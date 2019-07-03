@@ -16,7 +16,7 @@ namespace OutlookAddIn1
             inspectors = this.Application.Inspectors;
             inspectors.NewInspector +=
             new Microsoft.Office.Interop.Outlook.InspectorsEvents_NewInspectorEventHandler(Inspectors_NewInspector);
-            CreateMailItem();
+            
 
         }
 
@@ -38,16 +38,7 @@ namespace OutlookAddIn1
 
             }
         }
-        private void CreateMailItem()
-        {
-            Outlook.MailItem mailItem = (Outlook.MailItem)
-            this.Application.CreateItem(Outlook.OlItemType.olMailItem);
-            mailItem.Subject = "This is the subject";
-            mailItem.To = "someone@example.com";
-            mailItem.Body = "This is the message.";
-            mailItem.Importance = Outlook.OlImportance.olImportanceLow;
-            mailItem.Display(true);
-        }
+       
         protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
         {
             return new Ribbon1();

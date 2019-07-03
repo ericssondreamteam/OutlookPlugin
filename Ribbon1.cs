@@ -44,13 +44,23 @@ namespace OutlookAddIn1
             Outlook.NameSpace oNS = oApp.GetNamespace("mapi");
             Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
             Outlook.Items oItems = oInbox.Items;
-            Outlook.MailItem oMsg = (Outlook.MailItem)oItems.GetFirst();
+            foreach(Outlook.MailItem mail in oItems)
+            {
+                MessageBox.Show(mail.ReceivedTime + mail.SenderName);
+            }
 
-            String a = oMsg.Subject + " " + oMsg.SenderName;
-            Console.WriteLine(oMsg.SenderName);
-            Console.WriteLine(oMsg.ReceivedTime);
-            Console.WriteLine(oMsg.Body);
-            MessageBox.Show(a);
+            //Outlook.MailItem oMsg = (Outlook.MailItem)oItems.GetFirst();
+            
+            
+
+            /*var lista = new System.Collections.Generic.List<Outlook.MailItem>();
+            lista.Add(oMsg);
+
+            String a = lista[0].ReceivedTime + " " + lista[0].SenderName;
+            //Console.WriteLine(oMsg.SenderName);
+            //Console.WriteLine(oMsg.ReceivedTime);
+            //Console.WriteLine(oMsg.Body);
+            MessageBox.Show(a);*/
         }
        
         public Ribbon1()

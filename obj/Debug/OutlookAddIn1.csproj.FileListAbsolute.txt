@@ -35,3 +35,15 @@ C:\Users\emaatrb\source\repos\OutlookPlugin\obj\Debug\OutlookAddIn1.csproj.CoreC
 C:\Users\emaatrb\source\repos\OutlookPlugin\obj\Debug\OutlookAddIn1.csproj.CopyComplete
 C:\Users\emaatrb\source\repos\OutlookPlugin\obj\Debug\OutlookAddIn1.dll
 C:\Users\emaatrb\source\repos\OutlookPlugin\obj\Debug\OutlookAddIn1.pdb
+C:\Users\errbaak\Desktop\New\OutlookPlugin\bin\Debug\OutlookAddIn1.dll
+C:\Users\errbaak\Desktop\New\OutlookPlugin\bin\Debug\OutlookAddIn1.pdb
+C:\Users\errbaak\Desktop\New\OutlookPlugin\bin\Debug\OutlookAddIn1.dll.manifest
+C:\Users\errbaak\Desktop\New\OutlookPlugin\bin\Debug\OutlookAddIn1.vsto
+C:\Users\errbaak\Desktop\New\OutlookPlugin\bin\Debug\Microsoft.Office.Tools.Common.v4.0.Utilities.dll
+C:\Users\errbaak\Desktop\New\OutlookPlugin\bin\Debug\Microsoft.Office.Tools.Outlook.v4.0.Utilities.dll
+C:\Users\errbaak\Desktop\New\OutlookPlugin\obj\Debug\OutlookAddIn1.Properties.Resources.resources
+C:\Users\errbaak\Desktop\New\OutlookPlugin\obj\Debug\OutlookAddIn1.csproj.GenerateResource.cache
+C:\Users\errbaak\Desktop\New\OutlookPlugin\obj\Debug\OutlookAddIn1.csproj.CoreCompileInputs.cache
+C:\Users\errbaak\Desktop\New\OutlookPlugin\obj\Debug\OutlookAddIn1.csproj.CopyComplete
+C:\Users\errbaak\Desktop\New\OutlookPlugin\obj\Debug\OutlookAddIn1.dll
+C:\Users\errbaak\Desktop\New\OutlookPlugin\obj\Debug\OutlookAddIn1.pdb

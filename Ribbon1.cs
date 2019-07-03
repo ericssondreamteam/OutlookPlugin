@@ -1,8 +1,11 @@
-﻿using System;
+﻿
+using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Office = Microsoft.Office.Core;
+using Outlook = Microsoft.Office.Interop.Outlook;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
 
@@ -31,7 +34,25 @@ namespace OutlookAddIn1
     {
 
         private Office.IRibbonUI ribbon;
+        public void OnTextButton(Office.IRibbonControl control)
+        {
+            MessageBox.Show("You clicked a different control."+control.Id);
+        }
+        public void OnTableButton(Office.IRibbonControl control)
+        {
+            Outlook.Application oApp = new Outlook.Application();
+            Outlook.NameSpace oNS = oApp.GetNamespace("mapi");
+            Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
+            Outlook.Items oItems = oInbox.Items;
+            Outlook.MailItem oMsg = (Outlook.MailItem)oItems.GetFirst();
 
+            String a = oMsg.Subject + " " + oMsg.SenderName;
+            Console.WriteLine(oMsg.SenderName);
+            Console.WriteLine(oMsg.ReceivedTime);
+            Console.WriteLine(oMsg.Body);
+            MessageBox.Show(a);
+        }
+       
         public Ribbon1()
         {
 
@@ -71,6 +92,7 @@ namespace OutlookAddIn1
                     {
                         if (resourceReader != null)
                         {
+                            
                             return resourceReader.ReadToEnd();
                         }
                     }

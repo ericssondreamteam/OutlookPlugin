@@ -16,15 +16,9 @@ namespace OutlookAddIn1
             inspectors = this.Application.Inspectors;
             inspectors.NewInspector +=
             new Microsoft.Office.Interop.Outlook.InspectorsEvents_NewInspectorEventHandler(Inspectors_NewInspector);
-            
 
         }
 
-        private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
-        {
-            // Note: Outlook no longer raises this event. If you have code that 
-            //    must run when Outlook shuts down, see https://go.microsoft.com/fwlink/?LinkId=506785
-        }
         void Inspectors_NewInspector(Microsoft.Office.Interop.Outlook.Inspector Inspector)
         {
             Outlook.MailItem mailItem = Inspector.CurrentItem as Outlook.MailItem;
@@ -35,9 +29,15 @@ namespace OutlookAddIn1
                     mailItem.Subject = "This text was added by using code";
                     mailItem.Body = "This text was added by using code";
                 }
-
             }
         }
+
+        private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
+        {
+            // Note: Outlook no longer raises this event. If you have code that 
+            //    must run when Outlook shuts down, see https://go.microsoft.com/fwlink/?LinkId=506785
+        }
+ 
        
         protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
         {

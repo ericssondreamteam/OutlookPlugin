@@ -46,7 +46,7 @@ namespace OutlookAddIn1
             mailItem.To = "someone@example.com";
             mailItem.Body = "This is the message.";
             mailItem.Importance = Outlook.OlImportance.olImportanceLow;
-            mailItem.Display(false);
+            mailItem.Display(true);
         }
         protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
         {

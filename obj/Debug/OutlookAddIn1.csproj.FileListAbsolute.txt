@@ -1,0 +1,13 @@
+C:\Users\emaatrb\source\repos\OutlookAddIn1\bin\Debug\OutlookAddIn1.dll
+C:\Users\emaatrb\source\repos\OutlookAddIn1\bin\Debug\OutlookAddIn1.pdb
+C:\Users\emaatrb\source\repos\OutlookAddIn1\bin\Debug\OutlookAddIn1.dll.manifest
+C:\Users\emaatrb\source\repos\OutlookAddIn1\bin\Debug\OutlookAddIn1.vsto
+C:\Users\emaatrb\source\repos\OutlookAddIn1\bin\Debug\Microsoft.Office.Tools.Common.v4.0.Utilities.dll
+C:\Users\emaatrb\source\repos\OutlookAddIn1\bin\Debug\Microsoft.Office.Tools.Outlook.v4.0.Utilities.dll
+C:\Users\emaatrb\source\repos\OutlookAddIn1\obj\Debug\OutlookAddIn1.csprojAssemblyReference.cache
+C:\Users\emaatrb\source\repos\OutlookAddIn1\obj\Debug\OutlookAddIn1.Properties.Resources.resources
+C:\Users\emaatrb\source\repos\OutlookAddIn1\obj\Debug\OutlookAddIn1.csproj.GenerateResource.cache
+C:\Users\emaatrb\source\repos\OutlookAddIn1\obj\Debug\OutlookAddIn1.csproj.CoreCompileInputs.cache
+C:\Users\emaatrb\source\repos\OutlookAddIn1\obj\Debug\OutlookAddIn1.csproj.CopyComplete
+C:\Users\emaatrb\source\repos\OutlookAddIn1\obj\Debug\OutlookAddIn1.dll
+C:\Users\emaatrb\source\repos\OutlookAddIn1\obj\Debug\OutlookAddIn1.pdb

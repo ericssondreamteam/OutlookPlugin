@@ -40,27 +40,100 @@ namespace OutlookAddIn1
         }
         public void OnTableButton(Office.IRibbonControl control)
         {
+
+            /*foreach(Outlook.MailItem mail in oItems)
+            {
+                MessageBox.Show(mail.ReceivedTime + mail.SenderName);
+            }*/
+
+            /*var lista = new System.Collections.Generic.List<Outlook.MailItem>();
+            lista.Add(oMsg);*/
+
             Outlook.Application oApp = new Outlook.Application();
             Outlook.NameSpace oNS = oApp.GetNamespace("mapi");
             Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
             Outlook.Items oItems = oInbox.Items;
-            foreach(Outlook.MailItem mail in oItems)
-            {
-                MessageBox.Show(mail.ReceivedTime + mail.SenderName);
-            }
 
-            //Outlook.MailItem oMsg = (Outlook.MailItem)oItems.GetFirst();
-            
-            
+            /*Outlook.MailItem oMsg = (Outlook.MailItem)oItems.GetFirst();
 
-            /*var lista = new System.Collections.Generic.List<Outlook.MailItem>();
-            lista.Add(oMsg);
-
-            String a = lista[0].ReceivedTime + " " + lista[0].SenderName;
-            //Console.WriteLine(oMsg.SenderName);
-            //Console.WriteLine(oMsg.ReceivedTime);
-            //Console.WriteLine(oMsg.Body);
+            String a = oMsg.ReceivedTime + " " + oMsg.SenderName;
+            Console.WriteLine(oMsg.SenderName);
+            Console.WriteLine(oMsg.ReceivedTime);
+            Console.WriteLine(oMsg.Body);
             MessageBox.Show(a);*/
+
+            try
+            {
+                Outlook.MailItem oMsg = (Outlook.MailItem)oItems.GetFirst();
+                String a = oMsg.ReceivedTime + " " + oMsg.SenderName;
+                MessageBox.Show(a);
+
+                oMsg = (Outlook.MailItem)oItems.GetNext();
+                a = oMsg.ReceivedTime + " " + oMsg.SenderName;
+                MessageBox.Show(a);
+
+                oMsg = (Outlook.MailItem)oItems.GetLast();
+                a = oMsg.ReceivedTime + " " + oMsg.SenderName;
+                MessageBox.Show(a);
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            
+
+
+            /*String expMessage = "cos XD ";
+            String itemMessage = "Item is unknown.";
+            try
+            {
+                if(oApp.ActiveExplorer().Selection.Count > 0)
+                {
+                    Object selObj = oApp.ActiveExplorer().Selection[1];
+                    if(selObj is Outlook.MailItem)
+                    {
+                        Outlook.MailItem mailItem = (selObj as Outlook.MailItem);
+                        itemMessage = "The item is an e-mail message." +
+                        " The subject is " + mailItem.Subject + ".";
+                        mailItem.Display(false);
+                    }
+                    else if (selObj is Outlook.ContactItem)
+                    {
+                        Outlook.ContactItem contactItem =
+                            (selObj as Outlook.ContactItem);
+                        itemMessage = "The item is a contact." +
+                            " The full name is " + contactItem.Subject + ".";
+                        contactItem.Display(false);
+                    }
+                    else if (selObj is Outlook.AppointmentItem)
+                    {
+                        Outlook.AppointmentItem apptItem =
+                            (selObj as Outlook.AppointmentItem);
+                        itemMessage = "The item is an appointment." +
+                            " The subject is " + apptItem.Subject + ".";
+                    }
+                    else if (selObj is Outlook.TaskItem)
+                    {
+                        Outlook.TaskItem taskItem =
+                            (selObj as Outlook.TaskItem);
+                        itemMessage = "The item is a task. The body is "
+                            + taskItem.Body + ".";
+                    }
+                    else if (selObj is Outlook.MeetingItem)
+                    {
+                        Outlook.MeetingItem meetingItem =
+                            (selObj as Outlook.MeetingItem);
+                        itemMessage = "The item is a meeting item. " +
+                             "The subject is " + meetingItem.Subject + ".";
+                    }
+                }
+                expMessage = expMessage + itemMessage;
+            }
+            catch (Exception e)
+            {
+                expMessage = e.Message;
+            }
+            MessageBox.Show(expMessage);*/
         }
        
         public Ribbon1()

@@ -8,7 +8,7 @@ using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using System.Drawing;
 using Excel = Microsoft.Office.Interop.Excel;
-
+using System.Globalization;
 
 namespace OutlookAddIn1
 {
@@ -22,6 +22,20 @@ namespace OutlookAddIn1
         public void OnTextButton(Office.IRibbonControl control)
         {
             MessageBox.Show("You clicked a different control." + control.Id);
+        }
+        public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
+        {
+            CultureInfo defaultCultureInfo = CultureInfo.CurrentCulture;
+            return GetFirstDayOfWeek(dayInWeek, defaultCultureInfo);
+        }
+        public static DateTime GetFirstDayOfWeek(DateTime dayInWeek, CultureInfo cultureInfo)
+        {
+            DayOfWeek firstDay = cultureInfo.DateTimeFormat.FirstDayOfWeek;
+            DateTime firstDayInWeek = dayInWeek.Date;
+            while (firstDayInWeek.DayOfWeek != firstDay)
+                firstDayInWeek = firstDayInWeek.AddDays(-1);
+
+            return firstDayInWeek;
         }
         public void OnTableButton(Office.IRibbonControl control)
         {
@@ -59,17 +73,19 @@ namespace OutlookAddIn1
                         {
                             if (newEmail != null)
                             {
+                                DateTime today = GetFirstDayOfWeek(DateTime.Today);
+                                today = today.AddDays(-2).AddHours(5);
                                 if (newEmail.Subject.Contains("RE:"))
                                 {
                                     newEmail.Categories = "Green Category";
                                     newEmail.Save();
                                 }
-                                if (newEmail.ReceivedTime < new DateTime(2019, 7, 6))
+                                if (newEmail.ReceivedTime < today)
                                 {
                                     newEmail.Categories = "Blue Category";
                                     newEmail.Save();
                                 }
-                                if (!newEmail.Subject.Contains("RE:") && newEmail.ReceivedTime > new DateTime(2019, 7, 6))
+                                if (!newEmail.Subject.Contains("RE:") && newEmail.ReceivedTime > today)
                                 {
                                     newEmail.Categories = "Red Category";
                                     newEmail.Save();

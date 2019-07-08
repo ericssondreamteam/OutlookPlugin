@@ -48,7 +48,7 @@ namespace OutlookAddIn1
                     workSheet.Cells[1, 3] = "Subject";
                     workSheet.Cells[1, 4] = "Date-Time";
                     workSheet.Cells[1, 5] = "SenderName";
-
+                   // string c = "";
                     var row = 1;
                     Outlook.MailItem newEmail = null;
                     foreach (object collectionItem in oItems)
@@ -57,8 +57,28 @@ namespace OutlookAddIn1
                         newEmail = collectionItem as Outlook.MailItem;
                         if (newEmail != null)
                         {
+                            if (newEmail != null)
+                            {
+                                if (newEmail.Subject.Contains("RE:"))
+                                {
+                                    newEmail.Categories = "Green Category";
+                                    newEmail.Save();
+                                }
+                                if (newEmail.ReceivedTime < new DateTime(2019, 7, 6))
+                                {
+                                    newEmail.Categories = "Blue Category";
+                                    newEmail.Save();
+                                }
+                                if (!newEmail.Subject.Contains("RE:") && newEmail.ReceivedTime > new DateTime(2019, 7, 6))
+                                {
+                                    newEmail.Categories = "Red Category";
+                                    newEmail.Save();
+                                }
+                              //  c += "\n" + newEmail.Categories + " " + newEmail.Subject + " " + newEmail.ReceivedTime + "  " + newEmail.SenderName;
+
+                            }
                             //row++;
-                            if (newEmail.Categories == "Orange Category")
+                            if (newEmail.Categories == "Red Category")
                             {
                                 row++;
                                 workSheet.Cells[row, 1] = newEmail.Categories;
@@ -74,12 +94,23 @@ namespace OutlookAddIn1
                                 workSheet.Cells[row, 4] = newEmail.ReceivedTime;
                                 workSheet.Cells[row, 5] = newEmail.SenderName;
                             }
+                            if (newEmail.Categories == "Blue Category")
+                            {
+                                row++;
+                                workSheet.Cells[row, 1] = newEmail.Categories;
+                                workSheet.Cells[row, 3] = newEmail.Subject;
+                                workSheet.Cells[row, 4] = newEmail.ReceivedTime;
+                                workSheet.Cells[row, 5] = newEmail.SenderName;
+                            }
                             else { }
                         }
+                        
+                       
 
                     }
                     workSheet.SaveAs(value);
                     MessageBox.Show("Your raport is saved in: " + value);
+                    //MessageBox.Show(c);
                 }
                 else
                 {

@@ -81,24 +81,29 @@ namespace OutlookAddIn1
                         {
                             if (newEmail != null)
                             {
+                                //IN FLOW
                                 DateTime today = GetFirstDayOfWeek(DateTime.Today);
                                 today = today.AddDays(-2).AddHours(5);
-                                if (newEmail.Subject.Contains("RE:"))
+                                //IN HANDS
+                                Outlook.Conversation conv = newEmail.GetConversation();
+                                Outlook.SimpleItems items = conv.GetChildren(newEmail);
+                                Outlook.Table table = conv.GetTable();
+                                if (table.GetRowCount() > 1 && newEmail.ReceivedTime > today)
                                 {
                                     newEmail.Categories = "Green Category";
                                     newEmail.Save();
                                 }
-                                if (newEmail.ReceivedTime < today)
-                                {
-                                    newEmail.Categories = "Blue Category";
-                                    newEmail.Save();
-                                }
-                                if (!newEmail.Subject.Contains("RE:") && newEmail.ReceivedTime > today)
+                                else if (newEmail.ReceivedTime > today)
                                 {
                                     newEmail.Categories = "Red Category";
                                     newEmail.Save();
                                 }
-                                //  c += "\n" + newEmail.Categories + " " + newEmail.Subject + " " + newEmail.ReceivedTime + "  " + newEmail.SenderName;
+                                else
+                                {
+                                    newEmail.Categories = "Blue Category";
+                                    newEmail.Save();
+                                }
+                                //c += "\n" + table.GetRowCount().ToString() + " " + newEmail.ReceivedTime + " " + newEmail.Subject + " " + newEmail.ReceivedTime + "  " + newEmail.SenderName;
 
                             }
                             //row++;
@@ -132,7 +137,7 @@ namespace OutlookAddIn1
 
 
                     }
-                    oWB.SaveAs(value, Excel.XlFileFormat.xlExcel12, "haslo", "password");
+                    oWB.SaveAs(value, Excel.XlFileFormat.xlExcel12);
                     //workSheet.SaveAs(value);
                     oWB.Close(true);
                     oXL.Quit();

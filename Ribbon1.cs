@@ -6,25 +6,9 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
+using System.Drawing;
 using Excel = Microsoft.Office.Interop.Excel;
 
-// TODO:  Follow these steps to enable the Ribbon (XML) item:
-
-// 1: Copy the following code block into the ThisAddin, ThisWorkbook, or ThisDocument class.
-
-//  protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
-//  {
-//      return new Ribbon1();
-//  }
-
-// 2. Create callback methods in the "Ribbon Callbacks" region of this class to handle user
-//    actions, such as clicking a button. Note: if you have exported this Ribbon from the Ribbon designer,
-//    move your code from the event handlers to the callback methods and modify the code to work with the
-//    Ribbon extensibility (RibbonX) programming model.
-
-// 3. Assign attributes to the control tags in the Ribbon XML file to identify the appropriate callback methods in your code.  
-
-// For more information, see the Ribbon XML documentation in the Visual Studio Tools for Office Help.
 
 namespace OutlookAddIn1
 {
@@ -45,16 +29,14 @@ namespace OutlookAddIn1
             Outlook.NameSpace oNS = oApp.GetNamespace("mapi");
             Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
             Outlook.Items oItems = oInbox.Items;
-            /*Outlook.MailItem oMsg = (Outlook.MailItem)oItems.GetFirst();
-            String a = oMsg.ReceivedTime + " " + oMsg.SenderName;
-            Console.WriteLine(oMsg.SenderName);
-            Console.WriteLine(oMsg.ReceivedTime);
-            Console.WriteLine(oMsg.Body);
-            MessageBox.Show(a);*/
-
-            try //U mnie dziala XD sprawdzcie czy u was tez
+         
+            try 
             {
-                //getAllEmails(oItems);
+                string value = "Document 1";
+                if (InputBox("New document", "New document name:", ref value) == DialogResult.OK)
+                {
+                    MessageBox.Show(value);
+                
 
                 Outlook.Application myApp = new Outlook.Application();
                 Outlook.NameSpace mapiNameSpace = myApp.GetNamespace("MAPI");
@@ -62,7 +44,7 @@ namespace OutlookAddIn1
 
 
                 Excel.Application excelApp = new Excel.Application();
-                excelApp.Visible = true;
+                excelApp.Visible = false;
                 excelApp.Workbooks.Add();
                 Excel._Worksheet workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
 
@@ -100,11 +82,9 @@ namespace OutlookAddIn1
                         }
                         else { }
                     }
-                    /*workSheet.Columns[1].AutoFit();//only for AutoFit
-                    workSheet.Columns[2].AutoFit();
-                    workSheet.Columns[3].AutoFit();
-                    workSheet.Columns[4].AutoFit();
-                    workSheet.Columns[5].AutoFit();*/
+                 
+                }
+                workSheet.SaveAs(value);
                 }
             }
             catch(Exception e)
@@ -118,7 +98,47 @@ namespace OutlookAddIn1
 
          
         }
+        public static DialogResult InputBox(string title, string promptText, ref string value)
+        {
+            Form form = new Form();
+            Label label = new Label();
+            TextBox textBox = new TextBox();
+            Button buttonOk = new Button();
+            Button buttonCancel = new Button();
 
+            form.Text = title;
+            label.Text = promptText;
+            textBox.Text = value;
+
+            buttonOk.Text = "OK";
+            buttonCancel.Text = "Cancel";
+            buttonOk.DialogResult = DialogResult.OK;
+            buttonCancel.DialogResult = DialogResult.Cancel;
+
+            label.SetBounds(9, 20, 300, 13);
+            textBox.SetBounds(12, 50, 400, 20);
+            buttonOk.SetBounds(300, 100, 75, 23);
+            buttonCancel.SetBounds(150, 100, 75, 23);
+
+            label.AutoSize = true;
+            textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
+            buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+            form.ClientSize = new Size(424, 150);
+            form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
+            form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.StartPosition = FormStartPosition.CenterScreen;
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
+            form.AcceptButton = buttonOk;
+            form.CancelButton = buttonCancel;
+
+            DialogResult dialogResult = form.ShowDialog();
+            value = textBox.Text;
+            return dialogResult;
+        }
         #region IRibbonExtensibility Members
 
         public string GetCustomUI(string ribbonID)

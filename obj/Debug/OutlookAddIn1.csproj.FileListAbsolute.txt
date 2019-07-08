@@ -59,3 +59,4 @@ C:\Users\emaatrb\Desktop\git\OutlookPlugin\obj\Debug\OutlookAddIn1.csproj.CoreCo
 C:\Users\emaatrb\Desktop\git\OutlookPlugin\obj\Debug\OutlookAddIn1.csproj.CopyComplete
 C:\Users\emaatrb\Desktop\git\OutlookPlugin\obj\Debug\OutlookAddIn1.dll
 C:\Users\emaatrb\Desktop\git\OutlookPlugin\obj\Debug\OutlookAddIn1.pdb
+C:\Users\emaatrb\Desktop\git\OutlookPlugin\obj\Debug\OutlookAddIn1.csprojAssemblyReference.cache

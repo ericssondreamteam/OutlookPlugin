@@ -108,7 +108,7 @@ namespace OutlookAddIn1
                        
 
                     }
-                    workSheet.SaveAs(value,"docx","haslo","sao",false);
+                    workSheet.SaveAs(value);
                     MessageBox.Show("Your raport is saved in: " + value);
                     //MessageBox.Show(c);
                 }

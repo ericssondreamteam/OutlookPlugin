@@ -21,82 +21,81 @@ namespace OutlookAddIn1
         private Office.IRibbonUI ribbon;
         public void OnTextButton(Office.IRibbonControl control)
         {
-            MessageBox.Show("You clicked a different control."+control.Id);
+            MessageBox.Show("You clicked a different control." + control.Id);
         }
         public void OnTableButton(Office.IRibbonControl control)
         {
-            Outlook.Application oApp = new Outlook.Application();
-            Outlook.NameSpace oNS = oApp.GetNamespace("mapi");
-            Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
-            Outlook.Items oItems = oInbox.Items;
-         
-            try 
+            
+
+            try
             {
                 string value = "Document 1";
                 if (InputBox("New document", "New document name:", ref value) == DialogResult.OK)
                 {
-                    MessageBox.Show(value);
-                
+                    Outlook.Application oApp = new Outlook.Application();
+                    Outlook.NameSpace oNS = oApp.GetNamespace("mapi");
+                    Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
+                    Outlook.Items oItems = oInbox.Items;
 
-                Outlook.Application myApp = new Outlook.Application();
-                Outlook.NameSpace mapiNameSpace = myApp.GetNamespace("MAPI");
-                Outlook.MAPIFolder myInbox = mapiNameSpace.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
-
-
-                Excel.Application excelApp = new Excel.Application();
-                excelApp.Visible = false;
-                excelApp.Workbooks.Add();
-                Excel._Worksheet workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
+                    Excel.Application excelApp = new Excel.Application();
+                    excelApp.Visible = false;
+                    excelApp.Workbooks.Add();
+                    Excel._Worksheet workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
 
 
-                workSheet.Cells[1, 1] = "Category";
-                workSheet.Cells[1, 2] = "TIME: " + DateTime.Now.ToLongTimeString();
-                workSheet.Cells[1, 3] = "Subject";
-                workSheet.Cells[1, 4] = "Date-Time";
-                workSheet.Cells[1, 5] = "SenderName";
+                    workSheet.Cells[1, 1] = "Category";
+                    workSheet.Cells[1, 2] = "TIME: " + DateTime.Now.ToLongTimeString();
+                    workSheet.Cells[1, 3] = "Subject";
+                    workSheet.Cells[1, 4] = "Date-Time";
+                    workSheet.Cells[1, 5] = "SenderName";
 
-                var row = 1;
-                Outlook.MailItem newEmail = null;
-                foreach (object collectionItem in oItems)
-                {
-                    
-                    newEmail = collectionItem as Outlook.MailItem;
-                    if (newEmail != null)
+                    var row = 1;
+                    Outlook.MailItem newEmail = null;
+                    foreach (object collectionItem in oItems)
                     {
-                        //row++;
-                        if(newEmail.Categories == "Orange Category")
+
+                        newEmail = collectionItem as Outlook.MailItem;
+                        if (newEmail != null)
                         {
-                            row++;
-                            workSheet.Cells[row, 1] = newEmail.Categories;
-                            workSheet.Cells[row, 3] = newEmail.Subject;
-                            workSheet.Cells[row, 4] = newEmail.ReceivedTime;
-                            workSheet.Cells[row, 5] = newEmail.SenderName;
+                            //row++;
+                            if (newEmail.Categories == "Orange Category")
+                            {
+                                row++;
+                                workSheet.Cells[row, 1] = newEmail.Categories;
+                                workSheet.Cells[row, 3] = newEmail.Subject;
+                                workSheet.Cells[row, 4] = newEmail.ReceivedTime;
+                                workSheet.Cells[row, 5] = newEmail.SenderName;
+                            }
+                            if (newEmail.Categories == "Green Category")
+                            {
+                                row++;
+                                workSheet.Cells[row, 1] = newEmail.Categories;
+                                workSheet.Cells[row, 3] = newEmail.Subject;
+                                workSheet.Cells[row, 4] = newEmail.ReceivedTime;
+                                workSheet.Cells[row, 5] = newEmail.SenderName;
+                            }
+                            else { }
                         }
-                        if (newEmail.Categories == "Green Category")
-                        {
-                            row++;
-                            workSheet.Cells[row, 1] = newEmail.Categories;
-                            workSheet.Cells[row, 3] = newEmail.Subject;
-                            workSheet.Cells[row, 4] = newEmail.ReceivedTime;
-                            workSheet.Cells[row, 5] = newEmail.SenderName;
-                        }
-                        else { }
+
                     }
-                 
+                    workSheet.SaveAs(value);
+                    MessageBox.Show("Your raport is saved in: " + value);
                 }
-                workSheet.SaveAs(value);
+                else
+                {
+                    MessageBox.Show("Operation cannceled");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 MessageBox.Show(e.Message);
             }
         }
-       
+
         public Ribbon1()
         {
 
-         
+
         }
         public static DialogResult InputBox(string title, string promptText, ref string value)
         {
@@ -172,7 +171,7 @@ namespace OutlookAddIn1
                     {
                         if (resourceReader != null)
                         {
-                            
+
                             return resourceReader.ReadToEnd();
                         }
                     }

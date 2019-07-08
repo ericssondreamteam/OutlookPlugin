@@ -39,7 +39,9 @@ namespace OutlookAddIn1
         }
         public void OnTableButton(Office.IRibbonControl control)
         {
-            
+            Excel.Application oXL;
+            Excel._Workbook oWB;
+            Excel._Worksheet oSheet;
 
             try
             {
@@ -51,18 +53,24 @@ namespace OutlookAddIn1
                     Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     Outlook.Items oItems = oInbox.Items;
 
-                    Excel.Application excelApp = new Excel.Application();
-                    excelApp.Visible = false;
-                    excelApp.Workbooks.Add();
-                    Excel._Worksheet workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
+                    //Excel.Application excelApp = new Excel.Application();
+                    //excelApp.Visible = false;
+
+                    oXL = new Excel.Application();
+                    oXL.Visible = false;
+                    oWB = (Excel._Workbook)(oXL.Workbooks.Add(Missing.Value));
+                    oSheet = (Excel._Worksheet)oWB.ActiveSheet;
+
+                    //excelApp.Workbooks.Add();
+                    //Excel._Worksheet workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
 
 
-                    workSheet.Cells[1, 1] = "Category";
-                    workSheet.Cells[1, 2] = "TIME: " + DateTime.Now.ToLongTimeString();
-                    workSheet.Cells[1, 3] = "Subject";
-                    workSheet.Cells[1, 4] = "Date-Time";
-                    workSheet.Cells[1, 5] = "SenderName";
-                   // string c = "";
+                    oSheet.Cells[1, 1] = "Category";
+                    oSheet.Cells[1, 2] = "TIME: " + DateTime.Now.ToLongTimeString();
+                    oSheet.Cells[1, 3] = "Subject";
+                    oSheet.Cells[1, 4] = "Date-Time";
+                    oSheet.Cells[1, 5] = "SenderName";
+                    // string c = "";
                     var row = 1;
                     Outlook.MailItem newEmail = null;
                     foreach (object collectionItem in oItems)
@@ -90,41 +98,48 @@ namespace OutlookAddIn1
                                     newEmail.Categories = "Red Category";
                                     newEmail.Save();
                                 }
-                              //  c += "\n" + newEmail.Categories + " " + newEmail.Subject + " " + newEmail.ReceivedTime + "  " + newEmail.SenderName;
+                                //  c += "\n" + newEmail.Categories + " " + newEmail.Subject + " " + newEmail.ReceivedTime + "  " + newEmail.SenderName;
 
                             }
                             //row++;
                             if (newEmail.Categories == "Red Category")
                             {
                                 row++;
-                                workSheet.Cells[row, 1] = newEmail.Categories;
-                                workSheet.Cells[row, 3] = newEmail.Subject;
-                                workSheet.Cells[row, 4] = newEmail.ReceivedTime;
-                                workSheet.Cells[row, 5] = newEmail.SenderName;
+                                oSheet.Cells[row, 1] = newEmail.Categories;
+                                oSheet.Cells[row, 3] = newEmail.Subject;
+                                oSheet.Cells[row, 4] = newEmail.ReceivedTime;
+                                oSheet.Cells[row, 5] = newEmail.SenderName;
                             }
                             if (newEmail.Categories == "Green Category")
                             {
                                 row++;
-                                workSheet.Cells[row, 1] = newEmail.Categories;
-                                workSheet.Cells[row, 3] = newEmail.Subject;
-                                workSheet.Cells[row, 4] = newEmail.ReceivedTime;
-                                workSheet.Cells[row, 5] = newEmail.SenderName;
+                                oSheet.Cells[row, 1] = newEmail.Categories;
+                                oSheet.Cells[row, 3] = newEmail.Subject;
+                                oSheet.Cells[row, 4] = newEmail.ReceivedTime;
+                                oSheet.Cells[row, 5] = newEmail.SenderName;
                             }
                             if (newEmail.Categories == "Blue Category")
                             {
                                 row++;
-                                workSheet.Cells[row, 1] = newEmail.Categories;
-                                workSheet.Cells[row, 3] = newEmail.Subject;
-                                workSheet.Cells[row, 4] = newEmail.ReceivedTime;
-                                workSheet.Cells[row, 5] = newEmail.SenderName;
+                                oSheet.Cells[row, 1] = newEmail.Categories;
+                                oSheet.Cells[row, 3] = newEmail.Subject;
+                                oSheet.Cells[row, 4] = newEmail.ReceivedTime;
+                                oSheet.Cells[row, 5] = newEmail.SenderName;
                             }
                             else { }
                         }
-                        
-                       
+
+
 
                     }
-                    workSheet.SaveAs(value);
+                    oWB.SaveAs(value, Excel.XlFileFormat.xlExcel12, "haslo", "password");
+                    //workSheet.SaveAs(value);
+                    oWB.Close(true);
+                    oXL.Quit();
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oXL);
+
+
+
                     MessageBox.Show("Your raport is saved in: " + value);
                     //MessageBox.Show(c);
                 }

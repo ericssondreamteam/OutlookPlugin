@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
+using Excel = Microsoft.Office.Interop.Excel;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
 
@@ -53,17 +54,58 @@ namespace OutlookAddIn1
 
             try //U mnie dziala XD sprawdzcie czy u was tez
             {
-                Outlook.MailItem oMsg = (Outlook.MailItem)oItems.GetFirst();
-                String a ="FIRST: " + oMsg.ReceivedTime + " " + oMsg.SenderName;
-                for(int i = 0; i < 4; i++) //przykladowo
-                {
-                    oMsg = (Outlook.MailItem)oItems.GetNext();
-                    a += "\nNEXT: " + oMsg.ReceivedTime + " " + oMsg.SenderName;
-                }                
-                oMsg = (Outlook.MailItem)oItems.GetLast();
-                a += "\nLAST: " + oMsg.ReceivedTime + " " + oMsg.SenderName;
+                //getAllEmails(oItems);
 
-                MessageBox.Show(a);
+                Outlook.Application myApp = new Outlook.Application();
+                Outlook.NameSpace mapiNameSpace = myApp.GetNamespace("MAPI");
+                Outlook.MAPIFolder myInbox = mapiNameSpace.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
+
+
+                Excel.Application excelApp = new Excel.Application();
+                excelApp.Visible = true;
+                excelApp.Workbooks.Add();
+                Excel._Worksheet workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
+
+
+                workSheet.Cells[1, 1] = "Category";
+                workSheet.Cells[1, 2] = "TIME: " + DateTime.Now.ToLongTimeString();
+                workSheet.Cells[1, 3] = "Subject";
+                workSheet.Cells[1, 4] = "Date-Time";
+                workSheet.Cells[1, 5] = "SenderName";
+
+                var row = 1;
+                Outlook.MailItem newEmail = null;
+                foreach (object collectionItem in oItems)
+                {
+                    
+                    newEmail = collectionItem as Outlook.MailItem;
+                    if (newEmail != null)
+                    {
+                        //row++;
+                        if(newEmail.Categories == "Orange Category")
+                        {
+                            row++;
+                            workSheet.Cells[row, 1] = newEmail.Categories;
+                            workSheet.Cells[row, 3] = newEmail.Subject;
+                            workSheet.Cells[row, 4] = newEmail.ReceivedTime;
+                            workSheet.Cells[row, 5] = newEmail.SenderName;
+                        }
+                        if (newEmail.Categories == "Green Category")
+                        {
+                            row++;
+                            workSheet.Cells[row, 1] = newEmail.Categories;
+                            workSheet.Cells[row, 3] = newEmail.Subject;
+                            workSheet.Cells[row, 4] = newEmail.ReceivedTime;
+                            workSheet.Cells[row, 5] = newEmail.SenderName;
+                        }
+                        else { }
+                    }
+                    /*workSheet.Columns[1].AutoFit();//only for AutoFit
+                    workSheet.Columns[2].AutoFit();
+                    workSheet.Columns[3].AutoFit();
+                    workSheet.Columns[4].AutoFit();
+                    workSheet.Columns[5].AutoFit();*/
+                }
             }
             catch(Exception e)
             {
@@ -117,6 +159,21 @@ namespace OutlookAddIn1
                 }
             }
             return null;
+        }
+
+        private static void getAllEmails(Outlook.Items oItems)
+        {
+            String c = "";
+            Outlook.MailItem newEmail = null;
+            foreach (object collectionItem in oItems)
+            {
+                newEmail = collectionItem as Outlook.MailItem;
+                if (newEmail != null)
+                {
+                    c += "\n" + newEmail.ReceivedTime + "  " + newEmail.SenderName;
+                }
+            }
+            MessageBox.Show(c);
         }
 
         #endregion

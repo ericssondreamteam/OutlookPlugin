@@ -117,7 +117,7 @@ namespace OutlookAddIn1
                                 row++;
                                 oSheet.Cells[row, 2] = newEmail.Subject;
                                 oSheet.Cells[row, 3] = table_.GetRowCount();
-                                oSheet.Cells[row, 4] = "1";
+                                oSheet.Cells[row, 4].Value = 1;
                                 oSheet.Cells[row, 7] = newEmail.Categories;
                             }
                             if (typ == 1)
@@ -125,7 +125,7 @@ namespace OutlookAddIn1
                                 row++;
                                 oSheet.Cells[row, 2] = newEmail.Subject;
                                 oSheet.Cells[row, 3] = table_.GetRowCount();
-                                oSheet.Cells[row, 6] = "1";
+                                oSheet.Cells[row, 6].Value = 1;
                                 oSheet.Cells[row, 7] = newEmail.Categories;
                             }
                             if (typ == 3)
@@ -133,18 +133,28 @@ namespace OutlookAddIn1
                                 row++;
                                 oSheet.Cells[row, 2] = newEmail.Subject;
                                 oSheet.Cells[row, 3] = table_.GetRowCount();
-                                oSheet.Cells[row, 5] = "1";
+                                oSheet.Cells[row, 5].Value = 1;
                                 oSheet.Cells[row, 7] = newEmail.Categories;
                             }
                             else { }
                             oSheet.Columns.AutoFit();
                             oSheet.Cells[2, 2].EntireRow.Font.Bold = true;
+
                         }
                     }
+                    oSheet.Cells[row + 3, 3] = "SUM";
+                    oSheet.Cells[row + 4, 4] = "Inflow";
+                    oSheet.Cells[row + 4, 5] = "Outflow";
+                    oSheet.Cells[row + 4, 6] = "Inhence";
+                    oSheet.Cells[row + 3, 4].Formula = "=SUM(D3:D" + row + ")";
+                    oSheet.Cells[row + 3, 5].Formula = "=SUM(E3:E" + row + ")";
+                    oSheet.Cells[row + 3, 6].Formula = "=SUM(F3:F" + row + ")";
+                    oSheet.Cells[row + 3, 4].EntireRow.Font.Bold = true;
+
                     oWB.SaveAs(value, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
                     oWB.Close(true);
                     oXL.Quit();
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oXL);
+                    Marshal.ReleaseComObject(oXL);
 
 
 

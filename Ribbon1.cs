@@ -19,10 +19,6 @@ namespace OutlookAddIn1
     {
 
         private Office.IRibbonUI ribbon;
-        public void OnTextButton(Office.IRibbonControl control)
-        {
-            MessageBox.Show("You clicked a different control." + control.Id);
-        }
         public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
         {
             CultureInfo defaultCultureInfo = CultureInfo.CurrentCulture;

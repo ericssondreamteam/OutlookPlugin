@@ -159,7 +159,7 @@ namespace OutlookAddIn1
                                     }
                                     else
                                     {
-                                        //null category - in flow
+                                        //null category - in flow45
                                         typ = 2;
                                         Outlook.Conversation conv_ = newEmail.GetConversation();
                                         Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);

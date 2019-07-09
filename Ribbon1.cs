@@ -41,7 +41,7 @@ namespace OutlookAddIn1
             oSheet.Cells[2, 3] = "Count";
             oSheet.Cells[2, 4] = "Inflow";
             oSheet.Cells[2, 5] = "Outflow";
-            oSheet.Cells[2, 6] = "Inhance";
+            oSheet.Cells[2, 6] = "Inhands";
             oSheet.Cells[2, 7] = "Category";
         }
 
@@ -51,7 +51,7 @@ namespace OutlookAddIn1
             oSheet.Cells[row + 3, 3] = "SUM";
             oSheet.Cells[row + 4, 4] = "Inflow";
             oSheet.Cells[row + 4, 5] = "Outflow";
-            oSheet.Cells[row + 4, 6] = "Inhence";
+            oSheet.Cells[row + 4, 6] = "Inhands";
             oSheet.Cells[row + 3, 4].Formula = "=SUM(D3:D" + row + ")";
             oSheet.Cells[row + 3, 5].Formula = "=SUM(E3:E" + row + ")";
             oSheet.Cells[row + 3, 6].Formula = "=SUM(F3:F" + row + ")";
@@ -168,6 +168,7 @@ namespace OutlookAddIn1
                                 }
                                 else
                                 {
+                                    //null category - in flow
                                     typ = 2;
                                     Outlook.Conversation conv_ = newEmail.GetConversation();
                                     Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);

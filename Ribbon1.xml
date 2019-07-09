@@ -4,9 +4,7 @@
     <tabs>
       <tab idMso="TabAddIns">
         <group id="ContentGroup" label="Content">
-          <button id="textButton" label="TEST XD"
-               screentip="Text" onAction="OnTextButton"
-               supertip="Inserts text at the cursor location."/>
+        
           <button id="tableButton" label="Create Raport"
                screentip="Table" onAction="OnTableButton"
                supertip="Inserts a table at the cursor location."/>

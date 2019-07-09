@@ -159,7 +159,7 @@ namespace OutlookAddIn1
                                     }
                                     else
                                     {
-                                        //null category - in asrdtuasdrsudydtsd
+                                        //null category - in asrdtuasdrsudydtsd345353454
                                         typ = 2;
                                         Outlook.Conversation conv_ = newEmail.GetConversation();
                                         Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);

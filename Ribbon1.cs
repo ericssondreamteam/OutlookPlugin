@@ -180,8 +180,8 @@ namespace OutlookAddIn1
 
             label.SetBounds(9, 20, 300, 13);
             textBox.SetBounds(12, 50, 400, 20);
-            buttonOk.SetBounds(300, 100, 75, 23);
-            buttonCancel.SetBounds(150, 100, 75, 23);
+            buttonOk.SetBounds(300, 100, 100, 30);
+            buttonCancel.SetBounds(150, 100, 100, 30);
 
             label.AutoSize = true;
             textBox.Anchor = textBox.Anchor | AnchorStyles.Right;

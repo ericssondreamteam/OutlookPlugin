@@ -141,19 +141,25 @@ namespace OutlookAddIn1
                                     Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
                                     Outlook.Table table_ = conv_.GetTable();
 
-                                    row++;
-                                    insertDataExcel(oSheet, row, newEmail, table_);
+                                    
+                                    
 
                                     switch (typ)
                                     {
                                         case 1:
+                                            row++;
                                             oSheet.Cells[row, 6].Value = 1;
+                                            insertDataExcel(oSheet, row, newEmail, table_);
                                             break;
                                         case 2:
+                                            row++;
                                             oSheet.Cells[row, 4].Value = 1;
+                                            insertDataExcel(oSheet, row, newEmail, table_);
                                             break;
                                         case 3:
+                                            row++;
                                             oSheet.Cells[row, 5].Value = 1;
+                                            insertDataExcel(oSheet, row, newEmail, table_);
                                             break;
                                     }
                                     oSheet.Columns.AutoFit();

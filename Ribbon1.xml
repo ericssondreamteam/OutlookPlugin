@@ -3,7 +3,7 @@
   <ribbon>
     <tabs>
       <tab idMso="TabAddIns">
-        <group id="ContentGroup" label="Content">
+        <group id="ContentGroup" label="Raports">
         
           <button id="tableButton" label="Create Raport"
                screentip="Table" onAction="OnTableButton"

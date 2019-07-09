@@ -33,12 +33,76 @@ namespace OutlookAddIn1
 
             return firstDayInWeek;
         }
+        public void createExcelColumn(Excel._Worksheet oSheet)
+        {
+            oSheet.Cells[1, 1] = "Raport Time: " + DateTime.Now.ToLongTimeString();
+            oSheet.Cells[1, 2] = "Raport Date: " + DateTime.Now.ToLongDateString();
+            oSheet.Cells[2, 2] = "Subject";
+            oSheet.Cells[2, 3] = "Count";
+            oSheet.Cells[2, 4] = "Inflow";
+            oSheet.Cells[2, 5] = "Outflow";
+            oSheet.Cells[2, 6] = "Inhance";
+            oSheet.Cells[2, 7] = "Category";
+        }
+
+        public void createExcelSumCategroies(Excel._Worksheet oSheet, int row)
+        {
+            oSheet.Cells[row + 3, 3] = "SUM";
+            oSheet.Cells[row + 4, 4] = "Inflow";
+            oSheet.Cells[row + 4, 5] = "Outflow";
+            oSheet.Cells[row + 4, 6] = "Inhence";
+            oSheet.Cells[row + 3, 4].Formula = "=SUM(D3:D" + row + ")";
+            oSheet.Cells[row + 3, 5].Formula = "=SUM(E3:E" + row + ")";
+            oSheet.Cells[row + 3, 6].Formula = "=SUM(F3:F" + row + ")";
+            oSheet.Cells[row + 3, 4].EntireRow.Font.Bold = true;
+        }
+
+        public void insertDataExcel(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, Outlook.Table table_)
+        {
+            oSheet.Cells[row, 2] = newEmail.Subject;
+            oSheet.Cells[row, 3] = table_.GetRowCount();
+            oSheet.Cells[row, 7] = newEmail.Categories;
+        }
+
+        public DateTime getInflowDate()
+        {
+            DateTime today = GetFirstDayOfWeek(DateTime.Today);
+            today = today.AddDays(-2).AddHours(5);
+            return today;
+        }
+
+        public int getConversationAmount(Outlook.MailItem newEmail)
+        {
+            Outlook.Conversation conv = newEmail.GetConversation();
+            Outlook.SimpleItems items = conv.GetChildren(newEmail);
+            Outlook.Table table = conv.GetTable();
+            return table.GetRowCount();
+        }
+
+        public int selectCorrectEmailType(Outlook.MailItem newEmail)
+        {
+            int typ = 0;
+            if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate())
+            {
+                typ = 1;
+            }
+            else if (newEmail.ReceivedTime > getInflowDate())
+            {
+                typ = 2;
+            }
+            else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate()))
+            {
+                typ = 3;
+            }
+            return typ;
+        }
+
+
         public void OnTableButton(Office.IRibbonControl control)
         {
             Excel.Application oXL;
             Excel._Workbook oWB;
             Excel._Worksheet oSheet;
-
             try
             {
                 string value = "Document 1";
@@ -49,25 +113,17 @@ namespace OutlookAddIn1
                     Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     Outlook.Items oItems = oInbox.Items;
 
-
                     oXL = new Excel.Application();
                     oXL.Visible = false;
                     oWB = (oXL.Workbooks.Add(Missing.Value));
                     oSheet = (Excel._Worksheet)oWB.ActiveSheet;
 
-                    oSheet.Cells[1, 1] = "Raport Time: " + DateTime.Now.ToLongTimeString();
-                    oSheet.Cells[1, 2] = "Raport Date: " + DateTime.Now.ToLongDateString();
-                    oSheet.Cells[2, 2] = "Subject";
-                    oSheet.Cells[2, 3] = "Count";
-                    oSheet.Cells[2, 4] = "Inflow";
-                    oSheet.Cells[2, 5] = "Outflow";
-                    oSheet.Cells[2, 6] = "Inhance";
-                    oSheet.Cells[2, 7] = "Category";
+                    createExcelColumn(oSheet);
+
                     var row = 2;
                     Outlook.MailItem newEmail = null;
                     foreach (object collectionItem in oItems)
                     {
-
                         newEmail = collectionItem as Outlook.MailItem;
                         if (newEmail != null)
                         {
@@ -76,69 +132,37 @@ namespace OutlookAddIn1
                             {
                                 if (newEmail.Categories != null)
                                 {
-                                    //INFLOW  git testy
-                                    DateTime today = GetFirstDayOfWeek(DateTime.Today);
-                                    today = today.AddDays(-2).AddHours(5);
-                                    //INHENCE git testy
-                                    Outlook.Conversation conv = newEmail.GetConversation();
-                                    Outlook.SimpleItems items = conv.GetChildren(newEmail);
-                                    Outlook.Table table = conv.GetTable();
-                                    if (table.GetRowCount() > 1 && newEmail.ReceivedTime > today)
+                                    DateTime friday = getInflowDate();
+                                    int emailConversationAmount = getConversationAmount(newEmail);
+
+                                    typ = selectCorrectEmailType(newEmail);
+
+                                    Outlook.Conversation conv_ = newEmail.GetConversation();
+                                    Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
+                                    Outlook.Table table_ = conv_.GetTable();
+
+                                    row++;
+                                    insertDataExcel(oSheet, row, newEmail, table_);
+
+                                    switch (typ)
                                     {
-                                        typ = 1;
+                                        case 1:
+                                            oSheet.Cells[row, 6].Value = 1;
+                                            break;
+                                        case 2:
+                                            oSheet.Cells[row, 4].Value = 1;
+                                            break;
+                                        case 3:
+                                            oSheet.Cells[row, 5].Value = 1;
+                                            break;
                                     }
-                                    else if (newEmail.ReceivedTime > today)
-                                    {
-                                        typ = 2;
-                                    }
-                                    else if ((newEmail.ReceivedTime > today.AddDays(-7)) && (newEmail.ReceivedTime < today))
-                                    {
-                                        typ = 3;
-                                    }
+                                    oSheet.Columns.AutoFit();
+                                    oSheet.Cells[2, 2].EntireRow.Font.Bold = true;
                                 }
                             }
-
-                            Outlook.Conversation conv_ = newEmail.GetConversation();
-                            Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
-                            Outlook.Table table_ = conv_.GetTable();
-                            switch(typ)
-                            {
-                                case 1:
-                                    row++;
-                                    oSheet.Cells[row, 2] = newEmail.Subject;
-                                    oSheet.Cells[row, 3] = table_.GetRowCount();
-                                    oSheet.Cells[row, 6].Value = 1;
-                                    oSheet.Cells[row, 7] = newEmail.Categories;
-                                    break;
-                                case 2:
-                                    row++;
-                                    oSheet.Cells[row, 2] = newEmail.Subject;
-                                    oSheet.Cells[row, 3] = table_.GetRowCount();
-                                    oSheet.Cells[row, 4].Value = 1;
-                                    oSheet.Cells[row, 7] = newEmail.Categories;
-                                    break;
-                                case 3:
-                                    row++;
-                                    oSheet.Cells[row, 2] = newEmail.Subject;
-                                    oSheet.Cells[row, 3] = table_.GetRowCount();
-                                    oSheet.Cells[row, 5].Value = 1;
-                                    oSheet.Cells[row, 7] = newEmail.Categories;
-                                    break;
-                            }
-                            oSheet.Columns.AutoFit();
-                            oSheet.Cells[2, 2].EntireRow.Font.Bold = true;
-
                         }
                     }
-                    oSheet.Cells[row + 3, 3] = "SUM";
-                    oSheet.Cells[row + 4, 4] = "Inflow";
-                    oSheet.Cells[row + 4, 5] = "Outflow";
-                    oSheet.Cells[row + 4, 6] = "Inhence";
-                    oSheet.Cells[row + 3, 4].Formula = "=SUM(D3:D" + row + ")";
-                    oSheet.Cells[row + 3, 5].Formula = "=SUM(E3:E" + row + ")";
-                    oSheet.Cells[row + 3, 6].Formula = "=SUM(F3:F" + row + ")";
-                    oSheet.Cells[row + 3, 4].EntireRow.Font.Bold = true;
-
+                    createExcelSumCategroies(oSheet, row);
                     oWB.SaveAs(value, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
                     oWB.Close(true);
                     oXL.Quit();

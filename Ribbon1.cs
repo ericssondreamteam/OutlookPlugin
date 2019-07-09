@@ -79,6 +79,7 @@ namespace OutlookAddIn1
                         newEmail = collectionItem as Outlook.MailItem;
                         if (newEmail != null)
                         {
+                            var typ = 0;
                             if (newEmail != null)
                             {
                                 //IN FLOW
@@ -90,24 +91,27 @@ namespace OutlookAddIn1
                                 Outlook.Table table = conv.GetTable();
                                 if (table.GetRowCount() > 1 && newEmail.ReceivedTime > today)
                                 {
-                                    newEmail.Categories = "Green Category";
+                                    // newEmail.Categories = "Green Category";
+                                    typ = 1;
                                     newEmail.Save();
                                 }
                                 else if (newEmail.ReceivedTime > today)
                                 {
-                                    newEmail.Categories = "Red Category";
+                                    //  newEmail.Categories = "Red Category";
+                                    typ = 2;
                                     newEmail.Save();
                                 }
                                 else
                                 {
-                                    newEmail.Categories = "Blue Category";
+                                    //newEmail.Categories = "Blue Category";
+                                    typ = 3;
                                     newEmail.Save();
                                 }
                                 //c += "\n" + table.GetRowCount().ToString() + " " + newEmail.ReceivedTime + " " + newEmail.Subject + " " + newEmail.ReceivedTime + "  " + newEmail.SenderName;
 
                             }
                             //row++;
-                            if (newEmail.Categories == "Red Category")
+                            if (typ == 2)
                             {
                                 row++;
                                 oSheet.Cells[row, 1] = newEmail.Categories;
@@ -115,7 +119,7 @@ namespace OutlookAddIn1
                                 oSheet.Cells[row, 4] = newEmail.ReceivedTime;
                                 oSheet.Cells[row, 5] = newEmail.SenderName;
                             }
-                            if (newEmail.Categories == "Green Category")
+                            if (typ == 1)
                             {
                                 row++;
                                 oSheet.Cells[row, 1] = newEmail.Categories;
@@ -123,7 +127,7 @@ namespace OutlookAddIn1
                                 oSheet.Cells[row, 4] = newEmail.ReceivedTime;
                                 oSheet.Cells[row, 5] = newEmail.SenderName;
                             }
-                            if (newEmail.Categories == "Blue Category")
+                            if (typ == 3)
                             {
                                 row++;
                                 oSheet.Cells[row, 1] = newEmail.Categories;

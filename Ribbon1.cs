@@ -79,36 +79,39 @@ namespace OutlookAddIn1
                         newEmail = collectionItem as Outlook.MailItem;
                         if (newEmail != null)
                         {
+
                             var typ = 0;
                             if (newEmail != null)
                             {
-                                //IN FLOW
-                                DateTime today = GetFirstDayOfWeek(DateTime.Today);
-                                today = today.AddDays(-2).AddHours(5);
-                                //IN HANDS
-                                Outlook.Conversation conv = newEmail.GetConversation();
-                                Outlook.SimpleItems items = conv.GetChildren(newEmail);
-                                Outlook.Table table = conv.GetTable();
-                                if (table.GetRowCount() > 1 && newEmail.ReceivedTime > today)
+                                if (newEmail.Categories!=null)
                                 {
-                                    // newEmail.Categories = "Green Category";
-                                    typ = 1;
-                                    newEmail.Save();
+                                    //IN FLOW
+                                    DateTime today = GetFirstDayOfWeek(DateTime.Today);
+                                    today = today.AddDays(-2).AddHours(5);
+                                    //IN HANDS
+                                    Outlook.Conversation conv = newEmail.GetConversation();
+                                    Outlook.SimpleItems items = conv.GetChildren(newEmail);
+                                    Outlook.Table table = conv.GetTable();
+                                    if (table.GetRowCount() > 1 && newEmail.ReceivedTime > today)
+                                    {
+                                        // newEmail.Categories = "Green Category";
+                                        typ = 1;
+                                        // newEmail.Save();
+                                    }
+                                    else if (newEmail.ReceivedTime > today)
+                                    {
+                                        //  newEmail.Categories = "Red Category";
+                                        typ = 2;
+                                        // newEmail.Save();
+                                    }
+                                    else
+                                    {
+                                        //newEmail.Categories = "Blue Category";
+                                        typ = 3;
+                                        // newEmail.Save();
+                                    }
+                                    //c += "\n" + table.GetRowCount().ToString() + " " + newEmail.ReceivedTime + " " + newEmail.Subject + " " + newEmail.ReceivedTime + "  " + newEmail.SenderName;
                                 }
-                                else if (newEmail.ReceivedTime > today)
-                                {
-                                    //  newEmail.Categories = "Red Category";
-                                    typ = 2;
-                                    newEmail.Save();
-                                }
-                                else
-                                {
-                                    //newEmail.Categories = "Blue Category";
-                                    typ = 3;
-                                    newEmail.Save();
-                                }
-                                //c += "\n" + table.GetRowCount().ToString() + " " + newEmail.ReceivedTime + " " + newEmail.Subject + " " + newEmail.ReceivedTime + "  " + newEmail.SenderName;
-
                             }
                             //row++;
                             if (typ == 2)

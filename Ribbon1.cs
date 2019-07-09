@@ -50,7 +50,7 @@ namespace OutlookAddIn1
             oSheet.Cells[row + 3, 3] = "SUM";
             oSheet.Cells[row + 4, 4] = "Inflow";
             oSheet.Cells[row + 4, 5] = "Outflow";
-            oSheet.Cells[row + 4, 6] = "Inhence";
+            oSheet.Cells[row + 4, 6] = "Inhands";
             oSheet.Cells[row + 3, 4].Formula = "=SUM(D3:D" + row + ")";
             oSheet.Cells[row + 3, 5].Formula = "=SUM(E3:E" + row + ")";
             oSheet.Cells[row + 3, 6].Formula = "=SUM(F3:F" + row + ")";
@@ -82,15 +82,15 @@ namespace OutlookAddIn1
         public int selectCorrectEmailType(Outlook.MailItem newEmail)
         {
             int typ = 0;
-            if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate())
+            if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
             {
                 typ = 1;
             }
-            else if (newEmail.ReceivedTime > getInflowDate())
+            else if (newEmail.ReceivedTime > getInflowDate()) //inflow
             {
                 typ = 2;
             }
-            else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate()))
+            else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate())) //outflow
             {
                 typ = 3;
             }

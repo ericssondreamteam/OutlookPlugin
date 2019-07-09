@@ -56,15 +56,11 @@ namespace OutlookAddIn1
 
                     oXL = new Excel.Application();
                     oXL.Visible = false;
-                    oWB = (Excel._Workbook)(oXL.Workbooks.Add(Missing.Value));
+                    oWB = (oXL.Workbooks.Add(Missing.Value));
                     oSheet = (Excel._Worksheet)oWB.ActiveSheet;
 
-                    //excelApp.Workbooks.Add();
-                    //Excel._Worksheet workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
-
-
                     oSheet.Cells[1, 1] = "Raport Time: " + DateTime.Now.ToLongTimeString();
-                    oSheet.Cells[1, 2] = "Raport Time: " + DateTime.Now.ToLongDateString();
+                    oSheet.Cells[1, 2] = "Raport Date: " + DateTime.Now.ToLongDateString();
                     oSheet.Cells[2, 2] = "Subject";
                     oSheet.Cells[2, 3] = "Count";
                     oSheet.Cells[2, 4] = "Inflow";
@@ -101,9 +97,7 @@ namespace OutlookAddIn1
                                     }
                                     else if ((newEmail.ReceivedTime > today.AddDays(-7)) && (newEmail.ReceivedTime < today))
                                     {
-
                                         typ = 3;
-
                                     }
                                 }
                             }
@@ -111,32 +105,30 @@ namespace OutlookAddIn1
                             Outlook.Conversation conv_ = newEmail.GetConversation();
                             Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
                             Outlook.Table table_ = conv_.GetTable();
-
-                            if (typ == 2)
+                            switch(typ)
                             {
-                                row++;
-                                oSheet.Cells[row, 2] = newEmail.Subject;
-                                oSheet.Cells[row, 3] = table_.GetRowCount();
-                                oSheet.Cells[row, 4].Value = 1;
-                                oSheet.Cells[row, 7] = newEmail.Categories;
+                                case 1:
+                                    row++;
+                                    oSheet.Cells[row, 2] = newEmail.Subject;
+                                    oSheet.Cells[row, 3] = table_.GetRowCount();
+                                    oSheet.Cells[row, 6].Value = 1;
+                                    oSheet.Cells[row, 7] = newEmail.Categories;
+                                    break;
+                                case 2:
+                                    row++;
+                                    oSheet.Cells[row, 2] = newEmail.Subject;
+                                    oSheet.Cells[row, 3] = table_.GetRowCount();
+                                    oSheet.Cells[row, 4].Value = 1;
+                                    oSheet.Cells[row, 7] = newEmail.Categories;
+                                    break;
+                                case 3:
+                                    row++;
+                                    oSheet.Cells[row, 2] = newEmail.Subject;
+                                    oSheet.Cells[row, 3] = table_.GetRowCount();
+                                    oSheet.Cells[row, 5].Value = 1;
+                                    oSheet.Cells[row, 7] = newEmail.Categories;
+                                    break;
                             }
-                            if (typ == 1)
-                            {
-                                row++;
-                                oSheet.Cells[row, 2] = newEmail.Subject;
-                                oSheet.Cells[row, 3] = table_.GetRowCount();
-                                oSheet.Cells[row, 6].Value = 1;
-                                oSheet.Cells[row, 7] = newEmail.Categories;
-                            }
-                            if (typ == 3)
-                            {
-                                row++;
-                                oSheet.Cells[row, 2] = newEmail.Subject;
-                                oSheet.Cells[row, 3] = table_.GetRowCount();
-                                oSheet.Cells[row, 5].Value = 1;
-                                oSheet.Cells[row, 7] = newEmail.Categories;
-                            }
-                            else { }
                             oSheet.Columns.AutoFit();
                             oSheet.Cells[2, 2].EntireRow.Font.Bold = true;
 
@@ -155,9 +147,6 @@ namespace OutlookAddIn1
                     oWB.Close(true);
                     oXL.Quit();
                     Marshal.ReleaseComObject(oXL);
-
-
-
                     MessageBox.Show("Your raport is saved in: " + value);
                 }
                 else

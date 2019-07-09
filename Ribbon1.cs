@@ -53,8 +53,6 @@ namespace OutlookAddIn1
                     Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     Outlook.Items oItems = oInbox.Items;
 
-                    //Excel.Application excelApp = new Excel.Application();
-                    //excelApp.Visible = false;
 
                     oXL = new Excel.Application();
                     oXL.Visible = false;
@@ -65,13 +63,15 @@ namespace OutlookAddIn1
                     //Excel._Worksheet workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
 
 
-                    oSheet.Cells[1, 1] = "Category";
-                    oSheet.Cells[1, 2] = "TIME: " + DateTime.Now.ToLongTimeString();
-                    oSheet.Cells[1, 3] = "Subject";
-                    oSheet.Cells[1, 4] = "Date-Time";
-                    oSheet.Cells[1, 5] = "SenderName";
-                    // string c = "";
-                    var row = 1;
+                    oSheet.Cells[1, 1] = "Raport Time: " + DateTime.Now.ToLongTimeString();
+                    oSheet.Cells[1, 2] = "Raport Time: " + DateTime.Now.ToLongDateString();
+                    oSheet.Cells[2, 2] = "Subject";
+                    oSheet.Cells[2, 3] = "Count";
+                    oSheet.Cells[2, 4] = "Inflow";
+                    oSheet.Cells[2, 5] = "Outflow";
+                    oSheet.Cells[2, 6] = "Inhance";
+                    oSheet.Cells[2, 7] = "Category";
+                    var row = 2;
                     Outlook.MailItem newEmail = null;
                     foreach (object collectionItem in oItems)
                     {
@@ -79,73 +79,67 @@ namespace OutlookAddIn1
                         newEmail = collectionItem as Outlook.MailItem;
                         if (newEmail != null)
                         {
-
                             var typ = 0;
                             if (newEmail != null)
                             {
-                                if (newEmail.Categories!=null)
+                                if (newEmail.Categories != null)
                                 {
-                                    //IN FLOW
+                                    //INFLOW
                                     DateTime today = GetFirstDayOfWeek(DateTime.Today);
                                     today = today.AddDays(-2).AddHours(5);
-                                    //IN HANDS
+                                    //INHENCE
                                     Outlook.Conversation conv = newEmail.GetConversation();
                                     Outlook.SimpleItems items = conv.GetChildren(newEmail);
                                     Outlook.Table table = conv.GetTable();
                                     if (table.GetRowCount() > 1 && newEmail.ReceivedTime > today)
                                     {
-                                        // newEmail.Categories = "Green Category";
                                         typ = 1;
-                                        // newEmail.Save();
                                     }
                                     else if (newEmail.ReceivedTime > today)
                                     {
-                                        //  newEmail.Categories = "Red Category";
                                         typ = 2;
-                                        // newEmail.Save();
                                     }
                                     else
                                     {
-                                        //newEmail.Categories = "Blue Category";
                                         typ = 3;
-                                        // newEmail.Save();
                                     }
-                                    //c += "\n" + table.GetRowCount().ToString() + " " + newEmail.ReceivedTime + " " + newEmail.Subject + " " + newEmail.ReceivedTime + "  " + newEmail.SenderName;
                                 }
                             }
-                            //row++;
+
+                            Outlook.Conversation conv_ = newEmail.GetConversation();
+                            Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
+                            Outlook.Table table_ = conv_.GetTable();
+
                             if (typ == 2)
                             {
                                 row++;
-                                oSheet.Cells[row, 1] = newEmail.Categories;
-                                oSheet.Cells[row, 3] = newEmail.Subject;
-                                oSheet.Cells[row, 4] = newEmail.ReceivedTime;
-                                oSheet.Cells[row, 5] = newEmail.SenderName;
+                                oSheet.Cells[row, 2] = newEmail.Subject;
+                                oSheet.Cells[row, 3] = table_.GetRowCount();
+                                oSheet.Cells[row, 4] = "1";
+                                oSheet.Cells[row, 7] = newEmail.Categories;
                             }
                             if (typ == 1)
                             {
                                 row++;
-                                oSheet.Cells[row, 1] = newEmail.Categories;
-                                oSheet.Cells[row, 3] = newEmail.Subject;
-                                oSheet.Cells[row, 4] = newEmail.ReceivedTime;
-                                oSheet.Cells[row, 5] = newEmail.SenderName;
+                                oSheet.Cells[row, 2] = newEmail.Subject;
+                                oSheet.Cells[row, 3] = table_.GetRowCount();
+                                oSheet.Cells[row, 6] = "1";
+                                oSheet.Cells[row, 7] = newEmail.Categories;
                             }
                             if (typ == 3)
                             {
                                 row++;
-                                oSheet.Cells[row, 1] = newEmail.Categories;
-                                oSheet.Cells[row, 3] = newEmail.Subject;
-                                oSheet.Cells[row, 4] = newEmail.ReceivedTime;
-                                oSheet.Cells[row, 5] = newEmail.SenderName;
+                                oSheet.Cells[row, 2] = newEmail.Subject;
+                                oSheet.Cells[row, 3] = table_.GetRowCount();
+                                oSheet.Cells[row, 5] = "1";
+                                oSheet.Cells[row, 7] = newEmail.Categories;
                             }
                             else { }
+                            oSheet.Columns.AutoFit();
+                            oSheet.Cells[2, 2].EntireRow.Font.Bold = true;
                         }
-
-
-
                     }
                     oWB.SaveAs(value, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
-                    //workSheet.SaveAs(value);
                     oWB.Close(true);
                     oXL.Quit();
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oXL);
@@ -153,7 +147,6 @@ namespace OutlookAddIn1
 
 
                     MessageBox.Show("Your raport is saved in: " + value);
-                    //MessageBox.Show(c);
                 }
                 else
                 {

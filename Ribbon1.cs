@@ -47,6 +47,7 @@ namespace OutlookAddIn1
 
         public void createExcelSumCategroies(Excel._Worksheet oSheet, int row)
         {
+            var a = 0;
             oSheet.Cells[row + 3, 3] = "SUM";
             oSheet.Cells[row + 4, 4] = "Inflow";
             oSheet.Cells[row + 4, 5] = "Outflow";
@@ -84,14 +85,17 @@ namespace OutlookAddIn1
             int typ = 0;
             if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate())
             {
+                //in hands
                 typ = 1;
             }
             else if (newEmail.ReceivedTime > getInflowDate())
             {
+                //inflow
                 typ = 2;
             }
             else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate()))
             {
+                //outflow
                 typ = 3;
             }
             return typ;
@@ -141,8 +145,33 @@ namespace OutlookAddIn1
                                     Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
                                     Outlook.Table table_ = conv_.GetTable();
 
-                                    
-                                    
+                                    switch (typ)
+                                    {
+                                        case 1:
+                                            row++;
+                                            oSheet.Cells[row, 6].Value = 1;
+                                            insertDataExcel(oSheet, row, newEmail, table_);
+                                            break;
+                                        case 2:
+                                            row++;
+                                            oSheet.Cells[row, 4].Value = 1;
+                                            insertDataExcel(oSheet, row, newEmail, table_);
+                                            break;
+                                        case 3:
+                                            row++;
+                                            oSheet.Cells[row, 5].Value = 1;
+                                            insertDataExcel(oSheet, row, newEmail, table_);
+                                            break;
+                                    }
+                                    oSheet.Columns.AutoFit();
+                                    oSheet.Cells[2, 2].EntireRow.Font.Bold = true;
+                                }
+                                else
+                                {
+                                    typ = 2;
+                                    Outlook.Conversation conv_ = newEmail.GetConversation();
+                                    Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
+                                    Outlook.Table table_ = conv_.GetTable();
 
                                     switch (typ)
                                     {

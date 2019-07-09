@@ -99,9 +99,11 @@ namespace OutlookAddIn1
                                     {
                                         typ = 2;
                                     }
-                                    else
+                                    else if ((newEmail.ReceivedTime > today.AddDays(-7)) && (newEmail.ReceivedTime < today))
                                     {
+
                                         typ = 3;
+
                                     }
                                 }
                             }

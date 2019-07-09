@@ -76,10 +76,10 @@ namespace OutlookAddIn1
                             {
                                 if (newEmail.Categories != null)
                                 {
-                                    //INFLOW jol
+                                    //INFLOW  git testy
                                     DateTime today = GetFirstDayOfWeek(DateTime.Today);
                                     today = today.AddDays(-2).AddHours(5);
-                                    //INHENCE elko
+                                    //INHENCE git testy
                                     Outlook.Conversation conv = newEmail.GetConversation();
                                     Outlook.SimpleItems items = conv.GetChildren(newEmail);
                                     Outlook.Table table = conv.GetTable();

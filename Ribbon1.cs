@@ -123,6 +123,28 @@ namespace OutlookAddIn1
             return typ;
         }
 
+        public void createCenterTables(Excel._Worksheet oSheet, int row1, int row2, int row3)
+        {
+            Excel.Range tRange1 = oSheet.get_Range("A4", "C" + row2);
+            oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, tRange1,
+                Type.Missing, Excel.XlYesNoGuess.xlYes, Type.Missing).Name = "INFLOW";
+            oSheet.ListObjects["INFLOW"].TableStyle = "TableStyleMedium9";
+
+            Excel.Range tRange2 = oSheet.get_Range("E4", "G" + row3);
+            oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, tRange2,
+                Type.Missing, Excel.XlYesNoGuess.xlYes, Type.Missing).Name = "OUTFLOW";
+            oSheet.ListObjects["OUTFLOW"].TableStyle = "TableStyleMedium12";
+
+            Excel.Range tRange3 = oSheet.get_Range("I4", "K" + row1);
+            oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, tRange3,
+                Type.Missing, Excel.XlYesNoGuess.xlYes, Type.Missing).Name = "IN-HANDS";
+            oSheet.ListObjects["IN-HANDS"].TableStyle = "TableStyleMedium14";
+
+            oSheet.get_Range("B5", "B" + row2).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            oSheet.get_Range("F5", "F" + row3).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            oSheet.get_Range("J5", "J" + row1).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+        }
+
 
         public void OnTableButton(Office.IRibbonControl control)
         {
@@ -190,26 +212,8 @@ namespace OutlookAddIn1
                             }
                         }
                     }
-                    Excel.Range tRange1 = oSheet.get_Range("A4", "C" + row2);
-                    oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, tRange1,
-                        Type.Missing, Excel.XlYesNoGuess.xlYes, Type.Missing).Name = "INFLOW";
-                    oSheet.ListObjects["INFLOW"].TableStyle = "TableStyleMedium9";
-
-                    Excel.Range tRange2 = oSheet.get_Range("E4", "G" + row3);
-                    oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, tRange2,
-                        Type.Missing, Excel.XlYesNoGuess.xlYes, Type.Missing).Name = "OUTFLOW";
-                    oSheet.ListObjects["OUTFLOW"].TableStyle = "TableStyleMedium12";
-
-                    Excel.Range tRange3 = oSheet.get_Range("I4", "K" + row1);
-                    oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, tRange3,
-                        Type.Missing, Excel.XlYesNoGuess.xlYes, Type.Missing).Name = "IN-HANDS";
-                    oSheet.ListObjects["IN-HANDS"].TableStyle = "TableStyleMedium14";
-
-                    oSheet.get_Range("B5", "B" + row2).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-                    oSheet.get_Range("F5", "F" + row3).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-                    oSheet.get_Range("J5", "J" + row1).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-
-                    createExcelSumCategories(oSheet, row1, row2, row3); //TRZEBA ZMIENIC
+                    createCenterTables(oSheet, row1, row2, row3);
+                    createExcelSumCategories(oSheet, row1, row2, row3);
                     oWB.SaveAs(value, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
                     oWB.Close(true);
                     oXL.Quit();

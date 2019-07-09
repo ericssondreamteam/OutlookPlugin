@@ -17,7 +17,6 @@ namespace OutlookAddIn1
     [ComVisible(true)]
     public class Ribbon1 : Office.IRibbonExtensibility
     {
-
         private Office.IRibbonUI ribbon;
         public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
         {
@@ -37,31 +36,58 @@ namespace OutlookAddIn1
         {
             oSheet.Cells[1, 1] = "Raport Time: " + DateTime.Now.ToLongTimeString();
             oSheet.Cells[1, 2] = "Raport Date: " + DateTime.Now.ToLongDateString();
-            oSheet.Cells[2, 2] = "Subject";
-            oSheet.Cells[2, 3] = "Count";
-            oSheet.Cells[2, 4] = "Inflow";
-            oSheet.Cells[2, 5] = "Outflow";
-            oSheet.Cells[2, 6] = "Inhance";
-            oSheet.Cells[2, 7] = "Category";
+
+            oSheet.Cells[3, 1] = "INFLOW";
+            oSheet.Cells[3, 5] = "OUTFLOW";
+            oSheet.Cells[3, 9] = "IN-HANDS";
+
+
+            oSheet.Cells[4, 1] = "Subject";
+            oSheet.Cells[4, 2] = "Messages amount";
+            oSheet.Cells[4, 3] = "Category";
+
+            oSheet.Cells[4, 5] = "Subject";
+            oSheet.Cells[4, 6] = "Messages amount";
+            oSheet.Cells[4, 7] = "Category";
+
+            oSheet.Cells[4, 9] = "Subject";
+            oSheet.Cells[4, 10] = "Messages amount";
+            oSheet.Cells[4, 11] = "Category";
         }
 
-        public void createExcelSumCategroies(Excel._Worksheet oSheet, int row)
+        public void createExcelSumCategories(Excel._Worksheet oSheet, int row1, int row2, int row3)
         {
-            oSheet.Cells[row + 3, 3] = "SUM";
-            oSheet.Cells[row + 4, 4] = "Inflow";
-            oSheet.Cells[row + 4, 5] = "Outflow";
-            oSheet.Cells[row + 4, 6] = "Inhence";
-            oSheet.Cells[row + 3, 4].Formula = "=SUM(D3:D" + row + ")";
-            oSheet.Cells[row + 3, 5].Formula = "=SUM(E3:E" + row + ")";
-            oSheet.Cells[row + 3, 6].Formula = "=SUM(F3:F" + row + ")";
-            oSheet.Cells[row + 3, 4].EntireRow.Font.Bold = true;
+            oSheet.Cells[4, 13] = "SUM";
+            oSheet.Cells[5, 14] = "Inflow";
+            oSheet.Cells[5, 15] = "Outflow";
+            oSheet.Cells[5, 16] = "Inhence";
+            oSheet.Cells[4, 14].Formula = "=ROWS(A5:A" + row2 + ")";
+            oSheet.Cells[4, 15].Formula = "=ROWS(E5:E" + row3 + ")";
+            oSheet.Cells[4, 16].Formula = "=ROWS(I5:F" + row1 + ")";
+            //oSheet.Cells[row + 3, 4].EntireRow.Font.Bold = true;
         }
 
-        public void insertDataExcel(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, Outlook.Table table_)
+        public void insertDataExcel(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, Outlook.Table table_, int whichCategory)
         {
-            oSheet.Cells[row, 2] = newEmail.Subject;
-            oSheet.Cells[row, 3] = table_.GetRowCount();
-            oSheet.Cells[row, 7] = newEmail.Categories;
+            if(whichCategory == 1) //IN-HANDS
+            {
+                oSheet.Cells[row, 9] = newEmail.Subject;
+                oSheet.Cells[row, 10] = table_.GetRowCount();
+                oSheet.Cells[row, 11] = newEmail.Categories;
+            }
+            if(whichCategory == 2) //INFLOW
+            {
+                oSheet.Cells[row, 1] = newEmail.Subject;
+                oSheet.Cells[row, 2] = table_.GetRowCount();
+                oSheet.Cells[row, 3] = newEmail.Categories;
+            }
+            if (whichCategory == 3) //OUTFLOW
+            {
+                oSheet.Cells[row, 5] = newEmail.Subject;
+                oSheet.Cells[row, 6] = table_.GetRowCount();
+                oSheet.Cells[row, 7] = newEmail.Categories;
+            }
+
         }
 
         public DateTime getInflowDate()
@@ -120,7 +146,9 @@ namespace OutlookAddIn1
 
                     createExcelColumn(oSheet);
 
-                    var row = 2;
+                    var row1 = 4;
+                    var row2 = 4;
+                    var row3 = 4;
                     Outlook.MailItem newEmail = null;
                     foreach (object collectionItem in oItems)
                     {
@@ -141,34 +169,28 @@ namespace OutlookAddIn1
                                     Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
                                     Outlook.Table table_ = conv_.GetTable();
 
-                                    
-                                    
-
                                     switch (typ)
                                     {
                                         case 1:
-                                            row++;
-                                            oSheet.Cells[row, 6].Value = 1;
-                                            insertDataExcel(oSheet, row, newEmail, table_);
+                                            row1++;
+                                            insertDataExcel(oSheet, row1, newEmail, table_, 1);
                                             break;
                                         case 2:
-                                            row++;
-                                            oSheet.Cells[row, 4].Value = 1;
-                                            insertDataExcel(oSheet, row, newEmail, table_);
+                                            row2++;
+                                            insertDataExcel(oSheet, row2, newEmail, table_, 2);
                                             break;
                                         case 3:
-                                            row++;
-                                            oSheet.Cells[row, 5].Value = 1;
-                                            insertDataExcel(oSheet, row, newEmail, table_);
+                                            row3++;
+                                            insertDataExcel(oSheet, row3, newEmail, table_, 3);
                                             break;
                                     }
                                     oSheet.Columns.AutoFit();
-                                    oSheet.Cells[2, 2].EntireRow.Font.Bold = true;
+                                    oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
                                 }
                             }
                         }
                     }
-                    createExcelSumCategroies(oSheet, row);
+                    createExcelSumCategories(oSheet, row1, row2, row3); //TRZEBA ZMIENIC
                     oWB.SaveAs(value, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
                     oWB.Close(true);
                     oXL.Quit();

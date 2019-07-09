@@ -137,7 +137,7 @@ namespace OutlookAddIn1
 
 
                     }
-                    oWB.SaveAs(value, Excel.XlFileFormat.xlExcel12);
+                    oWB.SaveAs(value, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
                     //workSheet.SaveAs(value);
                     oWB.Close(true);
                     oXL.Quit();

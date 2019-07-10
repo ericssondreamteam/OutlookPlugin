@@ -167,13 +167,14 @@ namespace OutlookAddIn1
                     Outlook.NameSpace oNS = oApp.GetNamespace("mapi");
                     Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     var startDate = DateTime.Now.AddDays(-14).ToString("MMMM dd, yyyy hh:mm tt");
-                    var endDate = DateTime.Now.ToString("MMMM dd, yyyy hh:mm tt");
-                    var filter = $"[sentOn] > '{startDate}' And [sentOn] < '{endDate}'";
-                    //MessageBox.Show("Debug 1: " + filter);
+                    ///var endDate = DateTime.Now.ToString("MMMM dd, yyyy hh:mm tt");
+                   // var endDate = DateTime.Now.AddHours(-2).ToString("MMMM dd, yyyy hh:mm tt");
+                    var filter = $"[sentOn] > '{startDate}'";
+                    MessageBox.Show("Debug 1: " + filter);
                     Outlook.Items oItems = oInbox.Items.Restrict(filter);
-                    //MessageBox.Show("Debug 2: "+oItems.Count.ToString());
-             
+                    MessageBox.Show("Debug 2: "+oItems.Count.ToString());
 
+                    var a = 0;
                     oXL = new Excel.Application();
                     oXL.Visible = false;
                     oWB = (oXL.Workbooks.Add(Missing.Value));

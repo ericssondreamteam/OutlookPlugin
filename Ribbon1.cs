@@ -11,7 +11,7 @@ using System.Globalization;
 
 namespace OutlookAddIn1
 {
-    [ComVisible(true)]
+    //[ComVisible(true)]
     public class Ribbon1 : Office.IRibbonExtensibility
     {
         private Office.IRibbonUI ribbon;
@@ -188,12 +188,11 @@ namespace OutlookAddIn1
                     foreach (object collectionItem in oItems)
                     {
                         newEmail = collectionItem as Outlook.MailItem;
-                        if (newEmail != null)
-                        {
-                            var typ = 0;
+                    
                             if (newEmail != null)
                             {
-                                if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
+                            var typ = 0;
+                            if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                                 {
                                     if (newEmail.Categories != null)
                                     {
@@ -248,7 +247,6 @@ namespace OutlookAddIn1
                                     }
                                 }
                             }
-                        }
                     }
                     createCenterTables(oSheet, row1, row2, row3);
                     createExcelSumCategories(oSheet, row1, row2, row3);

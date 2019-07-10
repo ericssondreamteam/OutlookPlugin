@@ -8,6 +8,9 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using System.Drawing;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Globalization;
+using System.Collections.Generic;
+using Microsoft.Office.Interop.Outlook;
+using Exception = System.Exception;
 
 namespace OutlookAddIn1
 {
@@ -160,6 +163,7 @@ namespace OutlookAddIn1
                     Outlook.NameSpace oNS = oApp.GetNamespace("mapi");
                     Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     Outlook.Items oItems = oInbox.Items;
+                    
 
                     oXL = new Excel.Application();
                     oXL.Visible = false;

@@ -59,7 +59,7 @@ namespace OutlookAddIn1
             oSheet.Cells[5, 13] = "Inflow  = ";
             oSheet.Cells[6, 13] = "Outflow = ";
             oSheet.Cells[7, 13] = "In hands = ";
-            
+
             oSheet.Cells[5, 14].Formula = "=ROWS(A5:A" + row2 + ")";
             oSheet.Cells[6, 14].Formula = "=ROWS(E5:E" + row3 + ")";
             oSheet.Cells[7, 14].Formula = "=ROWS(I5:F" + row1 + ")";
@@ -75,13 +75,13 @@ namespace OutlookAddIn1
 
         public void insertDataExcel(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, Outlook.Table table_, int whichCategory)
         {
-            if(whichCategory == 1) //IN-HANDS
+            if (whichCategory == 1) //IN-HANDS
             {
                 oSheet.Cells[row, 9] = newEmail.Subject;
                 oSheet.Cells[row, 10] = table_.GetRowCount();
                 oSheet.Cells[row, 11] = newEmail.Categories;
             }
-            if(whichCategory == 2) //INFLOW
+            if (whichCategory == 2) //INFLOW
             {
                 oSheet.Cells[row, 1] = newEmail.Subject;
                 oSheet.Cells[row, 2] = table_.GetRowCount();
@@ -172,9 +172,8 @@ namespace OutlookAddIn1
                     var filter = $"[sentOn] > '{startDate}'";
                     MessageBox.Show("Debug 1: " + filter);
                     Outlook.Items oItems = oInbox.Items.Restrict(filter);
-                    MessageBox.Show("Debug 2: "+oItems.Count.ToString());
+                    MessageBox.Show("Debug 2: " + oItems.Count.ToString());
 
-                    var a = 0;
                     oXL = new Excel.Application();
                     oXL.Visible = false;
                     oWB = (oXL.Workbooks.Add(Missing.Value));
@@ -192,7 +191,9 @@ namespace OutlookAddIn1
                             if (newEmail != null)
                             {
                             var typ = 0;
-                            if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
+                            if (newEmail != null)
+                            {
+                                if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                                 {
                                     if (newEmail.Categories != null)
                                     {
@@ -247,6 +248,7 @@ namespace OutlookAddIn1
                                     }
                                 }
                             }
+                        }
                     }
                     createCenterTables(oSheet, row1, row2, row3);
                     createExcelSumCategories(oSheet, row1, row2, row3);
@@ -290,7 +292,7 @@ namespace OutlookAddIn1
         }
 
         public Ribbon1()
-        {                                          
+        {
         }
 
         public static DialogResult InputBox(string title, string promptText, ref string value)
@@ -299,8 +301,8 @@ namespace OutlookAddIn1
             Label label = new Label();
             TextBox textBox = new TextBox();
             Button buttonOk = new Button();
-            Button buttonCancel = new Button();     
-            
+            Button buttonCancel = new Button();
+
             form.Text = title;
             label.Text = promptText;
             textBox.Text = value;
@@ -345,7 +347,7 @@ namespace OutlookAddIn1
         public void Ribbon_Load(Office.IRibbonUI ribbonUI)
         {
             this.ribbon = ribbonUI;
-        }   
+        }
         #endregion
         #region Helpers
         private static string GetResourceText(string resourceName)

@@ -183,7 +183,7 @@ namespace OutlookAddIn1
                         email1 = collectionItem as Outlook.MailItem;
                         if (email1 != null)
                         {
-                            if (email1.ReceivedTime < getInflowDate().AddDays(-14));
+                            if (email1.ReceivedTime < getInflowDate().AddDays(-14))
                             {
                                 emails.Add(email1);
                             }

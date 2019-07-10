@@ -8,6 +8,8 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using System.Drawing;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Globalization;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OutlookAddIn1
 {
@@ -59,7 +61,7 @@ namespace OutlookAddIn1
             oSheet.Cells[5, 13] = "Inflow  = ";
             oSheet.Cells[6, 13] = "Outflow = ";
             oSheet.Cells[7, 13] = "In hands = ";
-            
+
             oSheet.Cells[5, 14].Formula = "=ROWS(A5:A" + row2 + ")";
             oSheet.Cells[6, 14].Formula = "=ROWS(E5:E" + row3 + ")";
             oSheet.Cells[7, 14].Formula = "=ROWS(I5:F" + row1 + ")";
@@ -75,13 +77,13 @@ namespace OutlookAddIn1
 
         public void insertDataExcel(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, Outlook.Table table_, int whichCategory)
         {
-            if(whichCategory == 1) //IN-HANDS
+            if (whichCategory == 1) //IN-HANDS
             {
                 oSheet.Cells[row, 9] = newEmail.Subject;
                 oSheet.Cells[row, 10] = table_.GetRowCount();
                 oSheet.Cells[row, 11] = newEmail.Categories;
             }
-            if(whichCategory == 2) //INFLOW
+            if (whichCategory == 2) //INFLOW
             {
                 oSheet.Cells[row, 1] = newEmail.Subject;
                 oSheet.Cells[row, 2] = table_.GetRowCount();
@@ -102,7 +104,12 @@ namespace OutlookAddIn1
             today = today.AddDays(-2).AddHours(5);
             return today;
         }
-
+        public DateTime getTwoWeeksDate()
+        {
+            DateTime today = GetFirstDayOfWeek(DateTime.Today);
+            today = today.AddHours(2);
+            return today;
+        }
         public int getConversationAmount(Outlook.MailItem newEmail)
         {
             Outlook.Conversation conv = newEmail.GetConversation();
@@ -160,6 +167,7 @@ namespace OutlookAddIn1
             Excel._Worksheet oSheet;
             try
             {
+                DateTime start = DateTime.Now;
                 string value = "Document 1";
                 if (InputBox("New document", "New document name:", ref value) == DialogResult.OK)
                 {
@@ -167,6 +175,22 @@ namespace OutlookAddIn1
                     Outlook.NameSpace oNS = oApp.GetNamespace("mapi");
                     Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     Outlook.Items oItems = oInbox.Items;
+                    List<Outlook.MailItem> emails = new List<Outlook.MailItem>();
+
+                    Outlook.MailItem email1 = null;
+                    foreach (object collectionItem in oItems)
+                    {
+                        email1 = collectionItem as Outlook.MailItem;
+                        if (email1 != null)
+                        {
+                            //if (email1.ReceivedTime < getInflowDate().AddHours(-2))
+                            //{
+                                emails.Add(email1);
+                            //}
+                        }
+                    }
+                    //MessageBox.Show(oItems.Count.ToString());
+                    //MessageBox.Show(emails.Count.ToString());
 
                     oXL = new Excel.Application();
                     oXL.Visible = false;
@@ -177,72 +201,68 @@ namespace OutlookAddIn1
                     var row1 = 4;
                     var row2 = 4;
                     var row3 = 4;
-                    Outlook.MailItem newEmail = null;
-                    foreach (object collectionItem in oItems)
+                    //Outlook.MailItem newEmail = null;
+                    foreach (Outlook.MailItem newEmail in emails)
                     {
-                        newEmail = collectionItem as Outlook.MailItem;
-                        if (newEmail != null)
+                        var typ = 0;
+                        if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
-                            var typ = 0;
-                            if (newEmail != null)
+                            if (newEmail.Categories != null)
                             {
-                                if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
+                                DateTime friday = getInflowDate();
+                                int emailConversationAmount = getConversationAmount(newEmail);
+                                typ = selectCorrectEmailType(newEmail);
+                                Outlook.Conversation conv_ = newEmail.GetConversation();
+                                Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
+                                Outlook.Table table_ = conv_.GetTable();
+                                switch (typ)
                                 {
-                                    if (newEmail.Categories != null)
-                                    {
-                                        DateTime friday = getInflowDate();
-                                        int emailConversationAmount = getConversationAmount(newEmail);
-                                        typ = selectCorrectEmailType(newEmail);
-                                        Outlook.Conversation conv_ = newEmail.GetConversation();
-                                        Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
-                                        Outlook.Table table_ = conv_.GetTable();
-                                        switch (typ)
-                                        {
-                                            case 1:
-                                                row1++;
-                                                insertDataExcel(oSheet, row1, newEmail, table_, 1);
-                                                break;
-                                            case 2:
-                                                row2++;
-                                                insertDataExcel(oSheet, row2, newEmail, table_, 2);
-                                                break;
-                                            case 3:
-                                                row3++;
-                                                insertDataExcel(oSheet, row3, newEmail, table_, 3);
-                                                break;
-                                        }
-                                        oSheet.Columns.AutoFit();
-                                        oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
-                                    }
-                                    else
-                                    {
-
-                                        typ = 2;
-                                        Outlook.Conversation conv_ = newEmail.GetConversation();
-                                        Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
-                                        Outlook.Table table_ = conv_.GetTable();
-                                        switch (typ)
-                                        {
-                                            case 1:
-                                                row1++;
-                                                insertDataExcel(oSheet, row1, newEmail, table_, 1);
-                                                break;
-                                            case 2:
-                                                row2++;
-                                                insertDataExcel(oSheet, row2, newEmail, table_, 2);
-                                                break;
-                                            case 3:
-                                                row3++;
-                                                insertDataExcel(oSheet, row3, newEmail, table_, 3);
-                                                break;
-                                        }
-                                        oSheet.Columns.AutoFit();
-                                        oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
-                                    }
+                                    case 1:
+                                        row1++;
+                                        insertDataExcel(oSheet, row1, newEmail, table_, 1);
+                                        break;
+                                    case 2:
+                                        row2++;
+                                        insertDataExcel(oSheet, row2, newEmail, table_, 2);
+                                        break;
+                                    case 3:
+                                        row3++;
+                                        insertDataExcel(oSheet, row3, newEmail, table_, 3);
+                                        break;
                                 }
+                                oSheet.Columns.AutoFit();
+                                oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
+                            }
+                            else
+                            {
+
+                                typ = 2;
+                                Outlook.Conversation conv_ = newEmail.GetConversation();
+                                Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
+                                Outlook.Table table_ = conv_.GetTable();
+                                switch (typ)
+                                {
+                                    case 1:
+                                        row1++;
+                                        insertDataExcel(oSheet, row1, newEmail, table_, 1);
+                                        break;
+                                    case 2:
+                                        row2++;
+                                        insertDataExcel(oSheet, row2, newEmail, table_, 2);
+                                        break;
+                                    case 3:
+                                        row3++;
+                                        insertDataExcel(oSheet, row3, newEmail, table_, 3);
+                                        break;
+                                }
+                                oSheet.Columns.AutoFit();
+                                oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
                             }
                         }
                     }
+                    DateTime end = DateTime.Now;
+                    var c = end - start;
+                    MessageBox.Show(c.ToString());
                     createCenterTables(oSheet, row1, row2, row3);
                     createExcelSumCategories(oSheet, row1, row2, row3);
                     oWB.SaveAs(value, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
@@ -285,7 +305,7 @@ namespace OutlookAddIn1
         }
 
         public Ribbon1()
-        {                                          
+        {
         }
 
         public static DialogResult InputBox(string title, string promptText, ref string value)
@@ -294,8 +314,8 @@ namespace OutlookAddIn1
             Label label = new Label();
             TextBox textBox = new TextBox();
             Button buttonOk = new Button();
-            Button buttonCancel = new Button();     
-            
+            Button buttonCancel = new Button();
+
             form.Text = title;
             label.Text = promptText;
             textBox.Text = value;
@@ -340,7 +360,7 @@ namespace OutlookAddIn1
         public void Ribbon_Load(Office.IRibbonUI ribbonUI)
         {
             this.ribbon = ribbonUI;
-        }   
+        }
         #endregion
         #region Helpers
         private static string GetResourceText(string resourceName)

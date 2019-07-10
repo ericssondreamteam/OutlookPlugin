@@ -165,6 +165,7 @@ namespace OutlookAddIn1
             Excel.Application oXL;
             Excel._Workbook oWB;
             Excel._Worksheet oSheet;
+            var i = 0;
             try
             {
                 DateTime start = DateTime.Now;
@@ -183,7 +184,7 @@ namespace OutlookAddIn1
                         email1 = collectionItem as Outlook.MailItem;
                         if (email1 != null)
                         {
-                            if (email1.ReceivedTime < getInflowDate().AddDays(-14))
+                            if (email1.ReceivedTime > getInflowDate().AddDays(-14))
                             {
                                 emails.Add(email1);
                             }

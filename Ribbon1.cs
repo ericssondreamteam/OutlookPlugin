@@ -240,6 +240,7 @@ namespace OutlookAddIn1
                     debug = 0;
                     foreach (Outlook.MailItem newEmail in emails)
                     {
+                        try { 
                         debug++;
                         var typ = 0;
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
@@ -247,7 +248,7 @@ namespace OutlookAddIn1
                             var a = 0;
                             if (newEmail.Categories != null)
                             {
-                                debugMsg += "\n\nFOREACH_IF: "; debugMsg += newEmail.Subject;debugMsg += "\n";
+                                debugMsg += "\n\nFOREACH_IF: "; debugMsg += newEmail.Subject; debugMsg += "\n";
                                 DateTime friday = getInflowDate();
                                 debugMsg += "getInflowDate"; debugMsg += "\n";
                                 int emailConversationAmount = getConversationAmount(newEmail);
@@ -309,6 +310,12 @@ namespace OutlookAddIn1
                                 debugMsg += "afterExcel 309"; debugMsg += "\n";
                             }
                         }
+                    }catch(Exception e)
+                        {
+                            debugMsg += "\n\nTRY CATCH 1\n\n";
+                            MessageBox.Show(e.Message);
+                            debugMsg += e.Message; debugMsg += "\n"; debugMsg += e.StackTrace; debugMsg += "\n";
+                        }
                     }
                     DateTime end = DateTime.Now;
                     var c = end - start;
@@ -332,6 +339,7 @@ namespace OutlookAddIn1
             }
             catch (Exception e)
             {
+                debugMsg += "\n\nTRY CATCH NEVER IN USE\n\n";
                 MessageBox.Show(e.Message);
                
                // MessageBox.Show(e.StackTrace);

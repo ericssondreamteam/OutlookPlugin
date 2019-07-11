@@ -10,7 +10,6 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Generic;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
 
@@ -168,15 +167,22 @@ namespace OutlookAddIn1
             Excel.Application oXL;
             Excel._Workbook oWB;
             Excel._Worksheet oSheet;
-            var i = 0;
             try
             {
                 DateTime start = DateTime.Now;
                 string value = "Document 1";
+                string login = "";
+                string passwd = "";
                 if (InputBox("New document", "New document name:", ref value) == DialogResult.OK)
                 {
                     Outlook.Application oApp = new Outlook.Application();
                     Outlook.NameSpace oNS = oApp.GetNamespace("mapi");
+                    if (InputBox("Try to logon", "LOGIN:", ref login) == DialogResult.OK)
+                    {
+                        if (InputBox("Try to logon", "PASSWORD:", ref passwd) == DialogResult.OK)
+                            oNS.Logon(login, passwd, Missing.Value, Missing.Value);
+                    }
+                        
                     Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     Outlook.Items oItems = oInbox.Items;
                     List<Outlook.MailItem> emails = new List<Outlook.MailItem>();

@@ -182,9 +182,16 @@ namespace OutlookAddIn1
                         if (InputBox("Try to logon", "PASSWORD:", ref passwd) == DialogResult.OK)
                             oNS.Logon(login, passwd, Missing.Value, Missing.Value);
                     }
-                        
+                    Outlook.Folder myFolder = oApp.ActiveExplorer().CurrentFolder
+       as Outlook.Folder;
+                    var msg = myFolder.Name;
+                    MessageBox.Show(msg);
+
+
+                    Outlook.MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder
+       as Outlook.MAPIFolder;
                     Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
-                    Outlook.Items oItems = oInbox.Items;
+                    Outlook.Items oItems = oInbox2.Items;
                     List<Outlook.MailItem> emails = new List<Outlook.MailItem>();
 
                     Outlook.MailItem email1 = null;

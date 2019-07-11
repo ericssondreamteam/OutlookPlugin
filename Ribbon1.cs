@@ -115,7 +115,7 @@ namespace OutlookAddIn1
         public int getConversationAmount(Outlook.MailItem newEmail)
         {
             Outlook.Conversation conv = newEmail.GetConversation();
-            Outlook.SimpleItems items = conv.GetChildren(newEmail);
+           // Outlook.SimpleItems items = conv.GetChildren(newEmail);
             Outlook.Table table = conv.GetTable();
             return table.GetRowCount();
         }
@@ -219,13 +219,14 @@ namespace OutlookAddIn1
                         var typ = 0;
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
+                            var a = 0;
                             if (newEmail.Categories != null)
                             {
                                 DateTime friday = getInflowDate();
                                 int emailConversationAmount = getConversationAmount(newEmail);
                                 typ = selectCorrectEmailType(newEmail);
                                 Outlook.Conversation conv_ = newEmail.GetConversation();
-                                Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
+                              //  Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
                                 Outlook.Table table_ = conv_.GetTable();
                                 switch (typ)
                                 {
@@ -250,7 +251,7 @@ namespace OutlookAddIn1
 
                                 typ = 2;
                                 Outlook.Conversation conv_ = newEmail.GetConversation();
-                                Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
+                               // Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
                                 Outlook.Table table_ = conv_.GetTable();
                                 switch (typ)
                                 {

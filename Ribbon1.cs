@@ -296,7 +296,7 @@ namespace OutlookAddIn1
                     }
                     DateTime end = DateTime.Now;
                     var c = end - start;
-                    MessageBox.Show(c.ToString());
+                    //MessageBox.Show(c.ToString());
                     createCenterTables(oSheet, row1, row2, row3);
                     createExcelSumCategories(oSheet, row1, row2, row3);
                     oWB.SaveAs(value, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
@@ -323,7 +323,7 @@ namespace OutlookAddIn1
             }
             finally
             {
-                System.IO.File.WriteAllText(@"C:\DebugInfoRaportPlugin.txt", debugMsg);
+                System.IO.File.WriteAllText(@"C:\Users\Public\DebugInfoRaportPlugin.txt", debugMsg);
             }
         }
 

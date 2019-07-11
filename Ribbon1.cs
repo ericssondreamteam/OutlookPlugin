@@ -192,12 +192,15 @@ namespace OutlookAddIn1
                     foreach (object collectionItem in oItems)
                     {
                         email1 = collectionItem as Outlook.MailItem;
-                        if (email1.ReceivedTime > getInflowDate().AddDays(-14))
+                        if (email1 != null)
                         {
-                            emails.Add(email1);
+                            if (email1.ReceivedTime > getInflowDate().AddDays(-14))
+                            {
+                                emails.Add(email1);
+                            }
+                            else
+                                break;
                         }
-                        else
-                            break;
                        
                     }
                     MessageBox.Show(oItems.Count.ToString());

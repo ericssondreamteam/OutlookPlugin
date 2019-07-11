@@ -185,18 +185,20 @@ namespace OutlookAddIn1
                     Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     Outlook.Items oItems = oInbox2.Items;
                     List<Outlook.MailItem> emails = new List<Outlook.MailItem>();
-
+                    MessageBox.Show("Before sorting" + oItems.Count.ToString()+ oItems.ToString());
+                    oItems.Sort("[ReceivedTime]", true);
+                    MessageBox.Show("After sorting"+oItems.Count.ToString() + oItems.ToString());
                     Outlook.MailItem email1 = null;
                     foreach (object collectionItem in oItems)
                     {
                         email1 = collectionItem as Outlook.MailItem;
-                        if (email1 != null)
+                        if (email1.ReceivedTime > getInflowDate().AddDays(-14))
                         {
-                            if (email1.ReceivedTime > getInflowDate().AddDays(-14))
-                            {
-                                emails.Add(email1);
-                            }
+                            emails.Add(email1);
                         }
+                        else
+                            break;
+                       
                     }
                     MessageBox.Show(oItems.Count.ToString());
                     MessageBox.Show(emails.Count.ToString());

@@ -161,7 +161,7 @@ namespace OutlookAddIn1
             oSheet.get_Range("J5", "J" + row1).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
         }
 
-
+        public static int debug;
         public void OnTableButton(Office.IRibbonControl control)
         {
             Excel.Application oXL;
@@ -171,25 +171,17 @@ namespace OutlookAddIn1
             {
                 DateTime start = DateTime.Now;
                 string value = "Document 1";
-                string login = "";
-                string passwd = "";
+              
                 if (InputBox("New document", "New document name:", ref value) == DialogResult.OK)
                 {
                     Outlook.Application oApp = new Outlook.Application();
                     Outlook.NameSpace oNS = oApp.GetNamespace("mapi");
-                    if (InputBox("Try to logon", "LOGIN:", ref login) == DialogResult.OK)
-                    {
-                        if (InputBox("Try to logon", "PASSWORD:", ref passwd) == DialogResult.OK)
-                            oNS.Logon(login, passwd, Missing.Value, Missing.Value);
-                    }
-                    Outlook.Folder myFolder = oApp.ActiveExplorer().CurrentFolder
-       as Outlook.Folder;
-                    var msg = myFolder.Name;
+                
+
+
+                    Outlook.MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder as Outlook.MAPIFolder;
+                    var msg = oInbox2.Name;
                     MessageBox.Show(msg);
-
-
-                    Outlook.MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder
-       as Outlook.MAPIFolder;
                     Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     Outlook.Items oItems = oInbox2.Items;
                     List<Outlook.MailItem> emails = new List<Outlook.MailItem>();
@@ -206,8 +198,8 @@ namespace OutlookAddIn1
                             }
                         }
                     }
-                    //MessageBox.Show(oItems.Count.ToString());
-                    //MessageBox.Show(emails.Count.ToString());
+                    MessageBox.Show(oItems.Count.ToString());
+                    MessageBox.Show(emails.Count.ToString());
 
                     oXL = new Excel.Application();
                     oXL.Visible = false;
@@ -219,8 +211,11 @@ namespace OutlookAddIn1
                     var row2 = 4;
                     var row3 = 4;
                     //Outlook.MailItem newEmail = null;
+                    //MessageBox.Show();
+                    debug = 0;
                     foreach (Outlook.MailItem newEmail in emails)
                     {
+                        debug++;
                         var typ = 0;
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
@@ -296,6 +291,8 @@ namespace OutlookAddIn1
             catch (Exception e)
             {
                 MessageBox.Show(e.Message);
+                MessageBox.Show("Licznik wiadmosci: " + debug);
+                MessageBox.Show(e.StackTrace);
             }
         }
 

@@ -202,7 +202,7 @@ namespace OutlookAddIn1
                         email1 = collectionItem as Outlook.MailItem;
                         if (email1 != null)
                         {
-                            debugMsg += "Email  "; debugMsg += x; debugMsg += ": "; debugMsg += email1.Subject; debugMsg += " "; debugMsg += email1.ReceivedTime; debugMsg += " "; debugMsg += "\n";
+                            debugMsg += "Email  "; debugMsg += x; debugMsg += ": "; debugMsg += email1.Subject; debugMsg += " "; debugMsg += email1.ReceivedTime; debugMsg += " "; debugMsg += email1.Categories; debugMsg += " "; debugMsg += "\n";
                             y++;
                             if (email1.ReceivedTime > getInflowDate().AddDays(-14))
                             {
@@ -223,14 +223,18 @@ namespace OutlookAddIn1
                     debugMsg += "Brane pod uwage: "; debugMsg += emails.Count.ToString(); debugMsg += "\n";
 
                     oXL = new Excel.Application();
+                    debugMsg += "excel utworzony(linia 226): ";  debugMsg += "\n";
                     oXL.Visible = false;
                     oWB = (oXL.Workbooks.Add(Missing.Value));
                     oSheet = (Excel._Worksheet)oWB.ActiveSheet;
                     createExcelColumn(oSheet);
+                    debugMsg += "createExcelColumn(linia 231): "; debugMsg += "\n";
 
                     var row1 = 4;
                     var row2 = 4;
                     var row3 = 4;
+                    debugMsg += "createExcelColumn(linia 236): "; debugMsg += "\n";
+                    debugMsg += "\n\n\n\n\n\n\n*******************FOREACH-spam*********************";
                     //Outlook.MailItem newEmail = null;
                     //MessageBox.Show();
                     debug = 0;
@@ -243,12 +247,18 @@ namespace OutlookAddIn1
                             var a = 0;
                             if (newEmail.Categories != null)
                             {
+                                debugMsg += "\n\nFOREACH_IF: "; debugMsg += newEmail.Subject;debugMsg += "\n";
                                 DateTime friday = getInflowDate();
+                                debugMsg += "getInflowDate"; debugMsg += "\n";
                                 int emailConversationAmount = getConversationAmount(newEmail);
+                                debugMsg += "emailConversationAmount"; debugMsg += "\n";
                                 typ = selectCorrectEmailType(newEmail);
+                                debugMsg += "selectCorrectEmailType"; debugMsg += "\n";
                                 Outlook.Conversation conv_ = newEmail.GetConversation();
-                              //  Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
+                                debugMsg += "conv_ Linia 258"; debugMsg += "\n";
+                                //  Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
                                 Outlook.Table table_ = conv_.GetTable();
+                                debugMsg += "Outlook.Table table_ Linia 261"; debugMsg += "\n";
                                 switch (typ)
                                 {
                                     case 1:
@@ -264,16 +274,20 @@ namespace OutlookAddIn1
                                         insertDataExcel(oSheet, row3, newEmail, table_, 3);
                                         break;
                                 }
+                                debugMsg += "AfterSwitch 277"; debugMsg += "\n";
                                 oSheet.Columns.AutoFit();
                                 oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
+                                debugMsg += "afterExcel 280"; debugMsg += "\n";
                             }
                             else
                             {
-
+                                debugMsg += "\n\nFOREACH_ELSE: "; debugMsg += newEmail.Subject; debugMsg += "\n";
                                 typ = 2;
                                 Outlook.Conversation conv_ = newEmail.GetConversation();
-                               // Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
+                                debugMsg += "Linia 287"; debugMsg += "\n";
+                                // Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
                                 Outlook.Table table_ = conv_.GetTable();
+                                debugMsg += "TABLE Linia 290"; debugMsg += "\n";
                                 switch (typ)
                                 {
                                     case 1:
@@ -289,22 +303,27 @@ namespace OutlookAddIn1
                                         insertDataExcel(oSheet, row3, newEmail, table_, 3);
                                         break;
                                 }
+                                debugMsg += "AfterSwitch 306"; debugMsg += "\n";
                                 oSheet.Columns.AutoFit();
                                 oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
+                                debugMsg += "afterExcel 309"; debugMsg += "\n";
                             }
                         }
                     }
                     DateTime end = DateTime.Now;
                     var c = end - start;
                     //MessageBox.Show(c.ToString());
+                    debugMsg += "\n\n\n\nLinia 316 Prawie dochodzi do konca ";
                     createCenterTables(oSheet, row1, row2, row3);
                     createExcelSumCategories(oSheet, row1, row2, row3);
+                    debugMsg += "\nLinia 319 przed  zapisem ";
                     oWB.SaveAs(value, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
                     oWB.Close(true);
                     oXL.Quit();
                     Marshal.ReleaseComObject(oXL);
                     MessageBox.Show("Your raport is saved in: " + value);
-                  //  MessageBox.Show("DEBUGER INFO\n\n" + debugMsg);
+                    debugMsg += "\nLinia 325 po zamykaniu ";
+                    //  MessageBox.Show("DEBUGER INFO\n\n" + debugMsg);
                 }
                 else
                 {

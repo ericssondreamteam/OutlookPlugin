@@ -139,6 +139,7 @@ namespace OutlookAddIn1
             }
             return typ;
         }
+        string t = " ";
         public void createCenterTables(Excel._Worksheet oSheet, int row1, int row2, int row3)
         {
             Excel.Range tRange1 = oSheet.get_Range("A4", "C" + row2);
@@ -162,6 +163,7 @@ namespace OutlookAddIn1
         }
 
         public static int debug;
+        public static string debugMsg;
         public void OnTableButton(Office.IRibbonControl control)
         {
             Excel.Application oXL;
@@ -180,31 +182,45 @@ namespace OutlookAddIn1
 
 
                     Outlook.MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder as Outlook.MAPIFolder;
-                    var msg = oInbox2.Name;
-                    MessageBox.Show(msg);
+                    // var msg = oInbox2.Name;
+                    debugMsg += "Wybrany folder "; debugMsg += oInbox2.Name; debugMsg += "\n";//MessageBox.Show(msg);
                     Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     Outlook.Items oItems = oInbox2.Items;
                     List<Outlook.MailItem> emails = new List<Outlook.MailItem>();
-                    MessageBox.Show("Before sorting" + oItems.Count.ToString()+ oItems.ToString());
+                    //MessageBox.Show("Before sorting" + oItems.Count.ToString()+" "+ oItems.ToString());
+                    debugMsg += "Before sorting "; debugMsg += oItems.Count.ToString(); debugMsg += "\n";
                     oItems.Sort("[ReceivedTime]", true);
-                    MessageBox.Show("After sorting"+oItems.Count.ToString() + oItems.ToString());
+                    //MessageBox.Show("After sorting"+oItems.Count.ToString() + " " + oItems.ToString());
+                    debugMsg += "After sorting "; debugMsg += oItems.Count.ToString(); debugMsg += "\n";
                     Outlook.MailItem email1 = null;
+                    var x = 0;
+                    var y = 0;
+                    debugMsg += "\n\n ************************MAILS*******************\n\n";
                     foreach (object collectionItem in oItems)
                     {
+                        x++;
                         email1 = collectionItem as Outlook.MailItem;
                         if (email1 != null)
                         {
+                            debugMsg += "Email  "; debugMsg += x; debugMsg += ": "; debugMsg += email1.Subject; debugMsg += " "; debugMsg += email1.ReceivedTime; debugMsg += " "; debugMsg += "\n";
+                            y++;
                             if (email1.ReceivedTime > getInflowDate().AddDays(-14))
                             {
                                 emails.Add(email1);
                             }
                             else
                                 break;
-                        }
-                       
+                        }                       
                     }
-                    MessageBox.Show(oItems.Count.ToString());
-                    MessageBox.Show(emails.Count.ToString());
+                    debugMsg += "\n\n";
+                   // MessageBox.Show("Ile razy foreach: "+x.ToString());
+                    debugMsg += "Ile razy foreach: "; debugMsg += x; debugMsg += "\n";
+                   // MessageBox.Show("Ile razy foreach and notnull: " + y.ToString());
+                    debugMsg += "Ile razy foreach and notnull: "; debugMsg += y; debugMsg += "\n";
+                   // MessageBox.Show(oItems.Count.ToString());
+                    debugMsg += "All Items: "; debugMsg += oItems.Count.ToString(); debugMsg += "\n";
+                   // MessageBox.Show(emails.Count.ToString());
+                    debugMsg += "Brane pod uwage: "; debugMsg += emails.Count.ToString(); debugMsg += "\n";
 
                     oXL = new Excel.Application();
                     oXL.Visible = false;
@@ -288,6 +304,7 @@ namespace OutlookAddIn1
                     oXL.Quit();
                     Marshal.ReleaseComObject(oXL);
                     MessageBox.Show("Your raport is saved in: " + value);
+                  //  MessageBox.Show("DEBUGER INFO\n\n" + debugMsg);
                 }
                 else
                 {
@@ -297,8 +314,16 @@ namespace OutlookAddIn1
             catch (Exception e)
             {
                 MessageBox.Show(e.Message);
-                MessageBox.Show("Licznik wiadmosci: " + debug);
-                MessageBox.Show(e.StackTrace);
+               
+               // MessageBox.Show(e.StackTrace);
+                debugMsg += "licznik wiadmosci(juz nie pamietam ktory): "; debugMsg += debug; debugMsg += "\n";
+
+                debugMsg += e.Message; debugMsg += "\n";debugMsg += e.StackTrace; debugMsg += "\n";
+                // MessageBox.Show(debugMsg);
+            }
+            finally
+            {
+                System.IO.File.WriteAllText(@"C:\DebugInfoRaportPlugin.txt", debugMsg);
             }
         }
 

@@ -77,24 +77,24 @@ namespace OutlookAddIn1
 
         }
 
-        public void insertDataExcel(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, Outlook.Table table_, int whichCategory)
+        public void insertDataExcel(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, int amount, int whichCategory)
         {
             if (whichCategory == 1) //IN-HANDS
             {
                 oSheet.Cells[row, 9] = newEmail.Subject;
-                oSheet.Cells[row, 10] = table_.GetRowCount();
+                oSheet.Cells[row, 10] = amount;
                 oSheet.Cells[row, 11] = newEmail.Categories;
             }
             if (whichCategory == 2) //INFLOW
             {
                 oSheet.Cells[row, 1] = newEmail.Subject;
-                oSheet.Cells[row, 2] = table_.GetRowCount();
+                oSheet.Cells[row, 2] = amount;
                 oSheet.Cells[row, 3] = newEmail.Categories;
             }
             if (whichCategory == 3) //OUTFLOW
             {
                 oSheet.Cells[row, 5] = newEmail.Subject;
-                oSheet.Cells[row, 6] = table_.GetRowCount();
+                oSheet.Cells[row, 6] = amount;
                 oSheet.Cells[row, 7] = newEmail.Categories;
             }
 
@@ -115,19 +115,26 @@ namespace OutlookAddIn1
         public int getConversationAmount(Outlook.MailItem newEmail)
         {
             Outlook.Conversation conv = newEmail.GetConversation();
-           // Outlook.SimpleItems items = conv.GetChildren(newEmail);
+            // Outlook.SimpleItems items = conv.GetChildren(newEmail);
             Outlook.Table table = conv.GetTable();
             return table.GetRowCount();
         }
         public int selectCorrectEmailType(Outlook.MailItem newEmail)
         {
+            var a = 3;
             int typ = 0;
+            if (newEmail.Categories == null) //inflow
+            {
+                //inflow
+                if (getConversationAmount(newEmail) > 1) typ = 1;
+                else typ = 2;
+            }
             if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
             {
                 //in hands
                 typ = 1;
             }
-            else if (newEmail.ReceivedTime > getInflowDate()) //inflow
+            else if (getConversationAmount(newEmail) == 1 && newEmail.ReceivedTime > getInflowDate()) //inflow
             {
                 //inflow
                 typ = 2;
@@ -171,15 +178,11 @@ namespace OutlookAddIn1
             Excel._Worksheet oSheet;
             try
             {
-                DateTime start = DateTime.Now;
                 string value = "Document 1";
-              
                 if (InputBox("New document", "New document name:", ref value) == DialogResult.OK)
                 {
                     Outlook.Application oApp = new Outlook.Application();
                     Outlook.NameSpace oNS = oApp.GetNamespace("mapi");
-                
-
 
                     Outlook.MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder as Outlook.MAPIFolder;
                     // var msg = oInbox2.Name;
@@ -198,12 +201,11 @@ namespace OutlookAddIn1
                     debugMsg += "\n\n ************************MAILS*******************\n\n";
                     foreach (object collectionItem in oItems)
                     {
-                        try { 
                         x++;
                         email1 = collectionItem as Outlook.MailItem;
                         if (email1 != null)
                         {
-                            debugMsg += "Email  "; debugMsg += x; debugMsg += ": "; debugMsg += email1.Subject; debugMsg += " "; debugMsg += email1.ReceivedTime; debugMsg += " "; debugMsg += email1.Categories; debugMsg += " "; debugMsg += "\n";
+                            debugMsg += "Email  "; debugMsg += x; debugMsg += ": "; debugMsg += email1.Subject; debugMsg += " "; debugMsg += email1.ReceivedTime; debugMsg += " "; debugMsg += "\n";
                             y++;
                             if (email1.ReceivedTime > getInflowDate().AddDays(-14))
                             {
@@ -212,131 +214,65 @@ namespace OutlookAddIn1
                             else
                                 break;
                         }
-                        }catch(Exception e)
-                        {
-                            debugMsg+="\n\n FIRST TRY CATCH";
-                            debugMsg += "Emial numer: "+y;
-                            debugMsg += "\n";
-                        }
                     }
                     debugMsg += "\n\n";
-                   // MessageBox.Show("Ile razy foreach: "+x.ToString());
+                    // MessageBox.Show("Ile razy foreach: "+x.ToString());
                     debugMsg += "Ile razy foreach: "; debugMsg += x; debugMsg += "\n";
-                   // MessageBox.Show("Ile razy foreach and notnull: " + y.ToString());
+                    // MessageBox.Show("Ile razy foreach and notnull: " + y.ToString());
                     debugMsg += "Ile razy foreach and notnull: "; debugMsg += y; debugMsg += "\n";
-                   // MessageBox.Show(oItems.Count.ToString());
+                    // MessageBox.Show(oItems.Count.ToString());
                     debugMsg += "All Items: "; debugMsg += oItems.Count.ToString(); debugMsg += "\n";
-                   // MessageBox.Show(emails.Count.ToString());
+                    // MessageBox.Show(emails.Count.ToString());
                     debugMsg += "Brane pod uwage: "; debugMsg += emails.Count.ToString(); debugMsg += "\n";
 
                     oXL = new Excel.Application();
-                    debugMsg += "excel utworzony(linia 226): ";  debugMsg += "\n";
                     oXL.Visible = false;
                     oWB = (oXL.Workbooks.Add(Missing.Value));
                     oSheet = (Excel._Worksheet)oWB.ActiveSheet;
                     createExcelColumn(oSheet);
-                    debugMsg += "createExcelColumn(linia 231): "; debugMsg += "\n";
 
                     var row1 = 4;
                     var row2 = 4;
                     var row3 = 4;
-                    debugMsg += "createExcelColumn(linia 236): "; debugMsg += "\n";
-                    debugMsg += "\n\n\n\n\n\n\n*******************FOREACH-spam*********************";
-                    //Outlook.MailItem newEmail = null;
-                    //MessageBox.Show();
+
                     debug = 0;
                     foreach (Outlook.MailItem newEmail in emails)
                     {
-                        try { 
                         debug++;
                         var typ = 0;
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
                             var a = 0;
-                            if (newEmail.Categories != null)
+                            int emailConversationAmount = getConversationAmount(newEmail);
+                            DateTime friday = getInflowDate();
+                            typ = selectCorrectEmailType(newEmail);
+                            switch (typ)
                             {
-                                debugMsg += "\n\nFOREACH_IF: "; debugMsg += newEmail.Subject; debugMsg += "\n";
-                                DateTime friday = getInflowDate();
-                                debugMsg += "getInflowDate"; debugMsg += "\n";
-                                int emailConversationAmount = getConversationAmount(newEmail);
-                                debugMsg += "emailConversationAmount"; debugMsg += "\n";
-                                typ = selectCorrectEmailType(newEmail);
-                                debugMsg += "selectCorrectEmailType"; debugMsg += "\n";
-                                Outlook.Conversation conv_ = newEmail.GetConversation();
-                                debugMsg += "conv_ Linia 258"; debugMsg += "\n";
-                                //  Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
-                                Outlook.Table table_ = conv_.GetTable();
-                                debugMsg += "Outlook.Table table_ Linia 261"; debugMsg += "\n";
-                                switch (typ)
-                                {
-                                    case 1:
-                                        row1++;
-                                        insertDataExcel(oSheet, row1, newEmail, table_, 1);
-                                        break;
-                                    case 2:
-                                        row2++;
-                                        insertDataExcel(oSheet, row2, newEmail, table_, 2);
-                                        break;
-                                    case 3:
-                                        row3++;
-                                        insertDataExcel(oSheet, row3, newEmail, table_, 3);
-                                        break;
-                                }
-                                debugMsg += "AfterSwitch 277"; debugMsg += "\n";
-                                oSheet.Columns.AutoFit();
-                                oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
-                                debugMsg += "afterExcel 280"; debugMsg += "\n";
+                                case 1:
+                                    row1++;
+                                    insertDataExcel(oSheet, row1, newEmail, emailConversationAmount, 1);
+                                    break;
+                                case 2:
+                                    row2++;
+                                    insertDataExcel(oSheet, row2, newEmail, emailConversationAmount, 2);
+                                    break;
+                                case 3:
+                                    row3++;
+                                    insertDataExcel(oSheet, row3, newEmail, emailConversationAmount, 3);
+                                    break;
                             }
-                            else
-                            {
-                                debugMsg += "\n\nFOREACH_ELSE: "; debugMsg += newEmail.Subject; debugMsg += "\n";
-                                typ = 2;
-                                Outlook.Conversation conv_ = newEmail.GetConversation();
-                                debugMsg += "Linia 287"; debugMsg += "\n";
-                                // Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
-                                Outlook.Table table_ = conv_.GetTable();
-                                debugMsg += "TABLE Linia 290"; debugMsg += "\n";
-                                switch (typ)
-                                {
-                                    case 1:
-                                        row1++;
-                                        insertDataExcel(oSheet, row1, newEmail, table_, 1);
-                                        break;
-                                    case 2:
-                                        row2++;
-                                        insertDataExcel(oSheet, row2, newEmail, table_, 2);
-                                        break;
-                                    case 3:
-                                        row3++;
-                                        insertDataExcel(oSheet, row3, newEmail, table_, 3);
-                                        break;
-                                }
-                                debugMsg += "AfterSwitch 306"; debugMsg += "\n";
-                                oSheet.Columns.AutoFit();
-                                oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
-                                debugMsg += "afterExcel 309"; debugMsg += "\n";
-                            }
-                        }
-                    }catch(Exception e)
-                        {
-                            debugMsg += "\n\nTRY CATCH 1\n\n";
-                            MessageBox.Show(e.Message);
-                            debugMsg += e.Message; debugMsg += "\n"; debugMsg += e.StackTrace; debugMsg += "\n";
+                            oSheet.Columns.AutoFit();
+                            oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
                         }
                     }
-                    DateTime end = DateTime.Now;
-                    var c = end - start;
                     //MessageBox.Show(c.ToString());
-                    debugMsg += "\n\n\n\nLinia 316 Prawie dochodzi do konca ";
                     createCenterTables(oSheet, row1, row2, row3);
                     createExcelSumCategories(oSheet, row1, row2, row3);
-                    debugMsg += "\nLinia 319 przed  zapisem ";
                     oWB.SaveAs(value, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
                     oWB.Close(true);
                     oXL.Quit();
                     Marshal.ReleaseComObject(oXL);
                     MessageBox.Show("Your raport is saved in: " + value);
-                    debugMsg += "\nLinia 325 po zamykaniu ";
                     //  MessageBox.Show("DEBUGER INFO\n\n" + debugMsg);
                 }
                 else
@@ -346,13 +282,12 @@ namespace OutlookAddIn1
             }
             catch (Exception e)
             {
-                debugMsg += "\n\nTRY CATCH NEVER IN USE\n\n";
                 MessageBox.Show(e.Message);
-               
-               // MessageBox.Show(e.StackTrace);
+
+                // MessageBox.Show(e.StackTrace);
                 debugMsg += "licznik wiadmosci(juz nie pamietam ktory): "; debugMsg += debug; debugMsg += "\n";
 
-                debugMsg += e.Message; debugMsg += "\n";debugMsg += e.StackTrace; debugMsg += "\n";
+                debugMsg += e.Message; debugMsg += "\n"; debugMsg += e.StackTrace; debugMsg += "\n";
                 // MessageBox.Show(debugMsg);
             }
             finally

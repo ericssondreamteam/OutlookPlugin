@@ -198,6 +198,7 @@ namespace OutlookAddIn1
                     debugMsg += "\n\n ************************MAILS*******************\n\n";
                     foreach (object collectionItem in oItems)
                     {
+                        try { 
                         x++;
                         email1 = collectionItem as Outlook.MailItem;
                         if (email1 != null)
@@ -210,7 +211,13 @@ namespace OutlookAddIn1
                             }
                             else
                                 break;
-                        }                       
+                        }
+                        }catch(Exception e)
+                        {
+                            debugMsg+="\n\n FIRST TRY CATCH";
+                            debugMsg += "Emial numer: "+y;
+                            debugMsg += "\n";
+                        }
                     }
                     debugMsg += "\n\n";
                    // MessageBox.Show("Ile razy foreach: "+x.ToString());

@@ -63,16 +63,19 @@ namespace OutlookAddIn1
             oSheet.Cells[5, 13] = "Inflow  = ";
             oSheet.Cells[6, 13] = "Outflow = ";
             oSheet.Cells[7, 13] = "In hands = ";
-
-            oSheet.Cells[5, 14].Formula = "=ROWS(A5:A" + row2 + ")";
-            oSheet.Cells[6, 14].Formula = "=ROWS(E5:E" + row3 + ")";
-            oSheet.Cells[7, 14].Formula = "=ROWS(I5:F" + row1 + ")";
-            if (row1 == 4)
+            
+            if (row1 == 4) /* Gdy nie znajdzie zadnych maili w IN-HANDS */
                 oSheet.Cells[7, 14].Value = 0;
-            if (row2 == 4)
+            else
+                oSheet.Cells[7, 14].Formula = "=ROWS(I5:F" + row1 + ")";
+            if (row2 == 4) /* Gdy nie znajdzie zadnych maili w INFLOW */
                 oSheet.Cells[5, 14].Value = 0;
-            if (row3 == 4)
+            else
+                oSheet.Cells[5, 14].Formula = "=ROWS(A5:A" + row2 + ")";
+            if (row3 == 4) /* Gdy nie znajdzie zadnych maili w OUTFLOW */
                 oSheet.Cells[6, 14].Value = 0;
+            else
+                oSheet.Cells[6, 14].Formula = "=ROWS(E5:E" + row3 + ")";
             oSheet.get_Range("N5", "N7").Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
 
         }
@@ -115,13 +118,11 @@ namespace OutlookAddIn1
         public int getConversationAmount(Outlook.MailItem newEmail)
         {
             Outlook.Conversation conv = newEmail.GetConversation();
-            // Outlook.SimpleItems items = conv.GetChildren(newEmail);
             Outlook.Table table = conv.GetTable();
             return table.GetRowCount();
         }
         public int selectCorrectEmailType(Outlook.MailItem newEmail)
         {
-            var a = 3;
             int typ = 0;
             if (newEmail.Categories == null) //inflow
             {

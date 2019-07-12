@@ -171,6 +171,54 @@ namespace OutlookAddIn1
 
         public static int debug;
         public static string debugMsg;
+        bool debugSave;
+        private CheckBox dynamicCheckBox;
+        //void debugerCheckBox()
+        //{
+        //    dynamicCheckBox = new CheckBox();
+        //    dynamicCheckBox.Left = 20;
+        //    dynamicCheckBox.Top = 20;
+        //    dynamicCheckBox.Width = 300;
+        //    dynamicCheckBox.Height = 30;
+
+        //    // Set background and foreground  
+        //    dynamicCheckBox.BackColor = Color.Orange;
+        //    dynamicCheckBox.ForeColor = Color.Black;
+        //    dynamicCheckBox.Text = "Zaznacz jesli chcesz debugowac";
+        //    dynamicCheckBox.Name = "Debuger";
+        //    dynamicCheckBox.Font = new Font("Georgia", 12);
+
+           
+        //}
+        public static class CheckboxDialog
+        {
+            public static bool ShowDialog(string text, string caption)
+            {
+
+                Form prompt = new Form();
+                prompt.Width = 250;
+                prompt.Height = 150;
+                prompt.Text = caption;
+                prompt.StartPosition = FormStartPosition.CenterScreen;
+
+                FlowLayoutPanel panel = new FlowLayoutPanel();
+                
+                CheckBox chk = new CheckBox();
+                chk.Text = text;
+                Button ok = new Button() { Text = "Confirm" };
+                ok.SetBounds(300, 100, 100, 30);
+                ok.Click += (sender, e) => { prompt.Close(); };
+                
+                panel.Controls.Add(chk);
+                panel.SetFlowBreak(chk, true);
+                panel.Controls.Add(ok);
+            
+                prompt.Controls.Add(panel);
+                prompt.ShowDialog();
+                
+                return chk.Checked;
+            }
+        }
         public void OnTableButton(Office.IRibbonControl control)
         {
             Excel.Application oXL;
@@ -179,6 +227,12 @@ namespace OutlookAddIn1
             try
             {
                 string value = "Document 1";
+<<<<<<< HEAD
+=======
+                //debugerCheckBox();
+                //debugSave = dynamicCheckBox.Checked;
+                debugSave = CheckboxDialog.ShowDialog("Debuger", "Turn on debuger?");
+>>>>>>> 378d143384c636eacb708fe7b58aa6b25deba139
                 if (InputBox("New document", "New document name:", ref value) == DialogResult.OK)
                 {
                     Outlook.Application oApp = new Outlook.Application();
@@ -292,7 +346,11 @@ namespace OutlookAddIn1
             }
             finally
             {
-                System.IO.File.WriteAllText(@"C:\Users\Public\DebugInfoRaportPlugin.txt", debugMsg);
+                if (debugSave) {
+                    System.IO.File.WriteAllText(@"C:\Users\Public\DebugInfoRaportPlugin.txt", debugMsg);
+                    MessageBox.Show("Plik debugowania zapisany w C:\\Users\\Public\nPlik: DebugInfoRaportPlugin.txt");
+                }
+                   
             }
         }
 

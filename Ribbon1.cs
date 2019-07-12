@@ -234,7 +234,7 @@ namespace OutlookAddIn1
                     var row1 = 4;
                     var row2 = 4;
                     var row3 = 4;
-
+                    emails = emails.Distinct().ToList();
                     debug = 0;
                     foreach (Outlook.MailItem newEmail in emails)
                     {

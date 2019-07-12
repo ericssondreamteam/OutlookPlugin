@@ -227,12 +227,10 @@ namespace OutlookAddIn1
             try
             {
                 string value = "Document 1";
-<<<<<<< HEAD
-=======
                 //debugerCheckBox();
                 //debugSave = dynamicCheckBox.Checked;
                 debugSave = CheckboxDialog.ShowDialog("Debuger", "Turn on debuger?");
->>>>>>> 378d143384c636eacb708fe7b58aa6b25deba139
+
                 if (InputBox("New document", "New document name:", ref value) == DialogResult.OK)
                 {
                     Outlook.Application oApp = new Outlook.Application();
@@ -255,18 +253,27 @@ namespace OutlookAddIn1
                     debugMsg += "\n\n ************************MAILS*******************\n\n";
                     foreach (object collectionItem in oItems)
                     {
-                        x++;
-                        email1 = collectionItem as Outlook.MailItem;
-                        if (email1 != null)
+                        try
                         {
-                            debugMsg += "Email  "; debugMsg += x; debugMsg += ": "; debugMsg += email1.Subject; debugMsg += " "; debugMsg += email1.ReceivedTime; debugMsg += " "; debugMsg += "\n";
-                            y++;
-                            if (email1.ReceivedTime > getInflowDate().AddDays(-14))
+                            x++;
+                            email1 = collectionItem as Outlook.MailItem;
+                            if (email1 != null)
                             {
-                                emails.Add(email1);
+                                debugMsg += "Email  "; debugMsg += x; debugMsg += ": "; debugMsg += email1.Subject; debugMsg += " "; debugMsg += email1.ReceivedTime; debugMsg += " "; debugMsg += "\n";
+                                y++;
+                                if (email1.ReceivedTime > getInflowDate().AddDays(-14))
+                                {
+                                    emails.Add(email1);
+                                }
+                                else
+                                    break;
                             }
-                            else
-                                break;
+                        }
+                        catch(Exception e)
+                        {
+                            debugMsg += "\n\n FIRST TRY CATCH";
+                            debugMsg += "Emial numer: " + y;
+                            debugMsg += "\n";
                         }
                     }
                     debugMsg += "\n\n";
@@ -364,10 +371,11 @@ namespace OutlookAddIn1
             {
                 categories = categories.Trim();
                 categories = categories.Replace(" ", "");
+                categories.ToLower();
                 string[] categoriesList = categories.Split(',');
                 foreach (var cat in categoriesList)
                 {   //No Response Necessary    or    Unknown     No Response Necessary, Unknown
-                    if (!cat.Equals("NoResponseNecessary") && !cat.Equals("Unknown"))
+                    if (!cat.Equals("noresponsenecessary") && !cat.Equals("unknown"))
                     {
                         return true;
                     }

@@ -18,6 +18,7 @@ namespace OutlookAddIn1
     public class Ribbon1 : Office.IRibbonExtensibility
     {
         private Debuger OurDebug = new Debuger();
+        private bool DebugerOptymisation;
         private Office.IRibbonUI ribbon;
         public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
         {
@@ -169,11 +170,6 @@ namespace OutlookAddIn1
             oSheet.get_Range("J5", "J" + row1).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
         }
 
-        
-        public static string debugMsg;
-
-
-
 
         public void OnTableButton(Office.IRibbonControl control)
         {
@@ -186,7 +182,10 @@ namespace OutlookAddIn1
                 string OutputRaportFileName = "Raport " + DateTime.Now.ToString("dd/MM/yyyy");
                 //Czy debugujemy
                 if (Interaction.ShowDebugDialog("Debuger", "Turn on debuger?"))
+                {
                     OurDebug.Enable();
+                    DebugerOptymisation = true;
+                }
                 else
                     OurDebug.Disable();
 
@@ -199,10 +198,10 @@ namespace OutlookAddIn1
                     MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     Items oItems = oInbox2.Items;
                     List<MailItem> emails = new List<MailItem>();
-                    
-                    OurDebug.AppendInfo("Email's amount",oItems.Count.ToString());
+
+                    OurDebug.AppendInfo("Email's amount", oItems.Count.ToString());
                     oItems.Sort("[ReceivedTime]", true);//sortowanie od najnowszych
-                   
+
                     MailItem email1 = null;
                     int DebugForEachCounter = 0;
                     int DebugCorrectEmialsCounter = 0;
@@ -215,8 +214,9 @@ namespace OutlookAddIn1
                             email1 = collectionItem as MailItem;
                             if (email1 != null)
                             {
+#if DebugerOptymisation
                                 OurDebug.AppendInfo("Email  ",DebugCorrectEmialsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());                                
-                               
+#endif            
                                 if (email1.ReceivedTime > getInflowDate().AddDays(-14))
                                 {
                                     DebugCorrectEmialsCounter++;
@@ -229,11 +229,11 @@ namespace OutlookAddIn1
                         catch (Exception e)
                         {
                             MessageBox.Show("Some error occured during first analysis\nIf You turn on debugger please go there");
-                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n","FIRST TRY CATCH\n", "Emial number:",DebugCorrectEmialsCounter.ToString(),"\n",e.Message, "\n",e.StackTrace);
+                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "FIRST TRY CATCH\n", "Emial number:", DebugCorrectEmialsCounter.ToString(), "\n", e.Message, "\n", e.StackTrace);
                         }
                     }
-                  
-                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ",DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ",DebugCorrectEmialsCounter.ToString(),"\n\n");
+
+                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", DebugCorrectEmialsCounter.ToString(), "\n\n");
                     oXL = new Excel.Application();
                     oXL.Visible = false;
                     oWB = (oXL.Workbooks.Add(Missing.Value));
@@ -244,18 +244,24 @@ namespace OutlookAddIn1
                     var row2 = 4;
                     var row3 = 4;
                     emails = emails.Distinct().ToList();//czy to potrzbne? 
-               
+
                     foreach (MailItem newEmail in emails)
                     {
+#if DebugerOptymisation
                         OurDebug.AppendInfo("Przed odczytem kategorii:",newEmail.Subject,newEmail.Categories, newEmail.ReceivedTime.ToString());
+#endif
                         var typ = 0;
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
+#if DebugerOptymisation
                             OurDebug.AppendInfo("Po odczycie kategorii:",newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
+#endif
                             int emailConversationAmount = getConversationAmount(newEmail);
                             DateTime friday = getInflowDate();
                             typ = selectCorrectEmailType(newEmail);
+#if DebugerOptymisation
                             OurDebug.AppendInfo("Nadany typ:",typ.ToString());
+#endif
                             switch (typ)
                             {
                                 case 1:
@@ -275,7 +281,7 @@ namespace OutlookAddIn1
                             oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
                         }
                     }
-                    
+
                     createCenterTables(oSheet, row1, row2, row3);
                     createExcelSumCategories(oSheet, row1, row2, row3);
                     oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
@@ -297,7 +303,7 @@ namespace OutlookAddIn1
             }
             finally
             {
-                if(OurDebug.IsEnable())
+                if (OurDebug.IsEnable())
                 {
                     OurDebug.SaveDebugInfoToFile(@"C:\Users\Public\DebugInfoRaportPlugin.txt");
                     MessageBox.Show("Plik debugowania zapisany w C:\\Users\\Public\nPlik: DebugInfoRaportPlugin.txt");

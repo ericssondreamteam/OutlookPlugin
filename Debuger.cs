@@ -34,15 +34,18 @@ namespace OutlookAddIn1
         }
         public void SaveDebugInfoToFile(string path)
         {
-            try
+            if (debugerStatus)
             {
-                System.IO.File.WriteAllText(path, DebugerMsg.ToString());
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("\nError during save debug info\n");
-                Console.WriteLine(e.Message + "\n");
-                Console.WriteLine(e.StackTrace);
+                try
+                {
+                    System.IO.File.WriteAllText(path, DebugerMsg.ToString());
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("\nError during save debug info\n");
+                    Console.WriteLine(e.Message + "\n");
+                    Console.WriteLine(e.StackTrace);
+                }
             }
         }
     }

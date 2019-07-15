@@ -167,6 +167,22 @@ namespace OutlookAddIn1
             oSheet.get_Range("J5", "J" + row1).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
         }
 
+        public List<MailItem> emailsWithoutDuplicates(List<MailItem> emails)
+        {
+            for (int i = 0; i < emails.Count; i++)
+            {
+                for (int j = i + 1; j < emails.Count; j++)
+                {                  
+                    if (emails[i].Subject == emails[j].Subject)
+                        emails.RemoveAt(j);
+                    if(emails[i].Subject.ToLower().StartsWith("re:") || emails[i].Subject.ToLower().StartsWith("fw:"))
+                    {
+                        emails[i].Subject = emails[i].Subject.Substring(4);
+                    }
+                }
+            }
+            return emails;
+        }
 
         public void OnTableButton(Office.IRibbonControl control)
         {
@@ -235,7 +251,8 @@ namespace OutlookAddIn1
                     var row1 = 4;
                     var row2 = 4;
                     var row3 = 4;
-                    emails = emails.Distinct().ToList();//czy to potrzbne? 
+                    //emails = emails.Distinct().ToList();//czy to potrzbne? 
+                    emails = emailsWithoutDuplicates(emails);
 
                     foreach (MailItem newEmail in emails)
                     {

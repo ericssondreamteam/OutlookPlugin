@@ -75,51 +75,20 @@ namespace OutlookAddIn1
 
         public List<MailItem> emailsWithoutDuplicates(List<MailItem> emails)
         {
-            List<string> mailList = new List<string>();
-           
-            for (int i = 0; i < emails.Count; i++)
-            {
-                if ((emails[i].Subject.ToLower().StartsWith("re:") || emails[i].Subject.ToLower().StartsWith("fw:")) && emails[i].Subject.Length > 4)
-                {
-                    mailList.Add(emails[i].Subject.Substring(4));
-                    
-                }
-                else
-                    mailList.Add(emails[i].Subject);
-            }
-
-            //string mail1 = "", mail2 = "";
-            //bool flagREFW = false;
-            //for (int i = 0; i < emails.Count; i++)
-            //{
-            //    if ((emails[i].Subject.ToLower().StartsWith("re:") || emails[i].Subject.ToLower().StartsWith("fw:")) && emails[i].Subject.Length > 4)
-            //    {
-            //        mail1 = emails[i].Subject.Substring(4);
-            //        flagREFW = true;
-            //    }
-            //    for (int j = i + 1; j < emails.Count; j++)
-            //    {
-
-            //        if ((emails[j].Subject.ToLower().StartsWith("re:") || emails[j].Subject.ToLower().StartsWith("fw:")) && emails[j].Subject.Length > 4)
-            //        {
-            //            mail2 = emails[j].Subject.Substring(4);
-            //            flagREFW = true;
-            //        }
-            //        if (mail1.Equals(mail2) && flagREFW)
-            //            emails.RemoveAt(j);
-            //        if (emails[i].Subject.Equals(emails[j].Subject) && emails.Count>j)
-            //            emails.RemoveAt(j);
-            //    }
-            //}
+ 
             for (int i = 0; i < emails.Count; i++)
             {
                 for (int j = i + 1; j < emails.Count; j++)
                 {
-                    if (mailList[i].Equals(mailList[j]) )
+                    if (emails[i].ConversationID.Equals(emails[j].ConversationID))
+                    {
+                        OurDebug.AppendInfo("\n\nPorwannie: i:", emails[i].ConversationID, "j:", emails[j].ConversationID, "\n\n");
                         emails.RemoveAt(j);
-                   
+                    }
+
                 }
             }
+
             return emails;
         }
         public void OnTableButton(Office.IRibbonControl control)

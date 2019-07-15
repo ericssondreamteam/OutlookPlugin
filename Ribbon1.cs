@@ -75,7 +75,9 @@ namespace OutlookAddIn1
 
         public List<MailItem> emailsWithoutDuplicates(List<MailItem> emails)
         {
- 
+            
+
+            
             for (int i = 0; i < emails.Count; i++)
             {
                 for (int j = i + 1; j < emails.Count; j++)
@@ -91,8 +93,9 @@ namespace OutlookAddIn1
 
             return emails;
         }
+
         public void OnTableButton(Office.IRibbonControl control)
-        {
+        {   
             try
             {
                 //Fajniejsza nazwa dla pliku raportu

@@ -172,13 +172,13 @@ namespace OutlookAddIn1
             for (int i = 0; i < emails.Count; i++)
             {
                 for (int j = i + 1; j < emails.Count; j++)
-                {                  
-                    if (emails[i].Subject == emails[j].Subject)
-                        emails.RemoveAt(j);
-                    if(emails[i].Subject.ToLower().StartsWith("re:") || emails[i].Subject.ToLower().StartsWith("fw:"))
+                {
+                    if (emails[i].Subject.ToLower().StartsWith("re:") || emails[i].Subject.ToLower().StartsWith("fw:"))
                     {
                         emails[i].Subject = emails[i].Subject.Substring(4);
                     }
+                    if (emails[i].Subject == emails[j].Subject)
+                        emails.RemoveAt(j);
                 }
             }
             return emails;

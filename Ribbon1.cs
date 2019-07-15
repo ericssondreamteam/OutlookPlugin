@@ -75,15 +75,25 @@ namespace OutlookAddIn1
 
         public List<MailItem> emailsWithoutDuplicates(List<MailItem> emails)
         {
+            string mail1="", mail2="";
+            bool flagREFW = false;
             for (int i = 0; i < emails.Count; i++)
             {
                 for (int j = i + 1; j < emails.Count; j++)
                 {
-                    //if (emails[i].Subject.ToLower().StartsWith("re:") || emails[i].Subject.ToLower().StartsWith("fw:"))
-                    //{
-                    //    emails[i].Subject = emails[i].Subject.Substring(4);
-                    //}
-                    if (emails[i].Subject == emails[j].Subject)
+                    if (emails[i].Subject.ToLower().StartsWith("re:") || emails[i].Subject.ToLower().StartsWith("fw:"))
+                    {
+                        mail1 = emails[i].Subject.Substring(4);
+                        flagREFW = true;
+                    }
+                    if (emails[j].Subject.ToLower().StartsWith("re:") || emails[j].Subject.ToLower().StartsWith("fw:"))
+                    {
+                        mail2 = emails[i].Subject.Substring(4);
+                        flagREFW = true;
+                    }
+                    if (mail1.Equals(mail2) && flagREFW)
+                        emails.RemoveAt(j);
+                    if (emails[i].Subject.Equals(emails[j].Subject))
                         emails.RemoveAt(j);
                 }
             }

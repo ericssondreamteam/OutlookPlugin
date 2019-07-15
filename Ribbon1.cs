@@ -83,6 +83,8 @@ namespace OutlookAddIn1
                     {
                         emails[i].Subject = emails[i].Subject.Substring(4);
                     }
+                    if (emails[i].Subject == emails[j].Subject)
+                        emails.RemoveAt(j);
                 }
             }
             for (int i = 0; i < emails.Count; i++)

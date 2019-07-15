@@ -77,6 +77,7 @@ namespace OutlookAddIn1
                 oSheet.Cells[row, 9] = newEmail.Subject;
                 oSheet.Cells[row, 10] = amount;
                 oSheet.Cells[row, 11] = newEmail.Categories;
+                oSheet.Cells[row, 12] = newEmail.ConversationID;
             }
             if (whichCategory == 2) //INFLOW
             {

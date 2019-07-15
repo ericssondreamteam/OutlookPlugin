@@ -84,8 +84,9 @@ namespace OutlookAddIn1
                 {
                     if (emails[i].ConversationID.Equals(emails[j].ConversationID))
                     {
-                        OurDebug.AppendInfo("\n\nPorwannie: i:", emails[i].ConversationID, "j:", emails[j].ConversationID, "\n\n");
+                     //   OurDebug.AppendInfo("\n\nPorwannie: i:", emails[i].ConversationID, "j:", emails[j].ConversationID, "\n\n");
                         emails.RemoveAt(j);
+                        j--;
                     }
 
                 }

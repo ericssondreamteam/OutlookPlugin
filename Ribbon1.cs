@@ -34,83 +34,10 @@ namespace OutlookAddIn1
                 firstDayInWeek = firstDayInWeek.AddDays(-1);
             return firstDayInWeek;
         }
-
-        public void createExcelColumn(Excel._Worksheet oSheet)
-        {
-            oSheet.Cells[1, 1] = "Raport Time: " + DateTime.Now.ToLongTimeString();
-            oSheet.Cells[1, 2] = "Raport Date: " + DateTime.Now.ToLongDateString();
-            oSheet.Cells[3, 1] = "INFLOW";
-            oSheet.Cells[3, 5] = "OUTFLOW";
-            oSheet.Cells[3, 9] = "IN-HANDS";
-
-            fillExcelCells(1, oSheet);
-            fillExcelCells(5, oSheet);
-            fillExcelCells(9, oSheet);
-        }
-
-        private void fillExcelCells(int i, Excel._Worksheet oSheet)
-        {
-            oSheet.Cells[4, i] = "Subject";
-            oSheet.Cells[4, i + 1] = "Messages amount";
-            oSheet.Cells[4, i + 2] = "Category";
-        }
-
-        public void createExcelSumCategories(Excel._Worksheet oSheet, int row1, int row2, int row3)
-        {
-            oSheet.Cells[4, 13] = "SUMMARY";
-            oSheet.Cells[5, 13] = "Inflow  = ";
-            oSheet.Cells[6, 13] = "Outflow = ";
-            oSheet.Cells[7, 13] = "In hands = ";
-
-            if (row1 == 4) /* Gdy nie znajdzie zadnych maili w IN-HANDS */
-                oSheet.Cells[7, 14].Value = 0;
-            else
-                oSheet.Cells[7, 14].Formula = "=ROWS(I5:F" + row1 + ")";
-            if (row2 == 4) /* Gdy nie znajdzie zadnych maili w INFLOW */
-                oSheet.Cells[5, 14].Value = 0;
-            else
-                oSheet.Cells[5, 14].Formula = "=ROWS(A5:A" + row2 + ")";
-            if (row3 == 4) /* Gdy nie znajdzie zadnych maili w OUTFLOW */
-                oSheet.Cells[6, 14].Value = 0;
-            else
-                oSheet.Cells[6, 14].Formula = "=ROWS(E5:E" + row3 + ")";
-            oSheet.get_Range("N5", "N7").Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-
-        }
-
-        public void insertDataExcel(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, int amount, int whichCategory)
-        {
-            if (whichCategory == 1) //IN-HANDS
-            {
-                oSheet.Cells[row, 9] = newEmail.Subject;
-                oSheet.Cells[row, 10] = amount;
-                oSheet.Cells[row, 11] = newEmail.Categories;
-            }
-            if (whichCategory == 2) //INFLOW
-            {
-                oSheet.Cells[row, 1] = newEmail.Subject;
-                oSheet.Cells[row, 2] = amount;
-                oSheet.Cells[row, 3] = newEmail.Categories;
-            }
-            if (whichCategory == 3) //OUTFLOW
-            {
-                oSheet.Cells[row, 5] = newEmail.Subject;
-                oSheet.Cells[row, 6] = amount;
-                oSheet.Cells[row, 7] = newEmail.Categories;
-            }
-
-        }
-
         public DateTime getInflowDate()
         {
             DateTime today = GetFirstDayOfWeek(DateTime.Today);
             today = today.AddDays(-2).AddHours(5);
-            return today;
-        }
-        public DateTime getTwoWeeksDate()
-        {
-            DateTime today = GetFirstDayOfWeek(DateTime.Today);
-            today = today.AddHours(2);
             return today;
         }
         public int getConversationAmount(Outlook.MailItem newEmail)
@@ -145,50 +72,31 @@ namespace OutlookAddIn1
             }
             return typ;
         }
-        public void createCenterTables(Excel._Worksheet oSheet, int row1, int row2, int row3)
-        {
-            Excel.Range tRange1 = oSheet.get_Range("A4", "C" + row2);
-            oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, tRange1,
-                Type.Missing, Excel.XlYesNoGuess.xlYes, Type.Missing).Name = "INFLOW";
-            oSheet.ListObjects["INFLOW"].TableStyle = "TableStyleMedium9";
-
-            Excel.Range tRange2 = oSheet.get_Range("E4", "G" + row3);
-            oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, tRange2,
-                Type.Missing, Excel.XlYesNoGuess.xlYes, Type.Missing).Name = "OUTFLOW";
-            oSheet.ListObjects["OUTFLOW"].TableStyle = "TableStyleMedium12";
-
-            Excel.Range tRange3 = oSheet.get_Range("I4", "K" + row1);
-            oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, tRange3,
-                Type.Missing, Excel.XlYesNoGuess.xlYes, Type.Missing).Name = "IN-HANDS";
-            oSheet.ListObjects["IN-HANDS"].TableStyle = "TableStyleMedium14";
-
-            oSheet.get_Range("B5", "B" + row2).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            oSheet.get_Range("F5", "F" + row3).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            oSheet.get_Range("J5", "J" + row1).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-        }
 
         public List<MailItem> emailsWithoutDuplicates(List<MailItem> emails)
         {
             for (int i = 0; i < emails.Count; i++)
             {
                 for (int j = i + 1; j < emails.Count; j++)
-                {                  
-                    if (emails[i].Subject == emails[j].Subject)
-                        emails.RemoveAt(j);
-                    if(emails[i].Subject.ToLower().StartsWith("re:") || emails[i].Subject.ToLower().StartsWith("fw:"))
+                {
+                    if (emails[i].Subject.ToLower().StartsWith("re:") || emails[i].Subject.ToLower().StartsWith("fw:"))
                     {
                         emails[i].Subject = emails[i].Subject.Substring(4);
                     }
                 }
             }
+            for (int i = 0; i < emails.Count; i++)
+            {
+                for (int j = i + 1; j < emails.Count; j++)
+                {
+                    if (emails[i].Subject == emails[j].Subject)
+                        emails.RemoveAt(j);
+                }
+            }
             return emails;
         }
-
         public void OnTableButton(Office.IRibbonControl control)
         {
-            Excel.Application oXL;
-            Excel._Workbook oWB;
-            Excel._Worksheet oSheet;
             try
             {
                 //Fajniejsza nazwa dla pliku raportu
@@ -242,16 +150,11 @@ namespace OutlookAddIn1
                     }
 
                     OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", DebugCorrectEmialsCounter.ToString(), "\n\n");
-                    oXL = new Excel.Application();
-                    oXL.Visible = false;
-                    oWB = (oXL.Workbooks.Add(Missing.Value));
-                    oSheet = (Excel._Worksheet)oWB.ActiveSheet;
-                    createExcelColumn(oSheet);
+                    ExcelSheet raport = new ExcelSheet();
 
                     var row1 = 4;
                     var row2 = 4;
                     var row3 = 4;
-                    //emails = emails.Distinct().ToList();//czy to potrzbne? 
                     emails = emailsWithoutDuplicates(emails);
 
                     foreach (MailItem newEmail in emails)
@@ -269,28 +172,28 @@ namespace OutlookAddIn1
                             {
                                 case 1:
                                     row1++;
-                                    insertDataExcel(oSheet, row1, newEmail, emailConversationAmount, 1);
+                                    raport.insertDataExcel(raport.oSheet, row1, newEmail, emailConversationAmount, 1);
                                     break;
                                 case 2:
                                     row2++;
-                                    insertDataExcel(oSheet, row2, newEmail, emailConversationAmount, 2);
+                                    raport.insertDataExcel(raport.oSheet, row2, newEmail, emailConversationAmount, 2);
                                     break;
                                 case 3:
                                     row3++;
-                                    insertDataExcel(oSheet, row3, newEmail, emailConversationAmount, 3);
+                                    raport.insertDataExcel(raport.oSheet, row3, newEmail, emailConversationAmount, 3);
                                     break;
                             }
-                            oSheet.Columns.AutoFit();
-                            oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
+                            raport.oSheet.Columns.AutoFit();
+                            raport.oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
                         }
                     }
 
-                    createCenterTables(oSheet, row1, row2, row3);
-                    createExcelSumCategories(oSheet, row1, row2, row3);
-                    oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
-                    oWB.Close(true);
-                    oXL.Quit();
-                    Marshal.ReleaseComObject(oXL);
+                    raport.createCenterTables(raport.oSheet, row1, row2, row3);
+                    raport.createExcelSumCategories(raport.oSheet, row1, row2, row3);
+                    raport.oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
+                    raport.oWB.Close(true);
+                    raport.oXL.Quit();
+                    Marshal.ReleaseComObject(raport.oXL);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
                 }
@@ -313,7 +216,6 @@ namespace OutlookAddIn1
                 }
             }
         }
-
         bool isMultipleCategoriesAndAnyOfTheireInterestedUs(string categories)
         {
             if (categories is null)

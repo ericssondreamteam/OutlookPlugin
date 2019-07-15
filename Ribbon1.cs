@@ -18,7 +18,7 @@ namespace OutlookAddIn1
     public class Ribbon1 : Office.IRibbonExtensibility
     {
         private Debuger OurDebug = new Debuger();
-     
+
         private Office.IRibbonUI ribbon;
         public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
         {
@@ -75,36 +75,29 @@ namespace OutlookAddIn1
 
         public List<MailItem> emailsWithoutDuplicates(List<MailItem> emails)
         {
-            string mail1="", mail2="";
+            string mail1 = "", mail2 = "";
             bool flagREFW = false;
             for (int i = 0; i < emails.Count; i++)
             {
+                if ((emails[i].Subject.ToLower().StartsWith("re:") || emails[i].Subject.ToLower().StartsWith("fw:")) && emails[i].Subject.Length > 4)
+                {
+                    mail1 = emails[i].Subject.Substring(4);
+                    flagREFW = true;
+                }
                 for (int j = i + 1; j < emails.Count; j++)
                 {
-                    if (emails[i].Subject.ToLower().StartsWith("re:") || emails[i].Subject.ToLower().StartsWith("fw:"))
+                    if ((emails[j].Subject.ToLower().StartsWith("re:") || emails[j].Subject.ToLower().StartsWith("fw:")) && emails[j].Subject.Length > 4)
                     {
-                        mail1 = emails[i].Subject.Substring(4);
-                        flagREFW = true;
-                    }
-                    if (emails[j].Subject.ToLower().StartsWith("re:") || emails[j].Subject.ToLower().StartsWith("fw:"))
-                    {
-                        mail2 = emails[i].Subject.Substring(4);
+                        mail2 = emails[j].Subject.Substring(4);
                         flagREFW = true;
                     }
                     if (mail1.Equals(mail2) && flagREFW)
                         emails.RemoveAt(j);
-                    if (emails[i].Subject.Equals(emails[j].Subject))
+                    else if (emails[i].Subject.Equals(emails[j].Subject) && emails.Count>j)
                         emails.RemoveAt(j);
                 }
             }
-            for (int i = 0; i < emails.Count; i++)
-            {
-                for (int j = i + 1; j < emails.Count; j++)
-                {
-                    if (emails[i].Subject == emails[j].Subject)
-                        emails.RemoveAt(j);
-                }
-            }
+
             return emails;
         }
         public void OnTableButton(Office.IRibbonControl control)
@@ -115,10 +108,10 @@ namespace OutlookAddIn1
                 string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
                 //Czy debugujemy
                 if (Interaction.ShowDebugDialog("Debuger", "Turn on debuger?"))
-                    OurDebug.Enable();               
+                    OurDebug.Enable();
                 else
                     OurDebug.Disable();
-              
+
                 if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
                 {
                     Outlook.Application oApp = new Outlook.Application();
@@ -144,7 +137,7 @@ namespace OutlookAddIn1
                             email1 = collectionItem as MailItem;
                             if (email1 != null)
                             {
-                                OurDebug.AppendInfo("Email  ",DebugCorrectEmialsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());                                
+                                OurDebug.AppendInfo("Email  ", DebugCorrectEmialsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());
                                 if (email1.ReceivedTime > getInflowDate().AddDays(-14))
                                 {
                                     DebugCorrectEmialsCounter++;
@@ -171,15 +164,15 @@ namespace OutlookAddIn1
 
                     foreach (MailItem newEmail in emails)
                     {
-                        OurDebug.AppendInfo("Przed odczytem kategorii:",newEmail.Subject,newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
+                        OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
                         var typ = 0;
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
-                            OurDebug.AppendInfo("Po odczycie kategorii:",newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
+                            OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
                             int emailConversationAmount = getConversationAmount(newEmail);
                             DateTime friday = getInflowDate();
                             typ = selectCorrectEmailType(newEmail);
-                            OurDebug.AppendInfo("Nadany typ:",typ.ToString());
+                            OurDebug.AppendInfo("Nadany typ:", typ.ToString());
                             switch (typ)
                             {
                                 case 1:

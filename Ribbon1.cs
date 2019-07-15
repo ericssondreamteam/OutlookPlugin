@@ -43,19 +43,16 @@ namespace OutlookAddIn1
             oSheet.Cells[3, 5] = "OUTFLOW";
             oSheet.Cells[3, 9] = "IN-HANDS";
 
+            fillExcelCells(1, oSheet);
+            fillExcelCells(5, oSheet);
+            fillExcelCells(9, oSheet);
+        }
 
-            oSheet.Cells[4, 1] = "Subject";
-            oSheet.Cells[4, 2] = "Messages amount";
-            oSheet.Cells[4, 3] = "Category";
-
-            oSheet.Cells[4, 5] = "Subject";
-            oSheet.Cells[4, 6] = "Messages amount";
-            oSheet.Cells[4, 7] = "Category";
-
-            oSheet.Cells[4, 9] = "Subject";
-            oSheet.Cells[4, 10] = "Messages amount";
-            oSheet.Cells[4, 11] = "Category";
-
+        private void fillExcelCells(int i, Excel._Worksheet oSheet)
+        {
+            oSheet.Cells[4, i] = "Subject";
+            oSheet.Cells[4, i + 1] = "Messages amount";
+            oSheet.Cells[4, i + 2] = "Category";
         }
 
         public void createExcelSumCategories(Excel._Worksheet oSheet, int row1, int row2, int row3)

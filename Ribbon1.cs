@@ -18,7 +18,7 @@ namespace OutlookAddIn1
     public class Ribbon1 : Office.IRibbonExtensibility
     {
         private Debuger OurDebug = new Debuger();
-        private bool DebugerOptymisation;
+        private bool DebugerOptymisation=true;
         private Office.IRibbonUI ribbon;
         public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
         {
@@ -179,7 +179,7 @@ namespace OutlookAddIn1
             try
             {
                 //Fajniejsza nazwa dla pliku raportu
-                string OutputRaportFileName = "Raport " + DateTime.Now.ToString("dd/MM/yyyy");
+                string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
                 //Czy debugujemy
                 if (Interaction.ShowDebugDialog("Debuger", "Turn on debuger?"))
                 {
@@ -188,7 +188,7 @@ namespace OutlookAddIn1
                 }
                 else
                     OurDebug.Disable();
-
+                MessageBox.Show(DebugerOptymisation.ToString());
                 if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
                 {
                     Outlook.Application oApp = new Outlook.Application();
@@ -214,9 +214,9 @@ namespace OutlookAddIn1
                             email1 = collectionItem as MailItem;
                             if (email1 != null)
                             {
-#if DebugerOptymisation
+//#if DebugerOptymisation==true
                                 OurDebug.AppendInfo("Email  ",DebugCorrectEmialsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());                                
-#endif            
+//#endif            
                                 if (email1.ReceivedTime > getInflowDate().AddDays(-14))
                                 {
                                     DebugCorrectEmialsCounter++;
@@ -247,21 +247,21 @@ namespace OutlookAddIn1
 
                     foreach (MailItem newEmail in emails)
                     {
-#if DebugerOptymisation
+//#if DebugerOptymisation==true
                         OurDebug.AppendInfo("Przed odczytem kategorii:",newEmail.Subject,newEmail.Categories, newEmail.ReceivedTime.ToString());
-#endif
+//#endif
                         var typ = 0;
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
-#if DebugerOptymisation
+//#if DebugerOptymisation==true
                             OurDebug.AppendInfo("Po odczycie kategorii:",newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
-#endif
+//#endif
                             int emailConversationAmount = getConversationAmount(newEmail);
                             DateTime friday = getInflowDate();
                             typ = selectCorrectEmailType(newEmail);
-#if DebugerOptymisation
+//#if DebugerOptymisation==true
                             OurDebug.AppendInfo("Nadany typ:",typ.ToString());
-#endif
+//#endif
                             switch (typ)
                             {
                                 case 1:

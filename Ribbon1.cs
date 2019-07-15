@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
-using System.Drawing;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Globalization;
 using System.Collections.Generic;
@@ -18,6 +17,8 @@ namespace OutlookAddIn1
     [ComVisible(true)]
     public class Ribbon1 : Office.IRibbonExtensibility
     {
+        private Debuger OurDebug = new Debuger();
+        private bool DebugerOptymisation=true;
         private Office.IRibbonUI ribbon;
         public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
         {
@@ -63,7 +64,7 @@ namespace OutlookAddIn1
             oSheet.Cells[5, 13] = "Inflow  = ";
             oSheet.Cells[6, 13] = "Outflow = ";
             oSheet.Cells[7, 13] = "In hands = ";
-            
+
             if (row1 == 4) /* Gdy nie znajdzie zadnych maili w IN-HANDS */
                 oSheet.Cells[7, 14].Value = 0;
             else
@@ -147,7 +148,6 @@ namespace OutlookAddIn1
             }
             return typ;
         }
-        string t = " ";
         public void createCenterTables(Excel._Worksheet oSheet, int row1, int row2, int row3)
         {
             Excel.Range tRange1 = oSheet.get_Range("A4", "C" + row2);
@@ -170,56 +170,7 @@ namespace OutlookAddIn1
             oSheet.get_Range("J5", "J" + row1).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
         }
 
-        public static int debug;
-        public static string debugMsg;
-        bool debugSave;
-        private CheckBox dynamicCheckBox;
-        //void debugerCheckBox()
-        //{
-        //    dynamicCheckBox = new CheckBox();
-        //    dynamicCheckBox.Left = 20;
-        //    dynamicCheckBox.Top = 20;
-        //    dynamicCheckBox.Width = 300;
-        //    dynamicCheckBox.Height = 30;
 
-        //    // Set background and foreground  
-        //    dynamicCheckBox.BackColor = Color.Orange;
-        //    dynamicCheckBox.ForeColor = Color.Black;
-        //    dynamicCheckBox.Text = "Zaznacz jesli chcesz debugowac";
-        //    dynamicCheckBox.Name = "Debuger";
-        //    dynamicCheckBox.Font = new Font("Georgia", 12);
-
-           
-        //}
-        public static class CheckboxDialog
-        {
-            public static bool ShowDialog(string text, string caption)
-            {
-
-                Form prompt = new Form();
-                prompt.Width = 250;
-                prompt.Height = 150;
-                prompt.Text = caption;
-                prompt.StartPosition = FormStartPosition.CenterScreen;
-
-                FlowLayoutPanel panel = new FlowLayoutPanel();
-                
-                CheckBox chk = new CheckBox();
-                chk.Text = text;
-                Button ok = new Button() { Text = "Confirm" };
-                ok.SetBounds(300, 100, 100, 30);
-                ok.Click += (sender, e) => { prompt.Close(); };
-                
-                panel.Controls.Add(chk);
-                panel.SetFlowBreak(chk, true);
-                panel.Controls.Add(ok);
-            
-                prompt.Controls.Add(panel);
-                prompt.ShowDialog();
-                
-                return chk.Checked;
-            }
-        }
         public void OnTableButton(Office.IRibbonControl control)
         {
             Excel.Application oXL;
@@ -227,66 +178,62 @@ namespace OutlookAddIn1
             Excel._Worksheet oSheet;
             try
             {
-                string value = "Document 1";
-                //debugerCheckBox();
-                //debugSave = dynamicCheckBox.Checked;
-                debugSave = CheckboxDialog.ShowDialog("Debuger", "Turn on debuger?");
-
-                if (InputBox("New document", "New document name:", ref value) == DialogResult.OK)
+                //Fajniejsza nazwa dla pliku raportu
+                string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
+                //Czy debugujemy
+                if (Interaction.ShowDebugDialog("Debuger", "Turn on debuger?"))
+                {
+                    OurDebug.Enable();
+                    DebugerOptymisation = true;
+                }
+                else
+                    OurDebug.Disable();
+                MessageBox.Show(DebugerOptymisation.ToString());
+                if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
                 {
                     Outlook.Application oApp = new Outlook.Application();
-                    Outlook.NameSpace oNS = oApp.GetNamespace("mapi");
+                    NameSpace oNS = oApp.GetNamespace("mapi");
+                    MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder as MAPIFolder;
+                    OurDebug.AppendInfo("Wybrany folder ", oInbox2.Name);
+                    MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
+                    Items oItems = oInbox2.Items;
+                    List<MailItem> emails = new List<MailItem>();
 
-                    Outlook.MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder as Outlook.MAPIFolder;
-                    // var msg = oInbox2.Name;
-                    debugMsg += "Wybrany folder "; debugMsg += oInbox2.Name; debugMsg += "\n";//MessageBox.Show(msg);
-                    Outlook.MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
-                    Outlook.Items oItems = oInbox2.Items;
-                    List<Outlook.MailItem> emails = new List<Outlook.MailItem>();
-                    //MessageBox.Show("Before sorting" + oItems.Count.ToString()+" "+ oItems.ToString());
-                    debugMsg += "Before sorting "; debugMsg += oItems.Count.ToString(); debugMsg += "\n";
-                    oItems.Sort("[ReceivedTime]", true);
-                    //MessageBox.Show("After sorting"+oItems.Count.ToString() + " " + oItems.ToString());
-                    debugMsg += "After sorting "; debugMsg += oItems.Count.ToString(); debugMsg += "\n";
-                    Outlook.MailItem email1 = null;
-                    var x = 0;
-                    var y = 0;
-                    debugMsg += "\n\n ************************MAILS*******************\n\n";
+                    OurDebug.AppendInfo("Email's amount", oItems.Count.ToString());
+                    oItems.Sort("[ReceivedTime]", true);//sortowanie od najnowszych
+
+                    MailItem email1 = null;
+                    int DebugForEachCounter = 0;
+                    int DebugCorrectEmialsCounter = 0;
+                    OurDebug.AppendInfo("\n\n ************************MAILS*******************\n\n");
                     foreach (object collectionItem in oItems)
                     {
                         try
                         {
-                            x++;
-                            email1 = collectionItem as Outlook.MailItem;
+                            DebugForEachCounter++;
+                            email1 = collectionItem as MailItem;
                             if (email1 != null)
                             {
-                                debugMsg += "Email  "; debugMsg += x; debugMsg += ": "; debugMsg += email1.Subject; debugMsg += " "; debugMsg += email1.ReceivedTime; debugMsg += " "; debugMsg += "\n";
-                                y++;
+//#if DebugerOptymisation==true
+                                OurDebug.AppendInfo("Email  ",DebugCorrectEmialsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());                                
+//#endif            
                                 if (email1.ReceivedTime > getInflowDate().AddDays(-14))
                                 {
+                                    DebugCorrectEmialsCounter++;
                                     emails.Add(email1);
                                 }
                                 else
                                     break;
                             }
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
-                            debugMsg += "\n\n FIRST TRY CATCH";
-                            debugMsg += "Emial numer: " + y;
-                            debugMsg += "\n";
+                            MessageBox.Show("Some error occured during first analysis\nIf You turn on debugger please go there");
+                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "FIRST TRY CATCH\n", "Emial number:", DebugCorrectEmialsCounter.ToString(), "\n", e.Message, "\n", e.StackTrace);
                         }
                     }
-                    debugMsg += "\n\n";
-                    // MessageBox.Show("Ile razy foreach: "+x.ToString());
-                    debugMsg += "Ile razy foreach: "; debugMsg += x; debugMsg += "\n";
-                    // MessageBox.Show("Ile razy foreach and notnull: " + y.ToString());
-                    debugMsg += "Ile razy foreach and notnull: "; debugMsg += y; debugMsg += "\n";
-                    // MessageBox.Show(oItems.Count.ToString());
-                    debugMsg += "All Items: "; debugMsg += oItems.Count.ToString(); debugMsg += "\n";
-                    // MessageBox.Show(emails.Count.ToString());
-                    debugMsg += "Brane pod uwage: "; debugMsg += emails.Count.ToString(); debugMsg += "\n";
 
+                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", DebugCorrectEmialsCounter.ToString(), "\n\n");
                     oXL = new Excel.Application();
                     oXL.Visible = false;
                     oWB = (oXL.Workbooks.Add(Missing.Value));
@@ -296,18 +243,25 @@ namespace OutlookAddIn1
                     var row1 = 4;
                     var row2 = 4;
                     var row3 = 4;
-                    emails = emails.Distinct().ToList();
-                    debug = 0;
-                    foreach (Outlook.MailItem newEmail in emails)
+                    emails = emails.Distinct().ToList();//czy to potrzbne? 
+
+                    foreach (MailItem newEmail in emails)
                     {
-                        debug++;
+//#if DebugerOptymisation==true
+                        OurDebug.AppendInfo("Przed odczytem kategorii:",newEmail.Subject,newEmail.Categories, newEmail.ReceivedTime.ToString());
+//#endif
                         var typ = 0;
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
-                            var a = 0;
+//#if DebugerOptymisation==true
+                            OurDebug.AppendInfo("Po odczycie kategorii:",newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
+//#endif
                             int emailConversationAmount = getConversationAmount(newEmail);
                             DateTime friday = getInflowDate();
                             typ = selectCorrectEmailType(newEmail);
+//#if DebugerOptymisation==true
+                            OurDebug.AppendInfo("Nadany typ:",typ.ToString());
+//#endif
                             switch (typ)
                             {
                                 case 1:
@@ -327,15 +281,15 @@ namespace OutlookAddIn1
                             oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
                         }
                     }
-                    //MessageBox.Show(c.ToString());
+
                     createCenterTables(oSheet, row1, row2, row3);
                     createExcelSumCategories(oSheet, row1, row2, row3);
-                    oWB.SaveAs(value, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
+                    oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
                     oWB.Close(true);
                     oXL.Quit();
                     Marshal.ReleaseComObject(oXL);
-                    MessageBox.Show("Your raport is saved in: " + value);
-                    //  MessageBox.Show("DEBUGER INFO\n\n" + debugMsg);
+                    MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
+                    OurDebug.AppendInfo("Your raport is SAVED :D");
                 }
                 else
                 {
@@ -344,21 +298,16 @@ namespace OutlookAddIn1
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
-
-                // MessageBox.Show(e.StackTrace);
-                debugMsg += "licznik wiadmosci(juz nie pamietam ktory): "; debugMsg += debug; debugMsg += "\n";
-
-                debugMsg += e.Message; debugMsg += "\n"; debugMsg += e.StackTrace; debugMsg += "\n";
-                // MessageBox.Show(debugMsg);
+                MessageBox.Show("Some error occured during second analysis\nIf You turn on debugger please go there");
+                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "SECOND TRY CATCH\n", e.Message, "\n", e.StackTrace);
             }
             finally
             {
-                if (debugSave) {
-                    System.IO.File.WriteAllText(@"C:\Users\Public\DebugInfoRaportPlugin.txt", debugMsg);
+                if (OurDebug.IsEnable())
+                {
+                    OurDebug.SaveDebugInfoToFile(@"C:\Users\Public\DebugInfoRaportPlugin.txt");
                     MessageBox.Show("Plik debugowania zapisany w C:\\Users\\Public\nPlik: DebugInfoRaportPlugin.txt");
                 }
-                   
             }
         }
 
@@ -389,46 +338,7 @@ namespace OutlookAddIn1
         {
         }
 
-        public static DialogResult InputBox(string title, string promptText, ref string value)
-        {
-            Form form = new Form();
-            Label label = new Label();
-            TextBox textBox = new TextBox();
-            Button buttonOk = new Button();
-            Button buttonCancel = new Button();
 
-            form.Text = title;
-            label.Text = promptText;
-            textBox.Text = value;
-            buttonOk.Text = "OK";
-            buttonCancel.Text = "Cancel";
-            buttonOk.DialogResult = DialogResult.OK;
-            buttonCancel.DialogResult = DialogResult.Cancel;
-
-            label.SetBounds(9, 20, 300, 13);
-            textBox.SetBounds(12, 50, 400, 20);
-            buttonOk.SetBounds(300, 100, 100, 30);
-            buttonCancel.SetBounds(150, 100, 100, 30);
-
-            label.AutoSize = true;
-            textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
-            buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-            form.ClientSize = new Size(424, 150);
-            form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
-            form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
-            form.FormBorderStyle = FormBorderStyle.FixedDialog;
-            form.StartPosition = FormStartPosition.CenterScreen;
-            form.MinimizeBox = false;
-            form.MaximizeBox = false;
-            form.AcceptButton = buttonOk;
-            form.CancelButton = buttonCancel;
-
-            DialogResult dialogResult = form.ShowDialog();
-            value = textBox.Text;
-            return dialogResult;
-        }
 
         #region IRibbonExtensibility Members
         public string GetCustomUI(string ribbonID)

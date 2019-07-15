@@ -75,22 +75,16 @@ namespace OutlookAddIn1
 
         public List<MailItem> emailsWithoutDuplicates(List<MailItem> emails)
         {
-            
-
-            
             for (int i = 0; i < emails.Count; i++)
             {
                 for (int j = i + 1; j < emails.Count; j++)
                 {
                     if (emails[i].ConversationID.Equals(emails[j].ConversationID))
                     {
-                        OurDebug.AppendInfo("\n\nPorwannie: i:", emails[i].ConversationID, "j:", emails[j].ConversationID, "\n\n");
                         emails.RemoveAt(j);
                     }
-
                 }
             }
-
             return emails;
         }
 

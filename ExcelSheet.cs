@@ -57,7 +57,7 @@ namespace OutlookAddIn1
             if (row1 == 4) /* Gdy nie znajdzie zadnych maili w IN-HANDS */
                 oSheet.Cells[7, 14].Value = 0;
             else
-                oSheet.Cells[7, 14].Formula = "=ROWS(I5:F" + row1 + ")";
+                oSheet.Cells[7, 14].Formula = "=ROWS(I5:I" + row1 + ")";
             if (row2 == 4) /* Gdy nie znajdzie zadnych maili w INFLOW */
                 oSheet.Cells[5, 14].Value = 0;
             else

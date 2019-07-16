@@ -1,16 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Excel = Microsoft.Office.Interop.Excel;
-using System.Globalization;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Office.Interop.Outlook;
-using Exception = System.Exception;
 
 namespace OutlookAddIn1
 {
@@ -47,27 +38,26 @@ namespace OutlookAddIn1
             oSheet.Cells[4, i + 2] = "Category";
         }
 
-        public void createExcelSumCategories(Excel._Worksheet oSheet, int row1, int row2, int row3)
+        public void createExcelSumCategories(Excel._Worksheet oSheet, int rowInHands, int rowInflow, int rowOutflow)
         {
             oSheet.Cells[4, 13] = "SUMMARY";
             oSheet.Cells[5, 13] = "Inflow  = ";
             oSheet.Cells[6, 13] = "Outflow = ";
             oSheet.Cells[7, 13] = "In hands = ";
 
-            if (row1 == 4) /* Gdy nie znajdzie zadnych maili w IN-HANDS */
+            if (rowInHands == 4) /* Gdy nie znajdzie zadnych maili w IN-HANDS */
                 oSheet.Cells[7, 14].Value = 0;
             else
-                oSheet.Cells[7, 14].Formula = "=ROWS(I5:I" + row1 + ")";
-            if (row2 == 4) /* Gdy nie znajdzie zadnych maili w INFLOW */
+                oSheet.Cells[7, 14].Formula = "=ROWS(I5:I" + rowInHands + ")";
+            if (rowInflow == 4) /* Gdy nie znajdzie zadnych maili w INFLOW */
                 oSheet.Cells[5, 14].Value = 0;
             else
-                oSheet.Cells[5, 14].Formula = "=ROWS(A5:A" + row2 + ")";
-            if (row3 == 4) /* Gdy nie znajdzie zadnych maili w OUTFLOW */
+                oSheet.Cells[5, 14].Formula = "=ROWS(A5:A" + rowInflow + ")";
+            if (rowOutflow == 4) /* Gdy nie znajdzie zadnych maili w OUTFLOW */
                 oSheet.Cells[6, 14].Value = 0;
             else
-                oSheet.Cells[6, 14].Formula = "=ROWS(E5:E" + row3 + ")";
+                oSheet.Cells[6, 14].Formula = "=ROWS(E5:E" + rowOutflow + ")";
             oSheet.get_Range("N5", "N7").Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-
         }
 
         public void insertDataExcel(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, int amount, int whichCategory)
@@ -77,7 +67,6 @@ namespace OutlookAddIn1
                 oSheet.Cells[row, 9] = newEmail.Subject;
                 oSheet.Cells[row, 10] = amount;
                 oSheet.Cells[row, 11] = newEmail.Categories;
-                oSheet.Cells[row, 12] = newEmail.ConversationID;
             }
             if (whichCategory == 2) //INFLOW
             {
@@ -91,28 +80,27 @@ namespace OutlookAddIn1
                 oSheet.Cells[row, 6] = amount;
                 oSheet.Cells[row, 7] = newEmail.Categories;
             }
-
         }
-        public void createCenterTables(Excel._Worksheet oSheet, int row1, int row2, int row3)
+        public void createCenterTables(Excel._Worksheet oSheet, int rowInHands, int rowInflow, int rowOutflow)
         {
-            Excel.Range tRange1 = oSheet.get_Range("A4", "C" + row2);
-            oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, tRange1,
+            Excel.Range rangeForInflowTable = oSheet.get_Range("A4", "C" + rowInflow);
+            oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, rangeForInflowTable,
                 Type.Missing, Excel.XlYesNoGuess.xlYes, Type.Missing).Name = "INFLOW";
             oSheet.ListObjects["INFLOW"].TableStyle = "TableStyleMedium9";
 
-            Excel.Range tRange2 = oSheet.get_Range("E4", "G" + row3);
-            oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, tRange2,
+            Excel.Range rangeForOutflowTable = oSheet.get_Range("E4", "G" + rowOutflow);
+            oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, rangeForOutflowTable,
                 Type.Missing, Excel.XlYesNoGuess.xlYes, Type.Missing).Name = "OUTFLOW";
             oSheet.ListObjects["OUTFLOW"].TableStyle = "TableStyleMedium12";
 
-            Excel.Range tRange3 = oSheet.get_Range("I4", "K" + row1);
-            oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, tRange3,
+            Excel.Range rangeForInHandsTable = oSheet.get_Range("I4", "K" + rowInHands);
+            oSheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, rangeForInHandsTable,
                 Type.Missing, Excel.XlYesNoGuess.xlYes, Type.Missing).Name = "IN-HANDS";
             oSheet.ListObjects["IN-HANDS"].TableStyle = "TableStyleMedium14";
 
-            oSheet.get_Range("B5", "B" + row2).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            oSheet.get_Range("F5", "F" + row3).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            oSheet.get_Range("J5", "J" + row1).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            oSheet.get_Range("B5", "B" + rowInflow).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            oSheet.get_Range("F5", "F" + rowOutflow).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            oSheet.get_Range("J5", "J" + rowInHands).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
         }
     }
 }

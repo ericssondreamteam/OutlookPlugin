@@ -8,16 +8,21 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Globalization;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
+<<<<<<< HEAD
 using System.Threading;
+=======
+using System.Diagnostics;
+using System.Collections;
+>>>>>>> 79a99e624cb6afa41d91158026e5899160afdbe1
 
 namespace OutlookAddIn1
 {
     [ComVisible(true)]
     public class Ribbon1 : Office.IRibbonExtensibility
     {
+        private Hashtable myHashtable;
         private Debuger OurDebug = new Debuger();
         public static int counter = 0;
         public static int progress = 0;
@@ -62,23 +67,19 @@ namespace OutlookAddIn1
             int typ = 0;
             if (newEmail.Categories == null) //inflow
             {
-                //inflow
                 if (getConversationAmount(newEmail) > 1) typ = 1;
                 else typ = 2;
             }
             if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
             {
-                //in hands
                 typ = 1;
             }
             else if (getConversationAmount(newEmail) == 1 && newEmail.ReceivedTime > getInflowDate()) //inflow
             {
-                //inflow
                 typ = 2;
             }
             else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate())) //outflow
             {
-                //outflow
                 typ = 3;
             }
             return typ;
@@ -92,7 +93,10 @@ namespace OutlookAddIn1
                 {
                     if (emails[i].ConversationID.Equals(emails[j].ConversationID))
                     {
+<<<<<<< HEAD
                         //OurDebug.AppendInfo("\n\nPorwannie: i:", emails[i].ConversationID, "j:", emails[j].ConversationID, "\n\n");
+=======
+>>>>>>> 79a99e624cb6afa41d91158026e5899160afdbe1
                         emails.RemoveAt(j);
                         j--;
                     }
@@ -111,7 +115,6 @@ namespace OutlookAddIn1
         {   
             try
             {
-                //Fajniejsza nazwa dla pliku raportu
                 string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
                 //Czy debugujemy
                 if (Interaction.ShowDebugDialog("Debuger", "Turn on debuger?"))
@@ -125,19 +128,22 @@ namespace OutlookAddIn1
                     NameSpace oNS = oApp.GetNamespace("mapi");
                     MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder as MAPIFolder;
                     OurDebug.AppendInfo("Wybrany folder ", oInbox2.Name);
-                    MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     Items oItems = oInbox2.Items;
                     List<MailItem> emails = new List<MailItem>();
 
                     OurDebug.AppendInfo("Email's amount", oItems.Count.ToString());
-                    oItems.Sort("[ReceivedTime]", true);//sortowanie od najnowszych
+                    oItems.Sort("[ReceivedTime]", true);//sortowanie od najnowszych wszystkich items 
 
                     MailItem email1 = null;
                     int DebugForEachCounter = 0;
-                    int DebugCorrectEmialsCounter = 0;
+                    int DebugCorrectEmailsCounter = 0;
                     OurDebug.AppendInfo("\n\n ************************MAILS*******************\n\n");
+<<<<<<< HEAD
 
                     foreach (object collectionItem in oItems)
+=======
+                    foreach (object collectionItem in oItems) //dodanie odpowiednich maili do listy emails
+>>>>>>> 79a99e624cb6afa41d91158026e5899160afdbe1
                     {
                         try
                         {
@@ -145,10 +151,10 @@ namespace OutlookAddIn1
                             email1 = collectionItem as MailItem;
                             if (email1 != null)
                             {
-                                OurDebug.AppendInfo("Email  ", DebugCorrectEmialsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());
+                                OurDebug.AppendInfo("Email  ", DebugCorrectEmailsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());
                                 if (email1.ReceivedTime > getInflowDate().AddDays(-14))
                                 {
-                                    DebugCorrectEmialsCounter++;
+                                    DebugCorrectEmailsCounter++;
                                     emails.Add(email1);
                                 }
                                 else
@@ -159,18 +165,25 @@ namespace OutlookAddIn1
                         catch (Exception e)
                         {
                             MessageBox.Show("Some error occured during first analysis\nIf You turn on debugger please go there");
-                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "FIRST TRY CATCH\n", "Emial number:", DebugCorrectEmialsCounter.ToString(), "\n", e.Message, "\n", e.StackTrace);
+                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "FIRST TRY CATCH\n", "Emial number:", DebugCorrectEmailsCounter.ToString(), "\n", e.Message, "\n", e.StackTrace);
                         }
                     }
+<<<<<<< HEAD
                     counter = emails.Count;
                                         Thread thread = new Thread(new ThreadStart(ProgressCreatingRaportLayout));
                     thread.Start();
                     OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", DebugCorrectEmialsCounter.ToString(), "\n\n");
-                    ExcelSheet raport = new ExcelSheet();
+=======
 
-                    var row1 = 4;
-                    var row2 = 4;
-                    var row3 = 4;
+                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", DebugCorrectEmailsCounter.ToString(), "\n\n");
+                    CheckExcellProcesses();
+>>>>>>> 79a99e624cb6afa41d91158026e5899160afdbe1
+                    ExcelSheet raport = new ExcelSheet();
+                    int processID = getExcelID();
+
+                    var rowInHands = 4;
+                    var rowInflow = 4;
+                    var rowOutflow = 4;
                     emails = emailsWithoutDuplicates(emails);
 
                     foreach (MailItem newEmail in emails)
@@ -190,29 +203,36 @@ namespace OutlookAddIn1
                             switch (typ)
                             {
                                 case 1:
-                                    row1++;
-                                    raport.insertDataExcel(raport.oSheet, row1, newEmail, emailConversationAmount, 1);
+                                    rowInHands++;
+                                    raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
                                     break;
                                 case 2:
-                                    row2++;
-                                    raport.insertDataExcel(raport.oSheet, row2, newEmail, emailConversationAmount, 2);
+                                    rowInflow++;
+                                    raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, emailConversationAmount, 2);
                                     break;
                                 case 3:
-                                    row3++;
-                                    raport.insertDataExcel(raport.oSheet, row3, newEmail, emailConversationAmount, 3);
+                                    rowOutflow++;
+                                    raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, emailConversationAmount, 3);
                                     break;
                             }
                             raport.oSheet.Columns.AutoFit();
                             raport.oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
                         }
                     }
+<<<<<<< HEAD
                     var b = 43;
                     raport.createCenterTables(raport.oSheet, row1, row2, row3);
                     raport.createExcelSumCategories(raport.oSheet, row1, row2, row3);
+=======
+
+                    raport.createCenterTables(raport.oSheet, rowInHands, rowInflow, rowOutflow);
+                    raport.createExcelSumCategories(raport.oSheet, rowInHands, rowInflow, rowOutflow);
+>>>>>>> 79a99e624cb6afa41d91158026e5899160afdbe1
                     raport.oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
                     raport.oWB.Close(true);
                     raport.oXL.Quit();
-                    Marshal.ReleaseComObject(raport.oXL);
+                    KillExcel(processID);
+                    //Marshal.ReleaseComObject(raport.oXL);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
 
@@ -318,6 +338,46 @@ namespace OutlookAddIn1
             MessageBox.Show(c);
         }
         #endregion
+        /* zapisujemy id procesow do hashTable przed uruchomieniem naszego procesu */
+        private void CheckExcellProcesses() 
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("excel");
+            myHashtable = new Hashtable();
+            int iCount = 0;
+
+            foreach (Process ExcelProcess in AllProcesses)
+            {
+                myHashtable.Add(ExcelProcess.Id, iCount);
+                iCount = iCount + 1;
+            }
+        }
+
+        private int getExcelID()
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("excel");
+
+            foreach(Process ExcelProcess in AllProcesses)
+            {
+                if (myHashtable.ContainsKey(ExcelProcess.Id) == false)
+                    return ExcelProcess.Id;
+            }
+            return 0; //rzuc wyjatkiem ze nie ma procesu
+        }
+
+        /* Zabijamy proces ktory nie znajduje sie w hashtable */
+        private void KillExcel(int processID)
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("excel");
+
+            // check to kill the right process
+            foreach (Process ExcelProcess in AllProcesses)
+            {
+                if (ExcelProcess.Id == processID)
+                    ExcelProcess.Kill();
+            }
+
+            AllProcesses = null;
+        }
     }
 
 }

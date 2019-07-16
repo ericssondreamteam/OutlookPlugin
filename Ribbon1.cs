@@ -51,23 +51,19 @@ namespace OutlookAddIn1
             int typ = 0;
             if (newEmail.Categories == null) //inflow
             {
-                //inflow
                 if (getConversationAmount(newEmail) > 1) typ = 1;
                 else typ = 2;
             }
             if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
             {
-                //in hands
                 typ = 1;
             }
             else if (getConversationAmount(newEmail) == 1 && newEmail.ReceivedTime > getInflowDate()) //inflow
             {
-                //inflow
                 typ = 2;
             }
             else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate())) //outflow
             {
-                //outflow
                 typ = 3;
             }
             return typ;
@@ -93,7 +89,6 @@ namespace OutlookAddIn1
         {   
             try
             {
-                //Fajniejsza nazwa dla pliku raportu
                 string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
                 //Czy debugujemy
                 if (Interaction.ShowDebugDialog("Debuger", "Turn on debuger?"))
@@ -107,18 +102,17 @@ namespace OutlookAddIn1
                     NameSpace oNS = oApp.GetNamespace("mapi");
                     MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder as MAPIFolder;
                     OurDebug.AppendInfo("Wybrany folder ", oInbox2.Name);
-                    //MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     Items oItems = oInbox2.Items;
                     List<MailItem> emails = new List<MailItem>();
 
                     OurDebug.AppendInfo("Email's amount", oItems.Count.ToString());
-                    oItems.Sort("[ReceivedTime]", true);//sortowanie od najnowszych
+                    oItems.Sort("[ReceivedTime]", true);//sortowanie od najnowszych wszystkich items 
 
                     MailItem email1 = null;
                     int DebugForEachCounter = 0;
-                    int DebugCorrectEmialsCounter = 0;
+                    int DebugCorrectEmailsCounter = 0;
                     OurDebug.AppendInfo("\n\n ************************MAILS*******************\n\n");
-                    foreach (object collectionItem in oItems)
+                    foreach (object collectionItem in oItems) //dodanie odpowiednich maili do listy emails
                     {
                         try
                         {
@@ -126,10 +120,10 @@ namespace OutlookAddIn1
                             email1 = collectionItem as MailItem;
                             if (email1 != null)
                             {
-                                OurDebug.AppendInfo("Email  ", DebugCorrectEmialsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());
+                                OurDebug.AppendInfo("Email  ", DebugCorrectEmailsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());
                                 if (email1.ReceivedTime > getInflowDate().AddDays(-14))
                                 {
-                                    DebugCorrectEmialsCounter++;
+                                    DebugCorrectEmailsCounter++;
                                     emails.Add(email1);
                                 }
                                 else
@@ -139,11 +133,11 @@ namespace OutlookAddIn1
                         catch (Exception e)
                         {
                             MessageBox.Show("Some error occured during first analysis\nIf You turn on debugger please go there");
-                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "FIRST TRY CATCH\n", "Emial number:", DebugCorrectEmialsCounter.ToString(), "\n", e.Message, "\n", e.StackTrace);
+                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "FIRST TRY CATCH\n", "Emial number:", DebugCorrectEmailsCounter.ToString(), "\n", e.Message, "\n", e.StackTrace);
                         }
                     }
 
-                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", DebugCorrectEmialsCounter.ToString(), "\n\n");
+                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", DebugCorrectEmailsCounter.ToString(), "\n\n");
                     ExcelSheet raport = new ExcelSheet();
 
                     var rowInHands = 4;

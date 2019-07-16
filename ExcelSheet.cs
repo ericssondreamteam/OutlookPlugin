@@ -80,7 +80,6 @@ namespace OutlookAddIn1
                 oSheet.Cells[row, 6] = amount;
                 oSheet.Cells[row, 7] = newEmail.Categories;
             }
-
         }
         public void createCenterTables(Excel._Worksheet oSheet, int rowInHands, int rowInflow, int rowOutflow)
         {

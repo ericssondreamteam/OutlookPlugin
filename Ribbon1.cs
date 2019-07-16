@@ -273,7 +273,7 @@ namespace OutlookAddIn1
                 string[] categoriesList = categories.Split(',');
                 foreach (var cat in categoriesList)
                 {   //No Response Necessary    or    Unknown     No Response Necessary, Unknown
-                    if (!cat.Equals("noresponse necessary") && !cat.Equals("unknown"))
+                    if (!cat.Equals("noresponsenecessary") && !cat.Equals("unknown"))
                     {
                         return true;
                     }

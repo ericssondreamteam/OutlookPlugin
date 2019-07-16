@@ -67,18 +67,22 @@ namespace OutlookAddIn1
                 oSheet.Cells[row, 9] = newEmail.Subject;
                 oSheet.Cells[row, 10] = amount;
                 oSheet.Cells[row, 11] = newEmail.Categories;
+                oSheet.Cells[row, 12] = newEmail.ReceivedTime;
             }
             if (whichCategory == 2) //INFLOW
             {
                 oSheet.Cells[row, 1] = newEmail.Subject;
                 oSheet.Cells[row, 2] = amount;
                 oSheet.Cells[row, 3] = newEmail.Categories;
+                oSheet.Cells[row, 4] = newEmail.ReceivedTime;
+
             }
             if (whichCategory == 3) //OUTFLOW
             {
                 oSheet.Cells[row, 5] = newEmail.Subject;
                 oSheet.Cells[row, 6] = amount;
                 oSheet.Cells[row, 7] = newEmail.Categories;
+                oSheet.Cells[row, 8] = newEmail.ReceivedTime;
             }
         }
         public void createCenterTables(Excel._Worksheet oSheet, int rowInHands, int rowInflow, int rowOutflow)

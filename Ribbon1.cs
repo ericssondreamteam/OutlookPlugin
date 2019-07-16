@@ -19,6 +19,7 @@ namespace OutlookAddIn1
     [ComVisible(true)]
     public class Ribbon1 : Office.IRibbonExtensibility
     {
+
         private Hashtable myHashtable;
         private Debuger OurDebug = new Debuger();
         public static int counter = 0;

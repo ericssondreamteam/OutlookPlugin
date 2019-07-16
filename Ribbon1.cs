@@ -81,10 +81,6 @@ namespace OutlookAddIn1
                 {
                     if (emails[i].ConversationID.Equals(emails[j].ConversationID))
                     {
-<<<<<<< HEAD
-                     //   OurDebug.AppendInfo("\n\nPorwannie: i:", emails[i].ConversationID, "j:", emails[j].ConversationID, "\n\n");
-=======
->>>>>>> b78d122fbdfc5b45fa6be9e759777b03741bfb1a
                         emails.RemoveAt(j);
                         j--;
                     }
@@ -111,7 +107,7 @@ namespace OutlookAddIn1
                     NameSpace oNS = oApp.GetNamespace("mapi");
                     MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder as MAPIFolder;
                     OurDebug.AppendInfo("Wybrany folder ", oInbox2.Name);
-                    MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
+                    //MAPIFolder oInbox = oNS.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
                     Items oItems = oInbox2.Items;
                     List<MailItem> emails = new List<MailItem>();
 
@@ -150,9 +146,9 @@ namespace OutlookAddIn1
                     OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", DebugCorrectEmialsCounter.ToString(), "\n\n");
                     ExcelSheet raport = new ExcelSheet();
 
-                    var row1 = 4;
-                    var row2 = 4;
-                    var row3 = 4;
+                    var rowInHands = 4;
+                    var rowInflow = 4;
+                    var rowOutflow = 4;
                     emails = emailsWithoutDuplicates(emails);
 
                     foreach (MailItem newEmail in emails)
@@ -169,16 +165,16 @@ namespace OutlookAddIn1
                             switch (typ)
                             {
                                 case 1:
-                                    row1++;
-                                    raport.insertDataExcel(raport.oSheet, row1, newEmail, emailConversationAmount, 1);
+                                    rowInHands++;
+                                    raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
                                     break;
                                 case 2:
-                                    row2++;
-                                    raport.insertDataExcel(raport.oSheet, row2, newEmail, emailConversationAmount, 2);
+                                    rowInflow++;
+                                    raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, emailConversationAmount, 2);
                                     break;
                                 case 3:
-                                    row3++;
-                                    raport.insertDataExcel(raport.oSheet, row3, newEmail, emailConversationAmount, 3);
+                                    rowOutflow++;
+                                    raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, emailConversationAmount, 3);
                                     break;
                             }
                             raport.oSheet.Columns.AutoFit();
@@ -186,8 +182,8 @@ namespace OutlookAddIn1
                         }
                     }
 
-                    raport.createCenterTables(raport.oSheet, row1, row2, row3);
-                    raport.createExcelSumCategories(raport.oSheet, row1, row2, row3);
+                    raport.createCenterTables(raport.oSheet, rowInHands, rowInflow, rowOutflow);
+                    raport.createExcelSumCategories(raport.oSheet, rowInHands, rowInflow, rowOutflow);
                     raport.oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
                     raport.oWB.Close(true);
                     raport.oXL.Quit();

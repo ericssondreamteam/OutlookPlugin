@@ -79,23 +79,6 @@ namespace OutlookAddIn1
             return table.GetRowCount();
         }
 
-        public int selectCorrectEmailType(Outlook.MailItem newEmail)
-        {
-            int typ = 0;
-            if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
-            {
-                typ = 1;
-            }
-            else if (newEmail.ReceivedTime > getInflowDate()) //inflow
-            {
-                typ = 2;
-            }
-            else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate())) //outflow
-            {
-                typ = 3;
-            }
-            return typ;
-        }
 
 
         public void OnTableButton(Office.IRibbonControl control)
@@ -135,7 +118,7 @@ namespace OutlookAddIn1
                                     DateTime friday = getInflowDate();
                                     int emailConversationAmount = getConversationAmount(newEmail);
 
-                                    typ = selectCorrectEmailType(newEmail);
+                              
 
                                     Outlook.Conversation conv_ = newEmail.GetConversation();
                                     Outlook.SimpleItems items_ = conv_.GetChildren(newEmail);
@@ -174,6 +157,7 @@ namespace OutlookAddIn1
                     oXL.Quit();
                     Marshal.ReleaseComObject(oXL);
                     MessageBox.Show("Your raport is saved in: " + value);
+                    MessageBox.Show("BLAAAAAAAAAAAAAAAAAAAH: " + value);
                 }
                 else
                 {

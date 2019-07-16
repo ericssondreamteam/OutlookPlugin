@@ -10,12 +10,9 @@ using System.Globalization;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
-<<<<<<< HEAD
-using System.Threading;
-=======
 using System.Diagnostics;
 using System.Collections;
->>>>>>> 79a99e624cb6afa41d91158026e5899160afdbe1
+using System.Threading;
 
 namespace OutlookAddIn1
 {
@@ -93,10 +90,7 @@ namespace OutlookAddIn1
                 {
                     if (emails[i].ConversationID.Equals(emails[j].ConversationID))
                     {
-<<<<<<< HEAD
-                        //OurDebug.AppendInfo("\n\nPorwannie: i:", emails[i].ConversationID, "j:", emails[j].ConversationID, "\n\n");
-=======
->>>>>>> 79a99e624cb6afa41d91158026e5899160afdbe1
+
                         emails.RemoveAt(j);
                         j--;
                     }
@@ -138,12 +132,7 @@ namespace OutlookAddIn1
                     int DebugForEachCounter = 0;
                     int DebugCorrectEmailsCounter = 0;
                     OurDebug.AppendInfo("\n\n ************************MAILS*******************\n\n");
-<<<<<<< HEAD
-
                     foreach (object collectionItem in oItems)
-=======
-                    foreach (object collectionItem in oItems) //dodanie odpowiednich maili do listy emails
->>>>>>> 79a99e624cb6afa41d91158026e5899160afdbe1
                     {
                         try
                         {
@@ -168,16 +157,13 @@ namespace OutlookAddIn1
                             OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "FIRST TRY CATCH\n", "Emial number:", DebugCorrectEmailsCounter.ToString(), "\n", e.Message, "\n", e.StackTrace);
                         }
                     }
-<<<<<<< HEAD
                     counter = emails.Count;
-                                        Thread thread = new Thread(new ThreadStart(ProgressCreatingRaportLayout));
+                    Thread thread = new Thread(new ThreadStart(ProgressCreatingRaportLayout));
                     thread.Start();
-                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", DebugCorrectEmialsCounter.ToString(), "\n\n");
-=======
+                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
 
-                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", DebugCorrectEmailsCounter.ToString(), "\n\n");
+                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
                     CheckExcellProcesses();
->>>>>>> 79a99e624cb6afa41d91158026e5899160afdbe1
                     ExcelSheet raport = new ExcelSheet();
                     int processID = getExcelID();
 
@@ -219,15 +205,9 @@ namespace OutlookAddIn1
                             raport.oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
                         }
                     }
-<<<<<<< HEAD
-                    var b = 43;
-                    raport.createCenterTables(raport.oSheet, row1, row2, row3);
-                    raport.createExcelSumCategories(raport.oSheet, row1, row2, row3);
-=======
 
                     raport.createCenterTables(raport.oSheet, rowInHands, rowInflow, rowOutflow);
                     raport.createExcelSumCategories(raport.oSheet, rowInHands, rowInflow, rowOutflow);
->>>>>>> 79a99e624cb6afa41d91158026e5899160afdbe1
                     raport.oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
                     raport.oWB.Close(true);
                     raport.oXL.Quit();

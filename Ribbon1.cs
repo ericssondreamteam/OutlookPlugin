@@ -238,15 +238,19 @@ namespace OutlookAddIn1
                 mailSubject1 = mailSubject1.Trim();
                 mailSubject1 = mailSubject1.Replace(" ", "");
                 mailSubject1 = mailSubject1.ToLower();
-
+                if (mailSubject1.Substring(0, 3).Equals("re:") || mailSubject1.Substring(0, 3).Equals("fw:"))
+                    mailSubject1 = mailSubject1.Substring(3);
+                int amountI = getConversationAmount(emails[i]);
+                MessageAmount.Add(amountI);
                 for (int j = i + 1; j < emails.Count; j++)
                 {
                     mailSubject2 = emails[j].Subject;
                     mailSubject2 = mailSubject2.Trim();
                     mailSubject2 = mailSubject2.Replace(" ", "");
                     mailSubject2 = mailSubject2.ToLower();
-                    int amountI = getConversationAmount(emails[i]);
-                    MessageAmount.Add(amountI);
+                    if (mailSubject2.Substring(0, 3).Equals("re:") || mailSubject2.Substring(0, 3).Equals("fw:"))
+                        mailSubject2 = mailSubject2.Substring(3);
+
                     if (mailSubject1.Equals(mailSubject2))
                     {                        
                         int amountJ = getConversationAmount(emails[j]);

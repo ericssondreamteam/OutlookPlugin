@@ -59,14 +59,15 @@ namespace OutlookAddIn1
 
         public void createExcelSumCategories(Excel._Worksheet oSheet, int row1, int row2, int row3)
         {
-            oSheet.Cells[4, 13] = "SUMMARY";
+            //oSheet.Cells[4, 13] = "SUMMARY";
             oSheet.Cells[5, 13] = "Inflow  = ";
             oSheet.Cells[6, 13] = "Outflow = ";
-            oSheet.Cells[7, 13] = "In hands = ";
+            //oSheet.Cells[7, 13] = "In hands = ";
+            var i = 0;
 
             oSheet.Cells[5, 14].Formula = "=ROWS(A5:A" + row2 + ")";
-            oSheet.Cells[6, 14].Formula = "=ROWS(E5:E" + row3 + ")";
-            oSheet.Cells[7, 14].Formula = "=ROWS(I5:F" + row1 + ")";
+            if (i == 0)
+                i = 2;
             if (row1 == 4)
                 oSheet.Cells[7, 14].Value = 0;
             if (row2 == 4)

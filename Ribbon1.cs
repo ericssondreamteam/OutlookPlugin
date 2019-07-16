@@ -236,8 +236,6 @@ namespace OutlookAddIn1
         {
         }
 
-
-
         #region IRibbonExtensibility Members
         public string GetCustomUI(string ribbonID)
         {
@@ -306,28 +304,24 @@ namespace OutlookAddIn1
         private int getExcelID()
         {
             Process[] AllProcesses = Process.GetProcessesByName("excel");
-
             foreach(Process ExcelProcess in AllProcesses)
             {
                 if (myHashtable.ContainsKey(ExcelProcess.Id) == false)
                     return ExcelProcess.Id;
             }
-            return 0; //rzuc wyjatkiem ze nie ma procesu
+            throw new SystemException("Process excel.exe do not exist. Check constructor in class 'ExcelSheet'");
         }
 
         /* Zabijamy proces ktory nie znajduje sie w hashtable */
         private void KillExcel(int processID)
         {
             Process[] AllProcesses = Process.GetProcessesByName("excel");
-
             // check to kill the right process
             foreach (Process ExcelProcess in AllProcesses)
             {
                 if (ExcelProcess.Id == processID)
                     ExcelProcess.Kill();
             }
-
-            AllProcesses = null;
         }
     }
 

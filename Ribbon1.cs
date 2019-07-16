@@ -45,7 +45,7 @@ namespace OutlookAddIn1
             today = today.AddDays(-2).AddHours(17);
             return today;
         }
-        public int getConversationAmount(Outlook.MailItem newEmail)
+        public int getConversationAmount(MailItem newEmail)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace OutlookAddIn1
             }
 
         }
-        public int selectCorrectEmailType(Outlook.MailItem newEmail)
+        public int selectCorrectEmailType(MailItem newEmail)
         {
             int typ = 0;
             if (newEmail.Categories == null) //inflow
@@ -250,9 +250,8 @@ namespace OutlookAddIn1
 
                     if (mailSubject1.Equals(mailSubject2))
                     {
-                        int amountI=getConversationAmount(emails[i]);
-                        int amountJ = getConversationAmount(emails[j]);
-                        MessageBox.Show(mailSubject1 + "\n" + mailSubject2);
+                       
+                       
                         //TODO trzeba zsumowowac ilosc maili... chyba nowy obiekt
                         emails.RemoveAt(j);
                         j--;

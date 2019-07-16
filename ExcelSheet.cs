@@ -78,7 +78,7 @@ namespace OutlookAddIn1
                 oSheet.Cells[row, whichColumn] = newEmail.Subject;
             oSheet.Cells[row, whichColumn + 1] = amount;
             oSheet.Cells[row, whichColumn + 2] = newEmail.Categories;
-            oSheet.Cells[row, whichColumn + 3] = newEmail.ReceivedTime;
+          //  oSheet.Cells[row, whichColumn + 3] = newEmail.ReceivedTime;
         }
 
         public void createCenterTables(Excel._Worksheet oSheet, int rowInHands, int rowInflow, int rowOutflow)

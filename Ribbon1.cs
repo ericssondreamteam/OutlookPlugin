@@ -160,6 +160,7 @@ namespace OutlookAddIn1
                     var rowInflow = 4;
                     var rowOutflow = 4;
                     emails = emailsWithoutDuplicates(emails);
+                    emails = removeDuplicateOneMoreTime(emails);
 
                     foreach (MailItem newEmail in emails)
                     {
@@ -224,8 +225,39 @@ namespace OutlookAddIn1
                 }
             }
         }
+
+        private List<MailItem> removeDuplicateOneMoreTime(List<MailItem> emails)
+        {
+            for (int i = 0; i < emails.Count; i++)
+            {
+                var email1=emails[i].Subject;
+                email1 = email1.Trim();
+                email1 = email1.Replace(" ", "");
+                email1 = email1.ToLower();
+
+                for (int j = i + 1; j < emails.Count; j++)
+                {
+                    var email2 = emails[i].Subject;
+                    email2 = email2.Trim();
+                    email2 = email2.Replace(" ", "");
+                    email2 = email2.ToLower();
+                    if (email1.Equals(email2))
+                    {
+                        int amountI=getConversationAmount(emails[i]);
+                        int amountJ = getConversationAmount(emails[j]);
+                        //TODO trzeba zsumowowac ilosc maili... chyba nowy obiekt
+                        emails.RemoveAt(j);
+                        j--;
+                    }
+                }
+            }
+            return emails;
+        }
+
+
         bool isMultipleCategoriesAndAnyOfTheireInterestedUs(string categories)
         {
+            OurDebug.AppendInfo("Categories start:",categories);
             if (categories is null)
             {
                 return true;
@@ -234,7 +266,8 @@ namespace OutlookAddIn1
             {
                 categories = categories.Trim();
                 categories = categories.Replace(" ", "");
-                categories.ToLower();
+                categories = categories.ToLower();
+                OurDebug.AppendInfo("Categories after trim and repalce and lower:", categories);
                 string[] categoriesList = categories.Split(',');
                 foreach (var cat in categoriesList)
                 {   //No Response Necessary    or    Unknown     No Response Necessary, Unknown

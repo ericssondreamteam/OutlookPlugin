@@ -241,15 +241,18 @@ namespace OutlookAddIn1
         }
         bool isMultipleCategoriesAndAnyOfTheireInterestedUs(string categories)
         {
+            OurDebug.AppendInfo("Categories start:",categories);
             if (categories is null)
             {
                 return true;
             }
             else
             {
+                var a = 0;
                 categories = categories.Trim();
                 categories = categories.Replace(" ", "");
-                categories.ToLower();
+                categories = categories.ToLower();
+                OurDebug.AppendInfo("Categories after trim and repalce and lower:", categories);
                 string[] categoriesList = categories.Split(',');
                 foreach (var cat in categoriesList)
                 {   //No Response Necessary    or    Unknown     No Response Necessary, Unknown

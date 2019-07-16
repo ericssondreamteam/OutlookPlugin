@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
+using System.Threading;
 
 namespace OutlookAddIn1
 {
@@ -18,7 +19,8 @@ namespace OutlookAddIn1
     public class Ribbon1 : Office.IRibbonExtensibility
     {
         private Debuger OurDebug = new Debuger();
-
+        public static int counter = 0;
+        public static int progress = 0;
         private Office.IRibbonUI ribbon;
         public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
         {
@@ -42,9 +44,18 @@ namespace OutlookAddIn1
         }
         public int getConversationAmount(Outlook.MailItem newEmail)
         {
-            Outlook.Conversation conv = newEmail.GetConversation();
-            Outlook.Table table = conv.GetTable();
-            return table.GetRowCount();
+            try
+            {
+                Outlook.Conversation conv = newEmail.GetConversation();
+                Outlook.Table table = conv.GetTable();
+                return table.GetRowCount();
+            }
+            catch(Exception e)
+            {
+                OurDebug.AppendInfo("Blad w liczbie konwersacji");
+                return 0;
+            }
+
         }
         public int selectCorrectEmailType(Outlook.MailItem newEmail)
         {
@@ -81,16 +92,19 @@ namespace OutlookAddIn1
                 {
                     if (emails[i].ConversationID.Equals(emails[j].ConversationID))
                     {
-<<<<<<< HEAD
-                     //   OurDebug.AppendInfo("\n\nPorwannie: i:", emails[i].ConversationID, "j:", emails[j].ConversationID, "\n\n");
-=======
->>>>>>> b78d122fbdfc5b45fa6be9e759777b03741bfb1a
+                        //OurDebug.AppendInfo("\n\nPorwannie: i:", emails[i].ConversationID, "j:", emails[j].ConversationID, "\n\n");
                         emails.RemoveAt(j);
                         j--;
                     }
                 }
             }
             return emails;
+        }
+
+        public void ProgressCreatingRaportLayout()
+        {
+            Form1 f1 = new Form1();
+            f1.ShowDialog();
         }
 
         public void OnTableButton(Office.IRibbonControl control)
@@ -122,6 +136,7 @@ namespace OutlookAddIn1
                     int DebugForEachCounter = 0;
                     int DebugCorrectEmialsCounter = 0;
                     OurDebug.AppendInfo("\n\n ************************MAILS*******************\n\n");
+
                     foreach (object collectionItem in oItems)
                     {
                         try
@@ -139,6 +154,7 @@ namespace OutlookAddIn1
                                 else
                                     break;
                             }
+                            
                         }
                         catch (Exception e)
                         {
@@ -146,7 +162,9 @@ namespace OutlookAddIn1
                             OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "FIRST TRY CATCH\n", "Emial number:", DebugCorrectEmialsCounter.ToString(), "\n", e.Message, "\n", e.StackTrace);
                         }
                     }
-
+                    counter = emails.Count;
+                                        Thread thread = new Thread(new ThreadStart(ProgressCreatingRaportLayout));
+                    thread.Start();
                     OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", DebugCorrectEmialsCounter.ToString(), "\n\n");
                     ExcelSheet raport = new ExcelSheet();
 
@@ -157,15 +175,18 @@ namespace OutlookAddIn1
 
                     foreach (MailItem newEmail in emails)
                     {
+                        progress++; 
+                        Form1.incrementValue(progress);
                         OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
                         var typ = 0;
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
                             OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
-                            int emailConversationAmount = getConversationAmount(newEmail);
+                            int emailConversationAmount = getConversationAmount(newEmail); 
                             DateTime friday = getInflowDate();
                             typ = selectCorrectEmailType(newEmail);
                             OurDebug.AppendInfo("Nadany typ:", typ.ToString());
+                            var a = 27;
                             switch (typ)
                             {
                                 case 1:
@@ -185,7 +206,7 @@ namespace OutlookAddIn1
                             raport.oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
                         }
                     }
-
+                    var b = 43;
                     raport.createCenterTables(raport.oSheet, row1, row2, row3);
                     raport.createExcelSumCategories(raport.oSheet, row1, row2, row3);
                     raport.oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
@@ -194,11 +215,14 @@ namespace OutlookAddIn1
                     Marshal.ReleaseComObject(raport.oXL);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
+
+                    thread.Join();
                 }
                 else
                 {
                     MessageBox.Show("Operation cannceled");
                 }
+                
             }
             catch (Exception e)
             {

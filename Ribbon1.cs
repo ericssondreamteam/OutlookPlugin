@@ -42,7 +42,7 @@ namespace OutlookAddIn1
         public DateTime getInflowDate()
         {
             DateTime today = GetFirstDayOfWeek(DateTime.Today);
-            today = today.AddDays(-2).AddHours(5);
+            today = today.AddDays(-2).AddHours(17);
             return today;
         }
         public int getConversationAmount(Outlook.MailItem newEmail)
@@ -65,6 +65,7 @@ namespace OutlookAddIn1
             int typ = 0;
             if (newEmail.Categories == null) //inflow
             {
+                if(newEmail.ReceivedTime > getInflowDate()) typ = 1;
                 if (getConversationAmount(newEmail) > 1) typ = 1;
                 else typ = 2;
             }
@@ -99,13 +100,6 @@ namespace OutlookAddIn1
             }
             return emails;
         }
-
-        public void ProgressCreatingRaportLayout()
-        {
-            Form1 f1 = new Form1();
-            f1.ShowDialog();
-        }
-
         public void OnTableButton(Office.IRibbonControl control)
         {   
             try
@@ -125,7 +119,7 @@ namespace OutlookAddIn1
                     OurDebug.AppendInfo("Wybrany folder ", oInbox2.Name);
                     Items oItems = oInbox2.Items;
                     List<MailItem> emails = new List<MailItem>();
-
+                    var a = 2;
                     OurDebug.AppendInfo("Email's amount", oItems.Count.ToString());
                     oItems.Sort("[ReceivedTime]", true);//sortowanie od najnowszych wszystkich items 
 
@@ -142,7 +136,7 @@ namespace OutlookAddIn1
                             if (email1 != null)
                             {
                                 OurDebug.AppendInfo("Email  ", DebugCorrectEmailsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());
-                                if (email1.ReceivedTime > getInflowDate().AddDays(-14))
+                                if (email1.ReceivedTime > getInflowDate().AddDays(-7))
                                 {
                                     DebugCorrectEmailsCounter++;
                                     emails.Add(email1);
@@ -158,16 +152,13 @@ namespace OutlookAddIn1
                             OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "FIRST TRY CATCH\n", "Emial number:", DebugCorrectEmailsCounter.ToString(), "\n", e.Message, "\n", e.StackTrace);
                         }
                     }
-                    counter = emails.Count;
-                    Thread thread = new Thread(new ThreadStart(ProgressCreatingRaportLayout));
-                    thread.Start();
                     OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
 
                     OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
                     CheckExcellProcesses();
                     ExcelSheet raport = new ExcelSheet();
                     int processID = getExcelID();
-
+                    var e2 = 2;
                     var rowInHands = 4;
                     var rowInflow = 4;
                     var rowOutflow = 4;
@@ -186,7 +177,7 @@ namespace OutlookAddIn1
                             DateTime friday = getInflowDate();
                             typ = selectCorrectEmailType(newEmail);
                             OurDebug.AppendInfo("Nadany typ:", typ.ToString());
-                            var a = 27;
+                            var a3 = 27;
                             switch (typ)
                             {
                                 case 1:
@@ -216,8 +207,6 @@ namespace OutlookAddIn1
                     //Marshal.ReleaseComObject(raport.oXL);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
-
-                    thread.Join();
                 }
                 else
                 {

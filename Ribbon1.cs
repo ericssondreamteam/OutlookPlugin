@@ -158,7 +158,6 @@ namespace OutlookAddIn1
                     CheckExcellProcesses();
                     ExcelSheet raport = new ExcelSheet();
                     int processID = getExcelID();
-                    var e2 = 2;
                     var rowInHands = 4;
                     var rowInflow = 4;
                     var rowOutflow = 4;
@@ -177,7 +176,6 @@ namespace OutlookAddIn1
                             DateTime friday = getInflowDate();
                             typ = selectCorrectEmailType(newEmail);
                             OurDebug.AppendInfo("Nadany typ:", typ.ToString());
-                            var a3 = 27;
                             switch (typ)
                             {
                                 case 1:
@@ -237,7 +235,6 @@ namespace OutlookAddIn1
             }
             else
             {
-                var a = 0;
                 categories = categories.Trim();
                 categories = categories.Replace(" ", "");
                 categories = categories.ToLower();

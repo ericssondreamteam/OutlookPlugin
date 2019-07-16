@@ -163,6 +163,7 @@ namespace OutlookAddIn1
                     var rowInflow = 4;
                     var rowOutflow = 4;
                     emails = emailsWithoutDuplicates(emails);
+                    emails = removeDuplicateOneMoreTime(emails);
 
                     foreach (MailItem newEmail in emails)
                     {
@@ -228,6 +229,36 @@ namespace OutlookAddIn1
                 }
             }
         }
+
+        private List<MailItem> removeDuplicateOneMoreTime(List<MailItem> emails)
+        {
+            for (int i = 0; i < emails.Count; i++)
+            {
+                var email1=emails[i].Subject;
+                email1 = email1.Trim();
+                email1 = email1.Replace(" ", "");
+                email1 = email1.ToLower();
+
+                for (int j = i + 1; j < emails.Count; j++)
+                {
+                    var email2 = emails[i].Subject;
+                    email2 = email2.Trim();
+                    email2 = email2.Replace(" ", "");
+                    email2 = email2.ToLower();
+                    if (email1.Equals(email2))
+                    {
+                        int amountI=getConversationAmount(emails[i]);
+                        int amountJ = getConversationAmount(emails[j]);
+                        //TODO trzeba zsumowowac ilosc maili... chyba nowy obiekt
+                        emails.RemoveAt(j);
+                        j--;
+                    }
+                }
+            }
+            return emails;
+        }
+
+
         bool isMultipleCategoriesAndAnyOfTheireInterestedUs(string categories)
         {
             OurDebug.AppendInfo("Categories start:",categories);
@@ -236,8 +267,7 @@ namespace OutlookAddIn1
                 return true;
             }
             else
-            {
-                var a = 0;
+            {                
                 categories = categories.Trim();
                 categories = categories.Replace(" ", "");
                 categories = categories.ToLower();
@@ -245,7 +275,7 @@ namespace OutlookAddIn1
                 string[] categoriesList = categories.Split(',');
                 foreach (var cat in categoriesList)
                 {   //No Response Necessary    or    Unknown     No Response Necessary, Unknown
-                    if (!cat.Equals("noresponsenecessary") && !cat.Equals("unknown"))
+                    if (!cat.Equals("noresponse necessary") && !cat.Equals("unknown"))
                     {
                         return true;
                     }

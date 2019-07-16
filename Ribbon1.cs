@@ -63,12 +63,12 @@ namespace OutlookAddIn1
             oSheet.Cells[5, 13] = "Inflow  = ";
             oSheet.Cells[6, 13] = "Outflow = ";
             oSheet.Cells[7, 13] = "In hands = ";
+            oSheet.Cells[8, 14] = "In hands = ";
 
             oSheet.Cells[5, 14].Formula = "=ROWS(A5:A" + row2 + ")";
             oSheet.Cells[6, 14].Formula = "=ROWS(E5:E" + row3 + ")";
             oSheet.Cells[7, 14].Formula = "=ROWS(I5:F" + row1 + ")";
-            if (row1 == 4)
-                oSheet.Cells[7, 14].Value = 0;
+           
             if (row2 == 4)
                 oSheet.Cells[5, 14].Value = 0;
             if (row3 == 4)

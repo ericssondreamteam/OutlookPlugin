@@ -160,7 +160,7 @@ namespace OutlookAddIn1
                     var rowInflow = 4;
                     var rowOutflow = 4;
                     emails = emailsWithoutDuplicates(emails);
-                    emails = removeDuplicateOneMoreTime(emails);
+                    //emails = removeDuplicateOneMoreTime(emails);
 
                     foreach (MailItem newEmail in emails)
                     {
@@ -226,7 +226,7 @@ namespace OutlookAddIn1
             }
         }
 
-        private List<MailItem> removeDuplicateOneMoreTime(List<MailItem> emails)
+        /*private List<MailItem> removeDuplicateOneMoreTime(List<MailItem> emails)
         {
             for (int i = 0; i < emails.Count; i++)
             {
@@ -252,7 +252,7 @@ namespace OutlookAddIn1
                 }
             }
             return emails;
-        }
+        }*/
 
 
         bool isMultipleCategoriesAndAnyOfTheireInterestedUs(string categories)

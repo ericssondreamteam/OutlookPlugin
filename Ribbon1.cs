@@ -60,31 +60,35 @@ namespace OutlookAddIn1
             }
 
         }
-        public int selectCorrectEmailType(Outlook.MailItem newEmail)
+        public int selectCorrectEmailType(Mail newEmail)
         {
+            var a = 2;
             int typ = 0;
-            if (newEmail.Categories == null) //inflow
+            if (newEmail.category == null) //inflow
             {
-                if(newEmail.ReceivedTime > getInflowDate()) typ = 1;
-                if (getConversationAmount(newEmail) > 1) typ = 1;
+                if (newEmail.recivedTime < getInflowDate())
+                {
+                    typ = 3;
+                }
+                else if (newEmail.conversationAmount > 1) typ = 1;
                 else typ = 2;
             }
-            if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
+            if (newEmail.conversationAmount > 1 && newEmail.recivedTime > getInflowDate()) //in hands
             {
                 typ = 1;
             }
-            else if (getConversationAmount(newEmail) == 1 && newEmail.ReceivedTime > getInflowDate()) //inflow
+            else if (newEmail.conversationAmount == 1 && newEmail.recivedTime > getInflowDate()) //inflow
             {
                 typ = 2;
             }
-            else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate())) //outflow
+            else if ((newEmail.recivedTime > getInflowDate().AddDays(-7)) && (newEmail.recivedTime < getInflowDate())) //outflow
             {
                 typ = 3;
             }
             return typ;
         }
 
-        public List<MailItem> emailsWithoutDuplicates(List<MailItem> emails)
+        public List<Mail> emailsWithoutDuplicates(List<Mail> emails)
         {
             for (int i = 0; i < emails.Count; i++)
             {
@@ -119,6 +123,7 @@ namespace OutlookAddIn1
                     OurDebug.AppendInfo("Wybrany folder ", oInbox2.Name);
                     Items oItems = oInbox2.Items;
                     List<MailItem> emails = new List<MailItem>();
+                    List<Mail> email = new List<Mail>();
                     var a = 2;
                     OurDebug.AppendInfo("Email's amount", oItems.Count.ToString());
                     oItems.Sort("[ReceivedTime]", true);//sortowanie od najnowszych wszystkich items 
@@ -139,7 +144,8 @@ namespace OutlookAddIn1
                                 if (email1.ReceivedTime > getInflowDate().AddDays(-7))
                                 {
                                     DebugCorrectEmailsCounter++;
-                                    emails.Add(email1);
+                                    //emails.Add(email1);
+                                    email.Add(new Mail(email1.Subject, getConversationAmount(email1), email1.ReceivedTime, email1.Categories, email1.ConversationID));
                                 }
                                 else
                                     break;
@@ -161,18 +167,20 @@ namespace OutlookAddIn1
                     var rowInHands = 4;
                     var rowInflow = 4;
                     var rowOutflow = 4;
-                    emails = emailsWithoutDuplicates(emails);
 
-                    foreach (MailItem newEmail in emails)
+
+                    //email = emailsWithoutDuplicates(email);
+
+                    foreach (Mail newEmail in email)
                     {
                         progress++; 
                         Form1.incrementValue(progress);
-                        OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
+                        //OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
                         var typ = 0;
-                        if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
+                        if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.category))
                         {
-                            OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
-                            int emailConversationAmount = getConversationAmount(newEmail); 
+                            //OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
+                            //int emailConversationAmount = getConversationAmount(newEmail); 
                             DateTime friday = getInflowDate();
                             typ = selectCorrectEmailType(newEmail);
                             OurDebug.AppendInfo("Nadany typ:", typ.ToString());
@@ -180,15 +188,15 @@ namespace OutlookAddIn1
                             {
                                 case 1:
                                     rowInHands++;
-                                    raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
+                                    raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, newEmail.conversationAmount, 1);
                                     break;
                                 case 2:
                                     rowInflow++;
-                                    raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, emailConversationAmount, 2);
+                                    raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, newEmail.conversationAmount, 2);
                                     break;
                                 case 3:
                                     rowOutflow++;
-                                    raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, emailConversationAmount, 3);
+                                    raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, newEmail.conversationAmount, 3);
                                     break;
                             }
                             raport.oSheet.Columns.AutoFit();

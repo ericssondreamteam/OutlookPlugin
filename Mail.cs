@@ -15,11 +15,18 @@ namespace OutlookAddIn1
         public String ConversationID;
         public Mail(String subject, int conversationAmount, DateTime recivedTime, String category, String ConversationID)
         {
-            this.subject = subject;
+            if(subject.ToLower().StartsWith("re:"))
+            {
+                string subPom = subject;
+                this.subject = subPom.Substring(3).Trim();
+            }
+            else
+            {
+                this.subject = subject;
+            }
             this.conversationAmount = conversationAmount;
             this.recivedTime = recivedTime;
             this.category = category;
         }
-
     }
 }

@@ -13,6 +13,7 @@ using Exception = System.Exception;
 using System.Diagnostics;
 using System.Collections;
 using System.Threading;
+using System.Linq;
 
 namespace OutlookAddIn1
 {
@@ -167,7 +168,11 @@ namespace OutlookAddIn1
                     var rowInHands = 4;
                     var rowInflow = 4;
                     var rowOutflow = 4;
+                    var aaa = 2222;
 
+                   
+
+                    email = email.GroupBy(t => t.subject).Select(g => g.First()).ToList();
 
                     //email = emailsWithoutDuplicates(email);
 

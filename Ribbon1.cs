@@ -22,6 +22,7 @@ namespace OutlookAddIn1
 
         private Hashtable myHashtable;
         private Debuger OurDebug = new Debuger();
+        private List<int> MessageAmount = new List<int>();
         public static int counter = 0;
         public static int progress = 0;
         private Office.IRibbonUI ribbon;
@@ -161,9 +162,10 @@ namespace OutlookAddIn1
                     var rowOutflow = 4;
                     emails = emailsWithoutDuplicates(emails);
                     emails = removeDuplicateOneMoreTime(emails);
-
+                    int ktoryElemntZListyElementowXD = 0;
                     foreach (MailItem newEmail in emails)
                     {
+                        ktoryElemntZListyElementowXD++;
                         progress++; 
                         Form1.incrementValue(progress);
                         OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
@@ -171,7 +173,7 @@ namespace OutlookAddIn1
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
                             OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
-                            int emailConversationAmount = getConversationAmount(newEmail); 
+                            //int emailConversationAmount = getConversationAmount(newEmail); 
                             DateTime friday = getInflowDate();
                             typ = selectCorrectEmailType(newEmail);
                             OurDebug.AppendInfo("Nadany typ:", typ.ToString());
@@ -179,15 +181,15 @@ namespace OutlookAddIn1
                             {
                                 case 1:
                                     rowInHands++;
-                                    raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
+                                    raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, MessageAmount[ktoryElemntZListyElementowXD], 1);
                                     break;
                                 case 2:
                                     rowInflow++;
-                                    raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, emailConversationAmount, 2);
+                                    raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, MessageAmount[ktoryElemntZListyElementowXD], 2);
                                     break;
                                 case 3:
                                     rowOutflow++;
-                                    raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, emailConversationAmount, 3);
+                                    raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, MessageAmount[ktoryElemntZListyElementowXD], 3);
                                     break;
                             }
                             raport.oSheet.Columns.AutoFit();
@@ -243,12 +245,14 @@ namespace OutlookAddIn1
                     mailSubject2 = mailSubject2.Trim();
                     mailSubject2 = mailSubject2.Replace(" ", "");
                     mailSubject2 = mailSubject2.ToLower();
+                    int amountI = getConversationAmount(emails[i]);
+                    MessageAmount.Add(amountI);
                     if (mailSubject1.Equals(mailSubject2))
-                    {
-                        int amountI=getConversationAmount(emails[i]);
+                    {                        
                         int amountJ = getConversationAmount(emails[j]);
                         MessageBox.Show(mailSubject1 + "\n" + mailSubject2);
                         //TODO trzeba zsumowowac ilosc maili... chyba nowy obiekt
+                        MessageAmount[i] = MessageAmount[i]+ amountJ;
                         emails.RemoveAt(j);
                         j--;
                     }

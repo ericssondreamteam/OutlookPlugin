@@ -64,9 +64,8 @@ namespace OutlookAddIn1
         {
             int typ = 0;
             if (newEmail.Categories == null) //inflow
-            {
-                if(newEmail.ReceivedTime > getInflowDate()) typ = 1;
-                if (getConversationAmount(newEmail) > 1) typ = 1;
+            { 
+                if (getConversationAmount(newEmail) > 1) typ = 1; // in hands
                 else typ = 2;
             }
             if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
@@ -119,7 +118,6 @@ namespace OutlookAddIn1
                     OurDebug.AppendInfo("Wybrany folder ", oInbox2.Name);
                     Items oItems = oInbox2.Items;
                     List<MailItem> emails = new List<MailItem>();
-                    var a = 2;
                     OurDebug.AppendInfo("Email's amount", oItems.Count.ToString());
                     oItems.Sort("[ReceivedTime]", true);//sortowanie od najnowszych wszystkich items 
 
@@ -158,7 +156,6 @@ namespace OutlookAddIn1
                     CheckExcellProcesses();
                     ExcelSheet raport = new ExcelSheet();
                     int processID = getExcelID();
-                    var e2 = 2;
                     var rowInHands = 4;
                     var rowInflow = 4;
                     var rowOutflow = 4;
@@ -177,7 +174,6 @@ namespace OutlookAddIn1
                             DateTime friday = getInflowDate();
                             typ = selectCorrectEmailType(newEmail);
                             OurDebug.AppendInfo("Nadany typ:", typ.ToString());
-                            var a3 = 27;
                             switch (typ)
                             {
                                 case 1:

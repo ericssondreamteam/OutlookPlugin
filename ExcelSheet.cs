@@ -63,28 +63,24 @@ namespace OutlookAddIn1
         public void insertDataExcel(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, int amount, int whichCategory)
         {
             if (whichCategory == 1) //IN-HANDS
-            {
-                oSheet.Cells[row, 9] = newEmail.Subject;
-                oSheet.Cells[row, 10] = amount;
-                oSheet.Cells[row, 11] = newEmail.Categories;
-                oSheet.Cells[row, 12] = newEmail.ReceivedTime;
-            }
-            if (whichCategory == 2) //INFLOW
-            {
-                oSheet.Cells[row, 1] = newEmail.Subject;
-                oSheet.Cells[row, 2] = amount;
-                oSheet.Cells[row, 3] = newEmail.Categories;
-                oSheet.Cells[row, 4] = newEmail.ReceivedTime;
-
-            }
-            if (whichCategory == 3) //OUTFLOW
-            {
-                oSheet.Cells[row, 5] = newEmail.Subject;
-                oSheet.Cells[row, 6] = amount;
-                oSheet.Cells[row, 7] = newEmail.Categories;
-                oSheet.Cells[row, 8] = newEmail.ReceivedTime;
-            }
+                setDataIntoCells(oSheet, row, newEmail, amount, 9);
+            else if (whichCategory == 2) //INFLOW
+                setDataIntoCells(oSheet, row, newEmail, amount, 1);
+            else if (whichCategory == 3) //OUTFLOW
+                setDataIntoCells(oSheet, row, newEmail, amount, 5);
         }
+
+        private void setDataIntoCells(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, int amount, int whichColumn)
+        {
+            if (newEmail.Subject.Substring(0, 3).Equals("RE:") || newEmail.Subject.Substring(0, 3).Equals("FW:"))
+                oSheet.Cells[row, whichColumn] = newEmail.Subject.Substring(4);
+            else
+                oSheet.Cells[row, whichColumn] = newEmail.Subject;
+            oSheet.Cells[row, whichColumn + 1] = amount;
+            oSheet.Cells[row, whichColumn + 2] = newEmail.Categories;
+            oSheet.Cells[row, whichColumn + 3] = newEmail.ReceivedTime;
+        }
+
         public void createCenterTables(Excel._Worksheet oSheet, int rowInHands, int rowInflow, int rowOutflow)
         {
             Excel.Range rangeForInflowTable = oSheet.get_Range("A4", "C" + rowInflow);

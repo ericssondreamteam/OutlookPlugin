@@ -160,7 +160,7 @@ namespace OutlookAddIn1
                     var rowInflow = 4;
                     var rowOutflow = 4;
                     emails = emailsWithoutDuplicates(emails);
-                    //emails = removeDuplicateOneMoreTime(emails);
+                    emails = removeDuplicateOneMoreTime(emails);
 
                     foreach (MailItem newEmail in emails)
                     {
@@ -226,25 +226,28 @@ namespace OutlookAddIn1
             }
         }
 
-        /*private List<MailItem> removeDuplicateOneMoreTime(List<MailItem> emails)
+        private List<MailItem> removeDuplicateOneMoreTime(List<MailItem> emails)
         {
-            for (int i = 0; i < emails.Count; i++)
+            string mailSubject1;
+            string mailSubject2;
+            for (int i = 0; i < emails.Count - 1; i++)
             {
-                var email1=emails[i].Subject;
-                email1 = email1.Trim();
-                email1 = email1.Replace(" ", "");
-                email1 = email1.ToLower();
+                mailSubject1 = emails[i].Subject;
+                mailSubject1 = mailSubject1.Trim();
+                mailSubject1 = mailSubject1.Replace(" ", "");
+                mailSubject1 = mailSubject1.ToLower();
 
                 for (int j = i + 1; j < emails.Count; j++)
                 {
-                    var email2 = emails[i].Subject;
-                    email2 = email2.Trim();
-                    email2 = email2.Replace(" ", "");
-                    email2 = email2.ToLower();
-                    if (email1.Equals(email2))
+                    mailSubject2 = emails[j].Subject;
+                    mailSubject2 = mailSubject2.Trim();
+                    mailSubject2 = mailSubject2.Replace(" ", "");
+                    mailSubject2 = mailSubject2.ToLower();
+                    if (mailSubject1.Equals(mailSubject2))
                     {
                         int amountI=getConversationAmount(emails[i]);
                         int amountJ = getConversationAmount(emails[j]);
+                        MessageBox.Show(mailSubject1 + "\n" + mailSubject2);
                         //TODO trzeba zsumowowac ilosc maili... chyba nowy obiekt
                         emails.RemoveAt(j);
                         j--;
@@ -252,7 +255,7 @@ namespace OutlookAddIn1
                 }
             }
             return emails;
-        }*/
+        }
 
 
         bool isMultipleCategoriesAndAnyOfTheireInterestedUs(string categories)

@@ -72,9 +72,9 @@ namespace OutlookAddIn1
 
         private void setDataIntoCells(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, int amount, int whichColumn)
         {
-            if (newEmail.Subject.Substring(0, 3).Equals("RE:") || newEmail.Subject.Substring(0, 3).Equals("FW:"))
-                oSheet.Cells[row, whichColumn] = newEmail.Subject.Substring(4);
-            else
+            //if (newEmail.Subject.Substring(0, 3).Equals("RE:") || newEmail.Subject.Substring(0, 3).Equals("FW:"))
+            //    oSheet.Cells[row, whichColumn] = newEmail.Subject.Substring(4);
+            //else
                 oSheet.Cells[row, whichColumn] = newEmail.Subject;
             oSheet.Cells[row, whichColumn + 1] = amount;
             oSheet.Cells[row, whichColumn + 2] = newEmail.Categories;

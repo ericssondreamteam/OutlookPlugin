@@ -237,7 +237,7 @@ namespace OutlookAddIn1
                 mailSubject1 = mailSubject1.Replace(" ", "");
                 mailSubject1 = mailSubject1.ToLower();
                 if (mailSubject1.Substring(0, 3).Equals("re:") || mailSubject1.Substring(0, 3).Equals("fw:"))
-                    mailSubject1 = mailSubject1.Substring(4);
+                    mailSubject1 = mailSubject1.Substring(3);
 
                 for (int j = i + 1; j < emails.Count; j++)
                 {
@@ -246,7 +246,8 @@ namespace OutlookAddIn1
                     mailSubject2 = mailSubject2.Replace(" ", "");
                     mailSubject2 = mailSubject2.ToLower();
                     if (mailSubject2.Substring(0, 3).Equals("re:") || mailSubject2.Substring(0, 3).Equals("fw:"))
-                        mailSubject2 = mailSubject2.Substring(4);
+                        mailSubject2 = mailSubject2.Substring(3);
+
                     if (mailSubject1.Equals(mailSubject2))
                     {
                         int amountI=getConversationAmount(emails[i]);

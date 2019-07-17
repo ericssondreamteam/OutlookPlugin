@@ -138,6 +138,8 @@ namespace OutlookAddIn1
                     path += ".docx";
                     //endingCorrectList.WriteToTxtFile(path);
                     endingCorrectList.WriteToWord(path);
+                    WordClass nowy = new WordClass();
+                    nowy.WriteToWord(path);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
 

@@ -2,21 +2,32 @@
 using System.Reflection;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Diagnostics;
+using System.Collections;
 
 namespace OutlookAddIn1
 {
     public class ExcelSheet
     {
+        private Hashtable myHashtable;
         public Excel.Application oXL;
         public Excel._Workbook oWB;
         public Excel._Worksheet oSheet;
+        private int excelIDProcess;
         public ExcelSheet()
         {
+            checkExcellProcesses();
             oXL = new Excel.Application();
             oXL.Visible = false;
             oWB = (oXL.Workbooks.Add(Missing.Value));
             oSheet = (Excel._Worksheet)oWB.ActiveSheet;
             createExcelColumn(oSheet);
+            excelIDProcess = getExcelID();
+        }
+
+        public int getExcelIDProcess()
+        {
+            return excelIDProcess;
         }
         public void createExcelColumn(Excel._Worksheet oSheet)
         {
@@ -107,6 +118,43 @@ namespace OutlookAddIn1
             oSheet.get_Range("B5", "B" + rowInflow).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
             oSheet.get_Range("F5", "F" + rowOutflow).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
             oSheet.get_Range("J5", "J" + rowInHands).Style.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+        }
+
+        /* zapisujemy id procesow do hashTable przed uruchomieniem naszego procesu */
+        private void checkExcellProcesses()
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("excel");
+            myHashtable = new Hashtable();
+            int iCount = 0;
+
+            foreach (Process ExcelProcess in AllProcesses)
+            {
+                myHashtable.Add(ExcelProcess.Id, iCount);
+                iCount = iCount + 1;
+            }
+        }
+
+        private int getExcelID()
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("excel");
+            foreach (Process ExcelProcess in AllProcesses)
+            {
+                if (myHashtable.ContainsKey(ExcelProcess.Id) == false)
+                    return ExcelProcess.Id;
+            }
+            throw new SystemException("Process excel.exe do not exist. Check constructor in class 'ExcelSheet'");
+        }
+
+        /* Zabijamy proces ktory nie znajduje sie w hashtable */
+        public void killExcel(int processID)
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("excel");
+            // check to kill the right process
+            foreach (Process ExcelProcess in AllProcesses)
+            {
+                if (ExcelProcess.Id == processID)
+                    ExcelProcess.Kill();
+            }
         }
     }
 }

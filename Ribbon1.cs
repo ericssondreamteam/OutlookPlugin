@@ -23,7 +23,9 @@ namespace OutlookAddIn1
         private Hashtable myHashtable;
         private Debuger OurDebug = new Debuger();
         private Office.IRibbonUI ribbon;
-        ToSaveObject koncowaLista = new ToSaveObject();
+        ToSaveObject endingCorrectList = new ToSaveObject();
+        ToSaveObject toBeSavedTemp = new ToSaveObject();
+        ToSaveObject toBeSavedTemp1 = new ToSaveObject();
 
         public Ribbon1()
         {
@@ -108,24 +110,24 @@ namespace OutlookAddIn1
                                 case 1:
                                     rowInHands++;
                                     raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
-                                    koncowaLista.addNewItem(newEmail.Subject,"inhands");
+                                    endingCorrectList.addNewItem(newEmail.Subject,"inhands");
                                     break;
                                 case 2:
                                     rowInflow++;
                                     raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, emailConversationAmount, 2);
-                                    koncowaLista.addNewItem(newEmail.Subject, "inflow");
+                                    endingCorrectList.addNewItem(newEmail.Subject, "inflow");
                                     break;
                                 case 3:
                                     rowOutflow++;
                                     raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, emailConversationAmount, 3);
-                                    koncowaLista.addNewItem(newEmail.Subject, "outflow");
+                                    endingCorrectList.addNewItem(newEmail.Subject, "outflow");
                                     break;
                                 case 4:
                                     rowInflow++;
                                     rowInHands++;
                                     raport.insertDataExcelInflowInHands(raport.oSheet, rowInflow, rowInHands, newEmail, emailConversationAmount);
-                                    koncowaLista.addNewItem(newEmail.Subject, "inhands");
-                                    koncowaLista.addNewItem(newEmail.Subject, "inflow");
+                                    endingCorrectList.addNewItem(newEmail.Subject, "inhands");
+                                    endingCorrectList.addNewItem(newEmail.Subject, "inflow");
                                     break;
                             }
                             raport.oSheet.Columns.AutoFit();
@@ -139,13 +141,16 @@ namespace OutlookAddIn1
                     raport.oWB.Close(true);
                     raport.oXL.Quit();
                     KillExcel(processID);
+
+
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                     path += "\\";
                     path += OutputRaportFileName;
                     path += ".txt";
-                    WriteToTxtFile(WriteInCorrextFomrat(koncowaLista), path);
+                    toBeSavedTemp.WriteToTxtFile(toBeSavedTemp1.WriteInCorrectFormat(endingCorrectList), path);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
+
                 }
                 else
                 {
@@ -169,28 +174,8 @@ namespace OutlookAddIn1
                 }
             }
         }
-        private StringBuilder WriteInCorrextFomrat(ToSaveObject tematy)
-        {
-            StringBuilder koncowyString = new StringBuilder();
-            koncowyString.Append("Inflow: "+tematy.inflowAmount+"\n");
-            int i;
-            for (i = 0; i < tematy.inflow.Count; i++)
-                koncowyString.Append("\t" + tematy.inflow[i] + "\n");
-            koncowyString.Append("In-hands: " + tematy.inhandsAmount + "\n");
-            for (i = 0; i < tematy.inhands.Count; i++)
-                koncowyString.Append("\t" + tematy.inhands[i] + "\n");
-            koncowyString.Append("Outflow: " + tematy.outflowAmount + "\n");
-            for (i = 0; i < tematy.outflow.Count; i++)
-                koncowyString.Append("\t" + tematy.outflow[i] + "\n");
-
-            return koncowyString;
-
-        }
-        private void WriteToTxtFile(StringBuilder doZapisu,string path)
-        {
-            MessageBox.Show(path);
-            File.WriteAllText(path, doZapisu.ToString());           
-        }
+       
+      
 
         private List<MailItem> removeDuplicateOneMoreTime(List<MailItem> emails)
         {

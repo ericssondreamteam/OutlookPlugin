@@ -22,7 +22,9 @@ namespace OutlookAddIn1
             try
             {
                 //Create an instance for word app  
+                CheckWordProcesses();
                 Word.Application winword = new Word.Application();
+                int wordIDProcess = getWordID();
 
                 //Set animation status for word application  
                 winword.ShowAnimation = false;
@@ -88,6 +90,7 @@ namespace OutlookAddIn1
                 document = null;
                 winword.Quit(ref missing, ref missing, ref missing);
                 winword = null;
+                killWord(wordIDProcess);
                 // MessageBox.Show("Document created successfully !");
             }
             catch (Exception ex)
@@ -121,7 +124,7 @@ namespace OutlookAddIn1
         }
 
         /* Zabijamy proces ktory nie znajduje sie w hashtable */
-        private void KillWord(int processID)
+        private void killWord(int processID)
         {
             Process[] AllProcesses = Process.GetProcessesByName("word");
             // check to kill the right process

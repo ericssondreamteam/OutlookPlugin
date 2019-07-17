@@ -64,23 +64,25 @@ namespace OutlookAddIn1
         public int selectCorrectEmailType(MailItem newEmail)
         {
             int typ = 0;
-            if (newEmail.Categories == null) //inflow
-            { 
-                if (getConversationAmount(newEmail) > 1) typ = 1; // in hands
-                else typ = 2;
-            }
-            if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
+            if(newEmail.Categories != null)
             {
-                typ = 1;
-            }
-            else if (getConversationAmount(newEmail) == 1 && newEmail.ReceivedTime > getInflowDate()) //inflow
-            {
-                typ = 2;
-            }
-            else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate())) //outflow
-            {
-                typ = 3;
-            }
+                if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
+                {
+                    typ = 1;
+                }
+                else if (newEmail.ReceivedTime > getInflowDate()) //inflow
+                {
+                    typ = 2;
+                }
+                else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate())) //outflow
+                {
+                    typ = 3;
+                }
+                if (typ == 1) //inflow + in hands
+                {
+                    typ = 4;
+                }
+            }            
             return typ;
         }
 
@@ -191,6 +193,11 @@ namespace OutlookAddIn1
                                     rowOutflow++;
                                     raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, emailConversationAmount, 3);
                                     break;
+                                case 4:
+                                    rowInflow++;
+                                    rowInHands++;
+                                    raport.insertDataExcelInflowInHands(raport.oSheet, rowInflow, rowInHands, newEmail, emailConversationAmount);
+                                    break;
                             }
                             raport.oSheet.Columns.AutoFit();
                             raport.oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
@@ -268,7 +275,7 @@ namespace OutlookAddIn1
             OurDebug.AppendInfo("Categories start:",categories);
             if (categories is null)
             {
-                return true;
+                return false;
             }
             else
             {
@@ -279,7 +286,7 @@ namespace OutlookAddIn1
                 string[] categoriesList = categories.Split(',');
                 foreach (var cat in categoriesList)
                 {   //No Response Necessary    or    Unknown     No Response Necessary, Unknown
-                    if (!cat.Equals("noresponsenecessary") && !cat.Equals("unknown"))
+                    if (!cat.Equals("noresponsenecessary") && !cat.Equals("unknown") && !cat.Equals(""))
                     {
                         return true;
                     }

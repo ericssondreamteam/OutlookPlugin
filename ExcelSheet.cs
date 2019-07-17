@@ -70,6 +70,13 @@ namespace OutlookAddIn1
                 setDataIntoCells(oSheet, row, newEmail, amount, 5);
         }
 
+        public void insertDataExcelInflowInHands(Excel._Worksheet oSheet, int rowInflow, int rowInHands, Outlook.MailItem newEmail, int amount)
+        {
+            setDataIntoCells(oSheet, rowInflow, newEmail, amount, 1);
+            setDataIntoCells(oSheet, rowInHands, newEmail, amount, 9);
+            var i = 0;
+        }
+
         private void setDataIntoCells(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, int amount, int whichColumn)
         {
             //if (newEmail.Subject.Substring(0, 3).Equals("RE:") || newEmail.Subject.Substring(0, 3).Equals("FW:"))

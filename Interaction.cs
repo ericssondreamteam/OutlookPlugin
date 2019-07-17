@@ -58,7 +58,7 @@ namespace OutlookAddIn1
             prompt.Width = 350;
             prompt.Height = 150;
             prompt.Text = caption;
-
+            prompt.StartPosition = FormStartPosition.CenterScreen;
             FlowLayoutPanel panel = new FlowLayoutPanel();
 
             CheckBox chk = new CheckBox();

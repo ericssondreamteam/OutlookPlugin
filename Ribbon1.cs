@@ -23,7 +23,7 @@ namespace OutlookAddIn1
         private Hashtable myHashtable;
         private Debuger OurDebug = new Debuger();
         private Office.IRibbonUI ribbon;
-        ToSaveObject koncowaLista = new ToSaveObject();
+        ToSaveObject endingLastList = new ToSaveObject();
 
         public Ribbon1()
         {
@@ -100,24 +100,24 @@ namespace OutlookAddIn1
                                 case 1:
                                     rowInHands++;
                                     raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
-                                    koncowaLista.addNewItem(newEmail.Subject,"inhands");
+                                    endingLastList.addNewItem(newEmail.Subject,"inhands");
                                     break;
                                 case 2:
                                     rowInflow++;
                                     raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, emailConversationAmount, 2);
-                                    koncowaLista.addNewItem(newEmail.Subject, "inflow");
+                                    endingLastList.addNewItem(newEmail.Subject, "inflow");
                                     break;
                                 case 3:
                                     rowOutflow++;
                                     raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, emailConversationAmount, 3);
-                                    koncowaLista.addNewItem(newEmail.Subject, "outflow");
+                                    endingLastList.addNewItem(newEmail.Subject, "outflow");
                                     break;
                                 case 4:
                                     rowInflow++;
                                     rowInHands++;
                                     raport.insertDataExcelInflowInHands(raport.oSheet, rowInflow, rowInHands, newEmail, emailConversationAmount);
-                                    koncowaLista.addNewItem(newEmail.Subject, "inhands");
-                                    koncowaLista.addNewItem(newEmail.Subject, "inflow");
+                                    endingLastList.addNewItem(newEmail.Subject, "inhands");
+                                    endingLastList.addNewItem(newEmail.Subject, "inflow");
                                     break;
                             }
                             raport.oSheet.Columns.AutoFit();
@@ -135,7 +135,7 @@ namespace OutlookAddIn1
                     path += "\\";
                     path += OutputRaportFileName;
                     path += ".txt";
-                    koncowaLista.WriteToTxtFile(path);
+                    endingLastList.WriteToTxtFile(path);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
                 }

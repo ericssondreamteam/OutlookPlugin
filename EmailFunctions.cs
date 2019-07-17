@@ -81,6 +81,7 @@ namespace OutlookAddIn1
                     typ = 4;
                 }
             }
+            OurDebug.AppendInfo("Nadany typ:", typ.ToString());
             return typ;
         }
 

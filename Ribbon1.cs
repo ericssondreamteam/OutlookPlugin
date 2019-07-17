@@ -245,14 +245,14 @@ namespace OutlookAddIn1
         private StringBuilder WriteInCorrextFomrat(ToSaveObject tematy)
         {
             StringBuilder koncowyString = new StringBuilder();
-            koncowyString.Append("Inflow "+tematy.inflowAmount+"\n");
+            koncowyString.Append("Inflow: "+tematy.inflowAmount+"\n");
             int i;
             for (i = 0; i < tematy.inflow.Count; i++)
                 koncowyString.Append("\t" + tematy.inflow[i] + "\n");
-            koncowyString.Append("In-hands " + tematy.inflowAmount + "\n");
+            koncowyString.Append("In-hands: " + tematy.inhandsAmount + "\n");
             for (i = 0; i < tematy.inhands.Count; i++)
                 koncowyString.Append("\t" + tematy.inhands[i] + "\n");
-            koncowyString.Append("Outflow " + tematy.outflowAmount + "\n");
+            koncowyString.Append("Outflow: " + tematy.outflowAmount + "\n");
             for (i = 0; i < tematy.outflow.Count; i++)
                 koncowyString.Append("\t" + tematy.outflow[i] + "\n");
 

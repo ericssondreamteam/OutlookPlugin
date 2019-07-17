@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using Word = Microsoft.Office.Interop.Word;
+using System.Collections;
 
 namespace OutlookAddIn1
 {
@@ -41,7 +46,9 @@ namespace OutlookAddIn1
             try
             {
                 //Create an instance for word app  
+                CheckWordProcesses();
                 Word.Application winword = new Word.Application();
+                int wordIDProcess = getWordID();
 
                 //Set animation status for word application  
                 winword.ShowAnimation = false;
@@ -129,10 +136,48 @@ namespace OutlookAddIn1
                 document = null;
                 winword.Quit(ref missing, ref missing, ref missing);
                 winword = null;
+                killWord(wordIDProcess);
+                // MessageBox.Show("Document created successfully !");
             }
             catch (Exception ex)
             {
                 
+            }
+        }
+
+        private void CheckWordProcesses()
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("word");
+            myHashtable = new Hashtable();
+            int iCount = 0;
+
+            foreach (Process WordProcess in AllProcesses)
+            {
+                myHashtable.Add(WordProcess.Id, iCount);
+                iCount = iCount + 1;
+            }
+        }
+
+        private int getWordID()
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("word");
+            foreach (Process WordProcess in AllProcesses)
+            {
+                if (myHashtable.ContainsKey(WordProcess.Id) == false)
+                    return WordProcess.Id;
+            }
+            throw new SystemException("Process word.exe do not exist.");
+        }
+
+        /* Zabijamy proces ktory nie znajduje sie w hashtable */
+        private void killWord(int processID)
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("word");
+            // check to kill the right process
+            foreach (Process WordProcess in AllProcesses)
+            {
+                if (WordProcess.Id == processID)
+                    WordProcess.Kill();
             }
         }
     }

@@ -34,56 +34,48 @@ namespace OutlookAddIn1
         {   
             try
             {
+                //Initialize
                 EmailFunctions functions = new EmailFunctions(OurDebug);
                 string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
+                List<MailItem> emails = new List<MailItem>();
+                MailItem email1 = null;
+                int DebugForEachCounter = 0;
+                int DebugCorrectEmailsCounter = 0;
+
                 //Czy debugujemy
                 if (Interaction.ShowDebugDialog("Debuger", "Turn on debuger?"))
+                {
                     OurDebug.Enable();
+                }
+                    
                 else
+                {
                     OurDebug.Disable();
+                }
 
                 if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
                 {
+                    //Initialize outlook app
                     Outlook.Application oApp = new Outlook.Application();
                     NameSpace oNS = oApp.GetNamespace("mapi");
                     MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder as MAPIFolder;
                     OurDebug.AppendInfo("Wybrany folder ", oInbox2.Name);
                     Items oItems = oInbox2.Items;
-                    List<MailItem> emails = new List<MailItem>();
                     OurDebug.AppendInfo("Email's amount", oItems.Count.ToString());
-                    oItems.Sort("[ReceivedTime]", true);//sortowanie od najnowszych wszystkich items 
 
-                    MailItem email1 = null;
-                    int DebugForEachCounter = 0;
-                    int DebugCorrectEmailsCounter = 0;
+                    //Sort all items
+                    oItems.Sort("[ReceivedTime]", true);
+
+                    //Debug info for mails
                     OurDebug.AppendInfo("\n\n ************************MAILS*******************\n\n");
-                    foreach (object collectionItem in oItems)
-                    {
-                        try
-                        {
 
-                            DebugForEachCounter++;
-                            email1 = collectionItem as MailItem;
-                            if (email1 != null)
-                            {
-                                OurDebug.AppendInfo("Email  ", DebugCorrectEmailsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());
-                                if (email1.ReceivedTime > functions.getInflowDate().AddDays(-7))
-                                {
-                                    DebugCorrectEmailsCounter++;
-                                    emails.Add(email1);
-                                }
-                                else
-                                    break;
-                            }
-                            
-                        }
-                        catch (Exception e)
-                        {
-                            MessageBox.Show("Some error occured during first analysis\nIf You turn on debugger please go there");
-                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "FIRST TRY CATCH\n", "eMail number:", DebugCorrectEmailsCounter.ToString(), "\n", e.Message, "\n", e.StackTrace);
-                        }
-                    }
+                    //Get only mails from two weeks ago
+                    functions.getOnlyEmailsForTwoWeeksAgo(DebugForEachCounter, email1, oItems, DebugCorrectEmailsCounter, emails);
+
+                    //Show how many times foreach is performed
                     OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
+
+
                     CheckExcellProcesses();
                     ExcelSheet raport = new ExcelSheet();
                     int processID = getExcelID();
@@ -91,12 +83,12 @@ namespace OutlookAddIn1
                     var rowInflow = 4;
                     var rowOutflow = 4;
                     emails = functions.emailsWithoutDuplicates(emails);
-                    emails = removeDuplicateOneMoreTime(emails);
+                    emails = functions.removeDuplicateOneMoreTime(emails);
                     foreach (MailItem newEmail in emails)
                     {
                         OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
                         var typ = 0;
-                        if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
+                        if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
                             OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
                             int emailConversationAmount = functions.getConversationAmount(newEmail); 
@@ -170,67 +162,6 @@ namespace OutlookAddIn1
             }
         }
        
-
-        private List<MailItem> removeDuplicateOneMoreTime(List<MailItem> emails)
-        {
-            string mailSubject1;
-            string mailSubject2;
-            for (int i = 0; i < emails.Count - 1; i++)
-            {
-                mailSubject1 = emails[i].Subject;
-                mailSubject1 = mailSubject1.Trim();
-                mailSubject1 = mailSubject1.Replace(" ", "");
-                mailSubject1 = mailSubject1.ToLower();
-                if (mailSubject1.Substring(0, 3).Equals("re:") || mailSubject1.Substring(0, 3).Equals("fw:"))
-                    mailSubject1 = mailSubject1.Substring(3);
-              
-                for (int j = i + 1; j < emails.Count; j++)
-                {
-                    mailSubject2 = emails[j].Subject;
-                    mailSubject2 = mailSubject2.Trim();
-                    mailSubject2 = mailSubject2.Replace(" ", "");
-                    mailSubject2 = mailSubject2.ToLower();
-                    if (mailSubject2.Substring(0, 3).Equals("re:") || mailSubject2.Substring(0, 3).Equals("fw:"))
-                        mailSubject2 = mailSubject2.Substring(3);
-
-                    if (mailSubject1.Equals(mailSubject2))
-
-                    {
-                        emails.RemoveAt(j);
-                        j--;
-                    }
-                }
-            }
-            return emails;
-        }
-
-
-        bool isMultipleCategoriesAndAnyOfTheireInterestedUs(string categories)
-        {
-            OurDebug.AppendInfo("Categories start:",categories);
-            if (categories is null)
-            {
-                return false;
-            }
-            else
-            {
-                categories = categories.Trim();
-                categories = categories.Replace(" ", "");
-                categories = categories.ToLower();
-                OurDebug.AppendInfo("Categories after trim and repalce and lower:", categories);
-                string[] categoriesList = categories.Split(',');
-                foreach (var cat in categoriesList)
-                {   //No Response Necessary    or    Unknown     No Response Necessary, Unknown
-                    if (!cat.Equals("noresponsenecessary") && !cat.Equals("unknown") && !cat.Equals(""))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-
 
         #region IRibbonExtensibility Members
         public string GetCustomUI(string ribbonID)

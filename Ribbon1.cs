@@ -20,9 +20,13 @@ namespace OutlookAddIn1
     [ComVisible(true)]
     public class Ribbon1 : Office.IRibbonExtensibility
     {
-
         private Hashtable myHashtable;
         private Debuger OurDebug = new Debuger();
+<<<<<<< HEAD
+=======
+        public static int counter = 0;
+        public static int progress = 0;
+>>>>>>> 6735f2538531fa17c90d6ade1b2a310c9030f199
         private Office.IRibbonUI ribbon;
         ToSaveObject koncowaLista = new ToSaveObject();
 
@@ -57,7 +61,7 @@ namespace OutlookAddIn1
             }
             catch(Exception e)
             {
-                OurDebug.AppendInfo("Blad w liczbie konwersacji");
+                OurDebug.AppendInfo("Blad w liczbie konwersacji; funkcja getConversationAmount()");
                 return 0;
             }
 
@@ -151,11 +155,9 @@ namespace OutlookAddIn1
                         catch (Exception e)
                         {
                             MessageBox.Show("Some error occured during first analysis\nIf You turn on debugger please go there");
-                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "FIRST TRY CATCH\n", "Emial number:", DebugCorrectEmailsCounter.ToString(), "\n", e.Message, "\n", e.StackTrace);
+                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "FIRST TRY CATCH\n", "eMail number:", DebugCorrectEmailsCounter.ToString(), "\n", e.Message, "\n", e.StackTrace);
                         }
                     }
-                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
-
                     OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
                     CheckExcellProcesses();
                     ExcelSheet raport = new ExcelSheet();
@@ -165,9 +167,13 @@ namespace OutlookAddIn1
                     var rowOutflow = 4;
                     emails = emailsWithoutDuplicates(emails);
                     emails = removeDuplicateOneMoreTime(emails);
-                   // int ktoryElemntZListyElementowXD = 0;
                     foreach (MailItem newEmail in emails)
                     {
+<<<<<<< HEAD
+=======
+                        progress++; 
+                        Form1.incrementValue(progress);
+>>>>>>> 6735f2538531fa17c90d6ade1b2a310c9030f199
                         OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
                         var typ = 0;
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
@@ -217,9 +223,7 @@ namespace OutlookAddIn1
                     path += "\\";
                     path += OutputRaportFileName;
                     path += ".txt";
-                    WriteToTxtFile(WriteInCorrextFomrat(koncowaLista),path);
-
-                    //Marshal.ReleaseComObject(raport.oXL);
+                    WriteToTxtFile(WriteInCorrextFomrat(koncowaLista), path);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
                 }
@@ -293,7 +297,6 @@ namespace OutlookAddIn1
                     if (mailSubject1.Equals(mailSubject2))
 
                     {
-  
                         emails.RemoveAt(j);
                         j--;
                     }

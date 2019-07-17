@@ -26,6 +26,7 @@ namespace OutlookAddIn1
         ToSaveObject endingCorrectList = new ToSaveObject();
         ToSaveObject toBeSavedTemp = new ToSaveObject();
         ToSaveObject toBeSavedTemp1 = new ToSaveObject();
+        WordClass toBeSavedWord = new WordClass();
 
         public Ribbon1()
         {
@@ -100,16 +101,19 @@ namespace OutlookAddIn1
                                     rowInHands++;
                                     raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
                                     endingCorrectList.addNewItem(newEmail.Subject,"inhands");
+                                    toBeSavedWord.addNewItem(newEmail.Subject, "inhands");
                                     break;
                                 case 2:
                                     rowInflow++;
                                     raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, emailConversationAmount, 2);
                                     endingCorrectList.addNewItem(newEmail.Subject, "inflow");
+                                    toBeSavedWord.addNewItem(newEmail.Subject, "inflow");
                                     break;
                                 case 3:
                                     rowOutflow++;
                                     raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, emailConversationAmount, 3);
                                     endingCorrectList.addNewItem(newEmail.Subject, "outflow");
+                                    toBeSavedWord.addNewItem(newEmail.Subject, "outflow");
                                     break;
                                 case 4:
                                     rowInflow++;
@@ -117,6 +121,8 @@ namespace OutlookAddIn1
                                     raport.insertDataExcelInflowInHands(raport.oSheet, rowInflow, rowInHands, newEmail, emailConversationAmount);
                                     endingCorrectList.addNewItem(newEmail.Subject, "inhands");
                                     endingCorrectList.addNewItem(newEmail.Subject, "inflow");
+                                    toBeSavedWord.addNewItem(newEmail.Subject, "inhands");
+                                    toBeSavedWord.addNewItem(newEmail.Subject, "inflow");
                                     break;
                             }
                             raport.oSheet.Columns.AutoFit();
@@ -136,10 +142,8 @@ namespace OutlookAddIn1
                     path += "\\";
                     path += OutputRaportFileName;
                     path += ".docx";
-                    //endingCorrectList.WriteToTxtFile(path);
-                    endingCorrectList.WriteToWord(path);
-                    WordClass nowy = new WordClass();
-                    nowy.WriteToWord(path);
+                    endingCorrectList.WriteToTxtFile(path);
+                    toBeSavedWord.WriteToWord(path);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
 

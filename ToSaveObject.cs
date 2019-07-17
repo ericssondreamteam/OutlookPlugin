@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 using Word=Microsoft.Office.Interop.Word;
 
 
@@ -139,7 +140,7 @@ namespace OutlookAddIn1
             }
             catch (Exception ex)
             {
-                // MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message);
             }
         }
     }

@@ -135,8 +135,9 @@ namespace OutlookAddIn1
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                     path += "\\";
                     path += OutputRaportFileName;
-                    path += ".txt";
-                    endingCorrectList.WriteToTxtFile(path);
+                    path += ".docx";
+                    //endingCorrectList.WriteToTxtFile(path);
+                    endingCorrectList.WriteToWord(path);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
 

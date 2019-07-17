@@ -99,12 +99,12 @@ namespace OutlookAddIn1
                                 case 1:
                                     rowInHands++;
                                     raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
-                                    koncowaLista.addNewItem(newEmail.Subject,"inhands");
+                                    endingCorrectList.addNewItem(newEmail.Subject,"inhands");
                                     break;
                                 case 2:
                                     rowInflow++;
                                     raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, emailConversationAmount, 2);
-                                    koncowaLista.addNewItem(newEmail.Subject, "inflow");
+                                    endingCorrectList.addNewItem(newEmail.Subject, "inflow");
                                     break;
                                 case 3:
                                     rowOutflow++;

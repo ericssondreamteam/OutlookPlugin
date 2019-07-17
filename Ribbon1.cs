@@ -23,7 +23,9 @@ namespace OutlookAddIn1
         private Hashtable myHashtable;
         private Debuger OurDebug = new Debuger();
         private Office.IRibbonUI ribbon;
-        ToSaveObject endingLastList = new ToSaveObject();
+        ToSaveObject endingCorrectList = new ToSaveObject();
+        ToSaveObject toBeSavedTemp = new ToSaveObject();
+        ToSaveObject toBeSavedTemp1 = new ToSaveObject();
 
         public Ribbon1()
         {
@@ -31,7 +33,7 @@ namespace OutlookAddIn1
         }
 
         public void OnTableButton(Office.IRibbonControl control)
-        {   
+        {
             try
             {
                 //Initialize
@@ -47,7 +49,7 @@ namespace OutlookAddIn1
                 {
                     OurDebug.Enable();
                 }
-                    
+
                 else
                 {
                     OurDebug.Disable();
@@ -91,7 +93,7 @@ namespace OutlookAddIn1
                         if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
                             OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
-                            int emailConversationAmount = functions.getConversationAmount(newEmail); 
+                            int emailConversationAmount = functions.getConversationAmount(newEmail);
                             DateTime friday = functions.getInflowDate();
                             typ = functions.selectCorrectEmailType(newEmail);
                             OurDebug.AppendInfo("Nadany typ:", typ.ToString());
@@ -100,24 +102,24 @@ namespace OutlookAddIn1
                                 case 1:
                                     rowInHands++;
                                     raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
-                                    endingLastList.addNewItem(newEmail.Subject,"inhands");
+                                    koncowaLista.addNewItem(newEmail.Subject,"inhands");
                                     break;
                                 case 2:
                                     rowInflow++;
                                     raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, emailConversationAmount, 2);
-                                    endingLastList.addNewItem(newEmail.Subject, "inflow");
+                                    koncowaLista.addNewItem(newEmail.Subject, "inflow");
                                     break;
                                 case 3:
                                     rowOutflow++;
                                     raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, emailConversationAmount, 3);
-                                    endingLastList.addNewItem(newEmail.Subject, "outflow");
+                                    endingCorrectList.addNewItem(newEmail.Subject, "outflow");
                                     break;
                                 case 4:
                                     rowInflow++;
                                     rowInHands++;
                                     raport.insertDataExcelInflowInHands(raport.oSheet, rowInflow, rowInHands, newEmail, emailConversationAmount);
-                                    endingLastList.addNewItem(newEmail.Subject, "inhands");
-                                    endingLastList.addNewItem(newEmail.Subject, "inflow");
+                                    endingCorrectList.addNewItem(newEmail.Subject, "inhands");
+                                    endingCorrectList.addNewItem(newEmail.Subject, "inflow");
                                     break;
                             }
                             raport.oSheet.Columns.AutoFit();
@@ -131,19 +133,22 @@ namespace OutlookAddIn1
                     raport.oWB.Close(true);
                     raport.oXL.Quit();
                     KillExcel(processID);
+
+
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                     path += "\\";
                     path += OutputRaportFileName;
                     path += ".txt";
-                    endingLastList.WriteToTxtFile(path);
+                    endingCorrectList.WriteToTxtFile(path);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
+
                 }
                 else
                 {
                     MessageBox.Show("Operation cannceled");
                 }
-                
+
             }
             catch (Exception e)
             {
@@ -157,11 +162,11 @@ namespace OutlookAddIn1
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                     path += "\\DebugInfoRaportPlugin.txt";
                     OurDebug.SaveDebugInfoToFile(path);
-                    MessageBox.Show("Plik debugowania zapisany w "+path);
+                    MessageBox.Show("Plik debugowania zapisany w " + path);
                 }
             }
         }
-       
+
 
         #region IRibbonExtensibility Members
         public string GetCustomUI(string ribbonID)
@@ -215,7 +220,7 @@ namespace OutlookAddIn1
         }
         #endregion
         /* zapisujemy id procesow do hashTable przed uruchomieniem naszego procesu */
-        private void CheckExcellProcesses() 
+        private void CheckExcellProcesses()
         {
             Process[] AllProcesses = Process.GetProcessesByName("excel");
             myHashtable = new Hashtable();
@@ -231,7 +236,7 @@ namespace OutlookAddIn1
         private int getExcelID()
         {
             Process[] AllProcesses = Process.GetProcessesByName("excel");
-            foreach(Process ExcelProcess in AllProcesses)
+            foreach (Process ExcelProcess in AllProcesses)
             {
                 if (myHashtable.ContainsKey(ExcelProcess.Id) == false)
                     return ExcelProcess.Id;
@@ -251,5 +256,4 @@ namespace OutlookAddIn1
             }
         }
     }
-
 }

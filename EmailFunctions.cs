@@ -44,17 +44,30 @@ namespace OutlookAddIn1
             today = today.AddDays(-2).AddHours(17);
             return today;
         }
-        public int getConversationAmount(MailItem newEmail)
+       public int getConversationAmount(MailItem newEmail)
         {
             try
             {
                 Outlook.Conversation conv = newEmail.GetConversation();
                 Outlook.Table table = conv.GetTable();
+                Debug.WriteLine("Pobieramy maile z conwersacji NOWA");
+                Debug.WriteLine("+++++++++++++++++++++++++++++++++++++");
+                Array tableArray = table.GetArray(table.GetRowCount()) as Array;
+                for (int i = 0; i <= tableArray.GetUpperBound(0); i++)
+                {
+                    for (int j = 0; j <= tableArray.GetUpperBound(1); j++)
+                    {
+                        Debug.WriteLine(tableArray.GetValue(i, j));
+                    }
+                }
+
+                Debug.WriteLine("+++++++++++++++++++++++++++++++++++++");
                 return table.GetRowCount();
             }
             catch (Exception e)
             {
                 OurDebug.AppendInfo("Blad w liczbie konwersacji; funkcja getConversationAmount()");
+                Debug.WriteLine("Blad w liczbie konwersacji; funkcja getConversationAmount()");
                 return 0;
             }
 

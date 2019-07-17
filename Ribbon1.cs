@@ -13,6 +13,7 @@ using Exception = System.Exception;
 using System.Diagnostics;
 using System.Collections;
 using System.Threading;
+using System.Text;
 
 namespace OutlookAddIn1
 {
@@ -26,6 +27,8 @@ namespace OutlookAddIn1
         public static int counter = 0;
         public static int progress = 0;
         private Office.IRibbonUI ribbon;
+
+        ToSaveObject koncowaLista = new ToSaveObject();
         public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
         {
             CultureInfo defaultCultureInfo = CultureInfo.CurrentCulture;
@@ -184,19 +187,24 @@ namespace OutlookAddIn1
                                 case 1:
                                     rowInHands++;
                                     raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
+                                    koncowaLista.addNewItem(newEmail.Subject,"inhands");
                                     break;
                                 case 2:
                                     rowInflow++;
                                     raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, emailConversationAmount, 2);
+                                    koncowaLista.addNewItem(newEmail.Subject, "inflow");
                                     break;
                                 case 3:
                                     rowOutflow++;
                                     raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, emailConversationAmount, 3);
+                                    koncowaLista.addNewItem(newEmail.Subject, "outflow");
                                     break;
                                 case 4:
                                     rowInflow++;
                                     rowInHands++;
                                     raport.insertDataExcelInflowInHands(raport.oSheet, rowInflow, rowInHands, newEmail, emailConversationAmount);
+                                    koncowaLista.addNewItem(newEmail.Subject, "inhands");
+                                    koncowaLista.addNewItem(newEmail.Subject, "inflow");
                                     break;
                             }
                             raport.oSheet.Columns.AutoFit();
@@ -210,6 +218,8 @@ namespace OutlookAddIn1
                     raport.oWB.Close(true);
                     raport.oXL.Quit();
                     KillExcel(processID);
+                    WriteToTxtFile(WriteInCorrextFomrat(koncowaLista));
+
                     //Marshal.ReleaseComObject(raport.oXL);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
@@ -233,6 +243,32 @@ namespace OutlookAddIn1
                     MessageBox.Show("Plik debugowania zapisany w C:\\Users\\Public\nPlik: DebugInfoRaportPlugin.txt");
                 }
             }
+        }
+        private StringBuilder WriteInCorrextFomrat(ToSaveObject tematy)
+        {
+            StringBuilder koncowyString = new StringBuilder();
+            koncowyString.Append("Inflow\n");
+            int i;
+            for (i = 0; i < tematy.inflow.Count; i++)
+                koncowyString.Append("\t" + tematy.inflow[i] + "\n");
+            koncowyString.Append("In-hands\n");
+            for (i = 0; i < tematy.inhands.Count; i++)
+                koncowyString.Append("\t" + tematy.inhands[i] + "\n");
+            koncowyString.Append("Outflow\n");
+            for (i = 0; i < tematy.outflow.Count; i++)
+                koncowyString.Append("\t" + tematy.outflow[i] + "\n");
+
+            return koncowyString;
+
+        }
+        private void WriteToTxtFile(StringBuilder doZapisu)
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            path += "\\TestowyRaport";
+            path+=DateTime.Now.ToString("dd_MM_yyyy");
+            path += ".txt";
+            File.WriteAllText(path, doZapisu.ToString());
+           
         }
 
         private List<MailItem> removeDuplicateOneMoreTime(List<MailItem> emails)

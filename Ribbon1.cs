@@ -212,7 +212,11 @@ namespace OutlookAddIn1
                     raport.oWB.Close(true);
                     raport.oXL.Quit();
                     KillExcel(processID);
-                    WriteToTxtFile(WriteInCorrextFomrat(koncowaLista));
+                    string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    path += "\\";
+                    path += OutputRaportFileName;
+                    path += ".txt";
+                    WriteToTxtFile(WriteInCorrextFomrat(koncowaLista), path);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
                 }
@@ -231,36 +235,34 @@ namespace OutlookAddIn1
             {
                 if (OurDebug.IsEnable())
                 {
-                    OurDebug.SaveDebugInfoToFile(@"C:\Users\Public\DebugInfoRaportPlugin.txt");
-                    MessageBox.Show("Plik debugowania zapisany w C:\\Users\\Public\nPlik: DebugInfoRaportPlugin.txt");
+                    string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    path += "\\DebugInfoRaportPlugin.txt";
+                    OurDebug.SaveDebugInfoToFile(path);
+                    MessageBox.Show("Plik debugowania zapisany w "+path);
                 }
             }
         }
         private StringBuilder WriteInCorrextFomrat(ToSaveObject tematy)
         {
             StringBuilder koncowyString = new StringBuilder();
-            koncowyString.Append("Inflow\n");
+            koncowyString.Append("Inflow "+tematy.inflowAmount+"\n");
             int i;
             for (i = 0; i < tematy.inflow.Count; i++)
                 koncowyString.Append("\t" + tematy.inflow[i] + "\n");
-            koncowyString.Append("In-hands\n");
+            koncowyString.Append("In-hands " + tematy.inflowAmount + "\n");
             for (i = 0; i < tematy.inhands.Count; i++)
                 koncowyString.Append("\t" + tematy.inhands[i] + "\n");
-            koncowyString.Append("Outflow\n");
+            koncowyString.Append("Outflow " + tematy.outflowAmount + "\n");
             for (i = 0; i < tematy.outflow.Count; i++)
                 koncowyString.Append("\t" + tematy.outflow[i] + "\n");
 
             return koncowyString;
 
         }
-        private void WriteToTxtFile(StringBuilder doZapisu)
+        private void WriteToTxtFile(StringBuilder doZapisu,string path)
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            path += "\\TestowyRaport";
-            path+=DateTime.Now.ToString("dd_MM_yyyy");
-            path += ".txt";
-            File.WriteAllText(path, doZapisu.ToString());
-           
+            MessageBox.Show(path);
+            File.WriteAllText(path, doZapisu.ToString());           
         }
 
         private List<MailItem> removeDuplicateOneMoreTime(List<MailItem> emails)

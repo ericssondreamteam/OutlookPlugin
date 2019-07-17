@@ -22,11 +22,6 @@ namespace OutlookAddIn1
     {
         private Hashtable myHashtable;
         private Debuger OurDebug = new Debuger();
-<<<<<<< HEAD
-=======
-        public static int counter = 0;
-        public static int progress = 0;
->>>>>>> 6735f2538531fa17c90d6ade1b2a310c9030f199
         private Office.IRibbonUI ribbon;
         ToSaveObject koncowaLista = new ToSaveObject();
 
@@ -169,11 +164,6 @@ namespace OutlookAddIn1
                     emails = removeDuplicateOneMoreTime(emails);
                     foreach (MailItem newEmail in emails)
                     {
-<<<<<<< HEAD
-=======
-                        progress++; 
-                        Form1.incrementValue(progress);
->>>>>>> 6735f2538531fa17c90d6ade1b2a310c9030f199
                         OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
                         var typ = 0;
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))

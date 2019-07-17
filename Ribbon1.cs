@@ -23,12 +23,10 @@ namespace OutlookAddIn1
 
         private Hashtable myHashtable;
         private Debuger OurDebug = new Debuger();
-      //  private List<int> MessageAmount = new List<int>();
-        public static int counter = 0;
-        public static int progress = 0;
         private Office.IRibbonUI ribbon;
-
         ToSaveObject koncowaLista = new ToSaveObject();
+
+
         public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
         {
             CultureInfo defaultCultureInfo = CultureInfo.CurrentCulture;
@@ -170,9 +168,6 @@ namespace OutlookAddIn1
                    // int ktoryElemntZListyElementowXD = 0;
                     foreach (MailItem newEmail in emails)
                     {
-                      //  ktoryElemntZListyElementowXD++;
-                        progress++; 
-                        Form1.incrementValue(progress);
                         OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
                         var typ = 0;
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))

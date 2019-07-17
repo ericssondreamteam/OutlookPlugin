@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Word = Microsoft.Office.Interop.Word;
+using System.Collections;
 
 namespace OutlookAddIn1
 {
     class WordClass
     {
+        private Hashtable myHashtable;
         public void WriteToWord(string path)
         {
             CreateDocument(path);
@@ -90,6 +93,42 @@ namespace OutlookAddIn1
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void CheckWordProcesses()
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("word");
+            myHashtable = new Hashtable();
+            int iCount = 0;
+
+            foreach (Process WordProcess in AllProcesses)
+            {
+                myHashtable.Add(WordProcess.Id, iCount);
+                iCount = iCount + 1;
+            }
+        }
+
+        private int getWordID()
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("word");
+            foreach (Process WordProcess in AllProcesses)
+            {
+                if (myHashtable.ContainsKey(WordProcess.Id) == false)
+                    return WordProcess.Id;
+            }
+            throw new SystemException("Process word.exe do not exist.");
+        }
+
+        /* Zabijamy proces ktory nie znajduje sie w hashtable */
+        private void KillWord(int processID)
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("word");
+            // check to kill the right process
+            foreach (Process WordProcess in AllProcesses)
+            {
+                if (WordProcess.Id == processID)
+                    WordProcess.Kill();
             }
         }
     }

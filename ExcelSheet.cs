@@ -74,7 +74,6 @@ namespace OutlookAddIn1
         {
             setDataIntoCells(oSheet, rowInflow, newEmail, amount, 1);
             setDataIntoCells(oSheet, rowInHands, newEmail, amount, 9);
-            var i = 0;
         }
 
         private void setDataIntoCells(Excel._Worksheet oSheet, int row, Outlook.MailItem newEmail, int amount, int whichColumn)

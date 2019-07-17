@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Word = Microsoft.Office.Interop.Word;
 using System.Collections;
 
@@ -18,6 +14,7 @@ namespace OutlookAddIn1
         public int inflowAmount = 0;
         public int outflowAmount = 0;
         public int inhandsAmount = 0;
+        private Hashtable myHashtable;
 
         public void addNewItem(string n, string k)
         {
@@ -86,46 +83,7 @@ namespace OutlookAddIn1
                     document.Content.Text += tym;
                 }
                    
-                ////Add header into the document  
-                //foreach (Word.Section section in document.Sections)
-                //{
-                //    //Get the header range and add the header details.  
-                //    Microsoft.Office.Interop.Word.Range headerRange = section.Headers[Word.WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
-                //    headerRange.Fields.Add(headerRange, Word.WdFieldType.wdFieldPage);
-                //    headerRange.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
-                //    headerRange.Font.ColorIndex = Word.WdColorIndex.wdBlue;
-                //    headerRange.Font.Size = 10;
-                //    headerRange.Text = "Header text goes here";
-                //}
-
-                ////Add the footers into the document  
-                //foreach (Microsoft.Office.Interop.Word.Section wordSection in document.Sections)
-                //{
-                //    //Get the footer range and add the footer details.  
-                //    Microsoft.Office.Interop.Word.Range footerRange = wordSection.Footers[Microsoft.Office.Interop.Word.WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
-                //    footerRange.Font.ColorIndex = Microsoft.Office.Interop.Word.WdColorIndex.wdDarkRed;
-                //    footerRange.Font.Size = 10;
-                //    footerRange.ParagraphFormat.Alignment = Microsoft.Office.Interop.Word.WdParagraphAlignment.wdAlignParagraphCenter;
-                //    footerRange.Text = "Footer text goes here";
-                //}
-
-                ////adding text to document  
-                //document.Content.SetRange(0, 0);
-                ////  document.Content.Text = "This is test document " + Environment.NewLine;
-
-                ////Add paragraph with Heading 1 style  
-                //Microsoft.Office.Interop.Word.Paragraph para1 = document.Content.Paragraphs.Add(ref missing);
-                //object styleHeading1 = "Heading 1";
-                //para1.Range.set_Style(ref styleHeading1);
-                //para1.Range.Text = "Para 1 text";
-                //para1.Range.InsertParagraphAfter();
-
-                ////Add paragraph with Heading 2 style  
-                //Microsoft.Office.Interop.Word.Paragraph para2 = document.Content.Paragraphs.Add(ref missing);
-                //object styleHeading2 = "Heading 2";
-                //para2.Range.set_Style(ref styleHeading2);
-                //para2.Range.Text = "Para 2 text";
-                //para2.Range.InsertParagraphAfter();
+               
 
 
 

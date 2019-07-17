@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Word = Microsoft.Office.Interop.Word;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 namespace OutlookAddIn1
 {
@@ -42,10 +43,8 @@ namespace OutlookAddIn1
         {
             try
             {
-                //Create an instance for word app  
-                CheckWordProcesses();
-                Word.Application winword = new Word.Application();
-                int wordIDProcess = getWordID();
+                //Create an instance for word app              
+                Word.Application winword = new Word.Application();             
 
                 //Set animation status for word application  
                 winword.ShowAnimation = false;
@@ -58,6 +57,10 @@ namespace OutlookAddIn1
 
                 //Create a new document  
                 Word.Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
+                //document.Content.Bold = 1;
+                //document.Content.Font = "Calibri";
+               // document.Content.Font.Size = 12;
+                //document.Content.Italic = 1;
                 document.Content.Text += "NCMAILBOX tasks (week 24):";
                 string tym1 = "\tInflow: "; tym1 += inflowAmount.ToString();
                 document.Content.Text += tym1;
@@ -94,8 +97,8 @@ namespace OutlookAddIn1
                 document = null;
                 winword.Quit(ref missing, ref missing, ref missing);
                 winword = null;
-                killWord(wordIDProcess);
-                // MessageBox.Show("Document created successfully !");
+                Marshal.ReleaseComObject(winword);
+
             }
             catch (Exception ex)
             {
@@ -103,40 +106,6 @@ namespace OutlookAddIn1
             }
         }
 
-        private void CheckWordProcesses()
-        {
-            Process[] AllProcesses = Process.GetProcessesByName("word");
-            myHashtable = new Hashtable();
-            int iCount = 0;
-
-            foreach (Process WordProcess in AllProcesses)
-            {
-                myHashtable.Add(WordProcess.Id, iCount);
-                iCount = iCount + 1;
-            }
-        }
-
-        private int getWordID()
-        {
-            Process[] AllProcesses = Process.GetProcessesByName("word");
-            foreach (Process WordProcess in AllProcesses)
-            {
-                if (myHashtable.ContainsKey(WordProcess.Id) == false)
-                    return WordProcess.Id;
-            }
-            throw new SystemException("Process word.exe do not exist.");
-        }
-
-        /* Zabijamy proces ktory nie znajduje sie w hashtable */
-        private void killWord(int processID)
-        {
-            Process[] AllProcesses = Process.GetProcessesByName("word");
-            // check to kill the right process
-            foreach (Process WordProcess in AllProcesses)
-            {
-                if (WordProcess.Id == processID)
-                    WordProcess.Kill();
-            }
-        }
+      
     }
 }

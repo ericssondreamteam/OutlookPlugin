@@ -33,7 +33,7 @@ namespace OutlookAddIn1
         }
 
         public void OnTableButton(Office.IRibbonControl control)
-        {   
+        {
             try
             {
                 //Initialize
@@ -49,7 +49,7 @@ namespace OutlookAddIn1
                 {
                     OurDebug.Enable();
                 }
-                    
+
                 else
                 {
                     OurDebug.Disable();
@@ -93,7 +93,7 @@ namespace OutlookAddIn1
                         if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
                             OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
-                            int emailConversationAmount = functions.getConversationAmount(newEmail); 
+                            int emailConversationAmount = functions.getConversationAmount(newEmail);
                             DateTime friday = functions.getInflowDate();
                             typ = functions.selectCorrectEmailType(newEmail);
                             OurDebug.AppendInfo("Nadany typ:", typ.ToString());
@@ -102,7 +102,7 @@ namespace OutlookAddIn1
                                 case 1:
                                     rowInHands++;
                                     raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
-                                    endingCorrectList.addNewItem(newEmail.Subject,"inhands");
+                                    endingCorrectList.addNewItem(newEmail.Subject, "inhands");
                                     break;
                                 case 2:
                                     rowInflow++;
@@ -139,7 +139,7 @@ namespace OutlookAddIn1
                     path += "\\";
                     path += OutputRaportFileName;
                     path += ".txt";
-                    koncowaLista.WriteToTxtFile(path);
+                    endingCorrectList.WriteToTxtFile(path);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
 
@@ -148,7 +148,7 @@ namespace OutlookAddIn1
                 {
                     MessageBox.Show("Operation cannceled");
                 }
-                
+
             }
             catch (Exception e)
             {
@@ -162,13 +162,11 @@ namespace OutlookAddIn1
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                     path += "\\DebugInfoRaportPlugin.txt";
                     OurDebug.SaveDebugInfoToFile(path);
-                    MessageBox.Show("Plik debugowania zapisany w "+path);
+                    MessageBox.Show("Plik debugowania zapisany w " + path);
                 }
             }
         }
-        
-        }
-       
+
 
         #region IRibbonExtensibility Members
         public string GetCustomUI(string ribbonID)
@@ -222,7 +220,7 @@ namespace OutlookAddIn1
         }
         #endregion
         /* zapisujemy id procesow do hashTable przed uruchomieniem naszego procesu */
-        private void CheckExcellProcesses() 
+        private void CheckExcellProcesses()
         {
             Process[] AllProcesses = Process.GetProcessesByName("excel");
             myHashtable = new Hashtable();
@@ -238,7 +236,7 @@ namespace OutlookAddIn1
         private int getExcelID()
         {
             Process[] AllProcesses = Process.GetProcessesByName("excel");
-            foreach(Process ExcelProcess in AllProcesses)
+            foreach (Process ExcelProcess in AllProcesses)
             {
                 if (myHashtable.ContainsKey(ExcelProcess.Id) == false)
                     return ExcelProcess.Id;
@@ -258,5 +256,4 @@ namespace OutlookAddIn1
             }
         }
     }
-
 }

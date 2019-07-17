@@ -25,87 +25,16 @@ namespace OutlookAddIn1
         private Office.IRibbonUI ribbon;
         ToSaveObject koncowaLista = new ToSaveObject();
 
-
-        public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
+        public Ribbon1()
         {
-            CultureInfo defaultCultureInfo = CultureInfo.CurrentCulture;
-            return GetFirstDayOfWeek(dayInWeek, defaultCultureInfo);
-        }
-
-        public static DateTime GetFirstDayOfWeek(DateTime dayInWeek, CultureInfo cultureInfo)
-        {
-            DayOfWeek firstDay = cultureInfo.DateTimeFormat.FirstDayOfWeek;
-            DateTime firstDayInWeek = dayInWeek.Date;
-            while (firstDayInWeek.DayOfWeek != firstDay)
-                firstDayInWeek = firstDayInWeek.AddDays(-1);
-            return firstDayInWeek;
-        }
-        public DateTime getInflowDate()
-        {
-            DateTime today = GetFirstDayOfWeek(DateTime.Today);
-            today = today.AddDays(-2).AddHours(17);
-            return today;
-        }
-        public int getConversationAmount(MailItem newEmail)
-        {
-            try
-            {
-                Outlook.Conversation conv = newEmail.GetConversation();
-                Outlook.Table table = conv.GetTable();
-                return table.GetRowCount();
-            }
-            catch(Exception e)
-            {
-                OurDebug.AppendInfo("Blad w liczbie konwersacji; funkcja getConversationAmount()");
-                return 0;
-            }
 
         }
-        public int selectCorrectEmailType(MailItem newEmail)
-        {
-            int typ = 0;
-            if(newEmail.Categories != null)
-            {
-                if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
-                {
-                    typ = 1;
-                }
-                else if (newEmail.ReceivedTime > getInflowDate()) //inflow
-                {
-                    typ = 2;
-                }
-                else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate())) //outflow
-                {
-                    typ = 3;
-                }
-                if (typ == 1) //inflow + in hands
-                {
-                    typ = 4;
-                }
-            }            
-            return typ;
-        }
 
-        public List<MailItem> emailsWithoutDuplicates(List<MailItem> emails)
-        {
-            for (int i = 0; i < emails.Count; i++)
-            {
-                for (int j = i + 1; j < emails.Count; j++)
-                {
-                    if (emails[i].ConversationID.Equals(emails[j].ConversationID))
-                    {
-
-                        emails.RemoveAt(j);
-                        j--;
-                    }
-                }
-            }
-            return emails;
-        }
         public void OnTableButton(Office.IRibbonControl control)
         {   
             try
             {
+                EmailFunctions functions = new EmailFunctions(OurDebug);
                 string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
                 //Czy debugujemy
                 if (Interaction.ShowDebugDialog("Debuger", "Turn on debuger?"))
@@ -132,12 +61,13 @@ namespace OutlookAddIn1
                     {
                         try
                         {
+
                             DebugForEachCounter++;
                             email1 = collectionItem as MailItem;
                             if (email1 != null)
                             {
                                 OurDebug.AppendInfo("Email  ", DebugCorrectEmailsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());
-                                if (email1.ReceivedTime > getInflowDate().AddDays(-7))
+                                if (email1.ReceivedTime > functions.getInflowDate().AddDays(-7))
                                 {
                                     DebugCorrectEmailsCounter++;
                                     emails.Add(email1);
@@ -160,7 +90,7 @@ namespace OutlookAddIn1
                     var rowInHands = 4;
                     var rowInflow = 4;
                     var rowOutflow = 4;
-                    emails = emailsWithoutDuplicates(emails);
+                    emails = functions.emailsWithoutDuplicates(emails);
                     emails = removeDuplicateOneMoreTime(emails);
                     foreach (MailItem newEmail in emails)
                     {
@@ -169,9 +99,9 @@ namespace OutlookAddIn1
                         if (isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
                             OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
-                            int emailConversationAmount = getConversationAmount(newEmail); 
-                            DateTime friday = getInflowDate();
-                            typ = selectCorrectEmailType(newEmail);
+                            int emailConversationAmount = functions.getConversationAmount(newEmail); 
+                            DateTime friday = functions.getInflowDate();
+                            typ = functions.selectCorrectEmailType(newEmail);
                             OurDebug.AppendInfo("Nadany typ:", typ.ToString());
                             switch (typ)
                             {
@@ -321,9 +251,7 @@ namespace OutlookAddIn1
             return false;
         }
 
-        public Ribbon1()
-        {
-        }
+
 
         #region IRibbonExtensibility Members
         public string GetCustomUI(string ribbonID)

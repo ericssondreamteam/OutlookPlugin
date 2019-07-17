@@ -162,6 +162,7 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="EmailFunctions.cs" />
     <Compile Include="Debuger.cs" />
     <Compile Include="ExcelSheet.cs" />
     <Compile Include="Interaction.cs" />

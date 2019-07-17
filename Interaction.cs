@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -47,31 +48,45 @@ namespace OutlookAddIn1
             return dialogResult;
         }
 
-        public static bool ShowDebugDialog(string text, string caption)
+        public static List<bool> ShowDebugDialog(string text, string textExcel, string textTxt, string caption)
         {
-
+            List<bool> checkList = new List<bool>();
+            checkList.Add(false);
+            checkList.Add(false);
+            checkList.Add(false);
             Form prompt = new Form();
-            prompt.Width = 250;
+            prompt.Width = 350;
             prompt.Height = 150;
             prompt.Text = caption;
-            prompt.StartPosition = FormStartPosition.CenterScreen;
 
             FlowLayoutPanel panel = new FlowLayoutPanel();
 
             CheckBox chk = new CheckBox();
             chk.Text = text;
+            CheckBox chkExcel = new CheckBox();
+            chkExcel.Text = textExcel;
+            CheckBox chkTxt = new CheckBox();
+            chkTxt.Text = textTxt;
             Button ok = new Button() { Text = "Confirm" };
-            ok.SetBounds(300, 100, 100, 30);
+            //ok.SetBounds(0, 200, 200, 30);
             ok.Click += (sender, e) => { prompt.Close(); };
 
             panel.Controls.Add(chk);
-            panel.SetFlowBreak(chk, true);
+            panel.Controls.Add(chkExcel);
+            panel.Controls.Add(chkTxt);
             panel.Controls.Add(ok);
 
             prompt.Controls.Add(panel);
             prompt.ShowDialog();
 
-            return chk.Checked;
+            if (chk.Checked)
+                checkList[0] = true;
+            if (chkExcel.Checked)
+                checkList[1] = true;
+            if (chkTxt.Checked)
+                checkList[2] = true;
+            return checkList;
+
         }
     }
 }

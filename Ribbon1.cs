@@ -44,16 +44,13 @@ namespace OutlookAddIn1
                 int DebugForEachCounter = 0;
                 int DebugCorrectEmailsCounter = 0;
 
-                //Czy debugujemy
-                if (Interaction.ShowDebugDialog("Debuger", "Turn on debuger?"))
-                {
+                List<bool> checkList = Interaction.ShowDebugDialog("Debuger", "Excel", "Txt", "CheckBoxes");
+                if (checkList[0])
                     OurDebug.Enable();
-                }
-
-                else
-                {
-                    OurDebug.Disable();
-                }
+                //if(checkList[1])
+                //Enable Excel
+                //if(checkList[2])
+                //Enable Txt
 
                 if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
                 {

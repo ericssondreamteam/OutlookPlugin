@@ -1,15 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace OutlookAddIn1
 {
     class ToSaveObject
     {
-        public List<string> inflow = new List<string>();
-        public List<string> outflow = new List<string>();
-        public List<string> inhands = new List<string>();
-        public int inflowAmount=0;
-        public int outflowAmount = 0;
-        public int inhandsAmount = 0;
+        private List<string> inflow = new List<string>();
+        private List<string> outflow = new List<string>();
+        private List<string> inhands = new List<string>();
+        private int inflowAmount=0;
+        private int outflowAmount = 0;
+        private int inhandsAmount = 0;
 
         public void addNewItem(string n,string k)
         {
@@ -28,6 +30,27 @@ namespace OutlookAddIn1
                 inhandsAmount++;
                 inhands.Add(n);
             }                
+        }
+        private StringBuilder WriteInCorrextFomrat()
+        {
+            StringBuilder koncowyString = new StringBuilder();
+            int i;
+            koncowyString.Append("Inflow: " + inflowAmount + "\n");
+            for (i = 0; i < inflow.Count; i++)
+                koncowyString.Append("\t" + inflow[i] + "\n");
+            koncowyString.Append("In-hands: " + inhandsAmount + "\n");
+            for (i = 0; i < inhands.Count; i++)
+                koncowyString.Append("\t" + inhands[i] + "\n");
+            koncowyString.Append("Outflow: " +outflowAmount + "\n");
+            for (i = 0; i < outflow.Count; i++)
+                koncowyString.Append("\t" + outflow[i] + "\n");
+
+            return koncowyString;
+
+        }
+        public void WriteToTxtFile( string path)
+        {
+            File.WriteAllText(path, WriteInCorrextFomrat().ToString());
         }
     }
 }

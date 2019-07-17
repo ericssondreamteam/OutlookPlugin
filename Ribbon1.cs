@@ -143,7 +143,7 @@ namespace OutlookAddIn1
                     path += "\\";
                     path += OutputRaportFileName;
                     path += ".txt";
-                    WriteToTxtFile(WriteInCorrextFomrat(koncowaLista), path);
+                    koncowaLista.WriteToTxtFile(path);
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
                 }
@@ -169,28 +169,7 @@ namespace OutlookAddIn1
                 }
             }
         }
-        private StringBuilder WriteInCorrextFomrat(ToSaveObject tematy)
-        {
-            StringBuilder koncowyString = new StringBuilder();
-            koncowyString.Append("Inflow: "+tematy.inflowAmount+"\n");
-            int i;
-            for (i = 0; i < tematy.inflow.Count; i++)
-                koncowyString.Append("\t" + tematy.inflow[i] + "\n");
-            koncowyString.Append("In-hands: " + tematy.inhandsAmount + "\n");
-            for (i = 0; i < tematy.inhands.Count; i++)
-                koncowyString.Append("\t" + tematy.inhands[i] + "\n");
-            koncowyString.Append("Outflow: " + tematy.outflowAmount + "\n");
-            for (i = 0; i < tematy.outflow.Count; i++)
-                koncowyString.Append("\t" + tematy.outflow[i] + "\n");
-
-            return koncowyString;
-
-        }
-        private void WriteToTxtFile(StringBuilder doZapisu,string path)
-        {
-            MessageBox.Show(path);
-            File.WriteAllText(path, doZapisu.ToString());           
-        }
+       
 
         private List<MailItem> removeDuplicateOneMoreTime(List<MailItem> emails)
         {

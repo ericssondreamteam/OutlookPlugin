@@ -82,15 +82,23 @@ namespace OutlookAddIn1
                     //Iterate all emails
                     foreach (MailItem newEmail in emails)
                     {
-                        List<bool> categoryList;
-                        //Divide on category
-                        if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
+                        try
                         {
-                            //Get inflow date and set to category
-                            DateTime friday = functions.getInflowDate();
-                            categoryList = functions.selectCorrectEmailType(newEmail);
-                            OurData.addNewItem(newEmail.Subject, categoryList);
+                            List<bool> categoryList;
+                            //Divide on category
+                            if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
+                            {
+                                //Get inflow date and set to category
+                                DateTime friday = functions.getInflowDate();
+                                categoryList = functions.selectCorrectEmailType(newEmail);
+                                OurData.addNewItem(newEmail.Subject, categoryList);
+                            }
                         }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Nasz try catch vol.3 - Problem w ID wiadomosci");
+                        }
+                        
                     }
 
                     //Start create excel raport

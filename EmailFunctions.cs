@@ -91,6 +91,7 @@ namespace OutlookAddIn1
         }
         public List<bool> selectCorrectEmailType(MailItem newEmail)
         {
+            OurDebug.AppendInfo("2345678asdasdasdasfjsdlkfjsdklafjsdklfjaskldfjlsadjfklsjdafklsdfj");
             try
             {
                 List<bool> categoryList = new List<bool>();
@@ -107,6 +108,7 @@ namespace OutlookAddIn1
                 {
                     try
                     {
+                        throw new Exception();
                         if (item is Outlook.MailItem)
                         {
                             Outlook.MailItem mail = item as Outlook.MailItem;
@@ -147,6 +149,7 @@ namespace OutlookAddIn1
                 Debug.WriteLine("----------------------------------------------");
                 OurDebug.AppendInfo("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
                 OurDebug.AppendInfo("----------------------------------------------");
+               
                 return categoryList;
             }
             catch (Exception e)

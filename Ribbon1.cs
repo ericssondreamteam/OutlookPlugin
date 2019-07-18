@@ -80,14 +80,20 @@ namespace OutlookAddIn1
                     var rowOutflow = 4;
                     emails = functions.emailsWithoutDuplicates(emails);
                     emails = functions.removeDuplicateOneMoreTime(emails);
+
+ 
+
                     foreach (MailItem newEmail in emails)
                     {
                         OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
                         var typ = 0;
+
                         if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
                             OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
                             int emailConversationAmount = functions.getConversationAmount(newEmail);
+                            
+                            //MessageBox.Show(newEmail.Sender.Name);
                             DateTime friday = functions.getInflowDate();
                             typ = functions.selectCorrectEmailType(newEmail);
                             OurDebug.AppendInfo("Nadany typ:", typ.ToString());

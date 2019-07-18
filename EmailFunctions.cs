@@ -112,7 +112,7 @@ namespace OutlookAddIn1
         }*/
 
 
-        void EnumerateConversation(object item,
+        /*void EnumerateConversation(object item,
          Outlook.Conversation conversation)
         {
             Outlook.SimpleItems items =
@@ -140,46 +140,23 @@ namespace OutlookAddIn1
                 }
             }
         }
-
+        */
 
         public int getConversationAmount(MailItem newEmail)
         {
             try
             {
-                /*Debug.WriteLine("\n");
-                Debug.WriteLine(newEmail.SenderName);
-                Debug.WriteLine(newEmail.Sender.Name.ToString());
-                Debug.WriteLine(newEmail.LastModificationTime);
-                Debug.WriteLine(newEmail.ReceivedTime);
-                Debug.WriteLine(newEmail.ReplyRecipients.Count.ToString());*/
-                //Debug.WriteLine(newEmail.SenderEmailAddress);
-                //Debug.WriteLine(newEmail.Subject);
-
+                
                 Outlook.Conversation conv = newEmail.GetConversation();
                 Debug.WriteLine("Conversation Items from Root:");
-                // Obtain root items and enumerate the conversation. 
-                Outlook.SimpleItems simpleItems
-                = conv.GetRootItems();
+           
+                Outlook.SimpleItems simpleItems = conv.GetRootItems();
+
                 foreach (object item in simpleItems)
                 {
-                    // In this example, only enumerate MailItem type. 
-                    // Other types such as PostItem or MeetingItem 
-                    // can appear in the conversation. 
-                    if (item is Outlook.MailItem)
-                    {
-                        Outlook.MailItem mail = item
-                        as Outlook.MailItem;
-                        Outlook.Folder inFolder =
-                        mail.Parent as Outlook.Folder;
-                        string msg = mail.Subject
-                        + " in folder " + inFolder.Name + " Sender: " + mail.SenderName
-                        + " Date: " + mail.ReceivedTime;
-                        Debug.WriteLine(msg);
-                    }
-                    // Call EnumerateConversation 
-                    // to access child nodes of root items. 
-                    EnumerateConversation(item, conv);
+                    GetFirstInGeneral(newEmail);
                 }
+                
 
 
                 /* Outlook.Conversation conv = newEmail.GetConversation();
@@ -208,6 +185,44 @@ namespace OutlookAddIn1
             }
 
         }
+
+        public MailItem GetFirstInGeneral(MailItem newEmail)
+        {
+            Conversation conv = newEmail.GetConversation();
+            SimpleItems simpleItems = conv.GetRootItems();
+            MailItem firstMailInGeneral;
+
+            foreach (object item in simpleItems)
+            {
+                MailItem firstInGeneral = item as MailItem;
+                if (item is MailItem)
+                {
+                    MailItem mail = item as MailItem;
+                    //MailItem firstInGeneral = item as MailItem;
+                    Folder inFolder = mail.Parent as Folder;
+
+                    String nameToCompare = "karolina baranowska";
+                    DateTime thisDay = DateTime.Today;
+                    if ((mail.Sender.Name.ToLower()).Equals(nameToCompare) && mail.ReceivedTime < thisDay)
+                    {
+                        firstInGeneral = mail;
+                        thisDay = mail.ReceivedTime;
+                    }
+
+                    //string msg = mail.Subject+ " in folder " + inFolder.Name + " Sender: " + mail.SenderName
+                    //+ " Date: " + mail.ReceivedTime;
+                    //Debug.WriteLine(msg);
+                    
+                }
+
+                return firstInGeneral;
+            }
+            return null;
+        }
+            
+
+        
+
         public int selectCorrectEmailType(MailItem newEmail)
         {
             int typ = 0;

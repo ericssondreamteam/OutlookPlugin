@@ -1,25 +1,16 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
-using Excel = Microsoft.Office.Interop.Excel;
 using System.Globalization;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
 using System.Diagnostics;
-using System.Collections;
-using System.Threading;
-using System.Text;
-
 namespace OutlookAddIn1
 {
     class EmailFunctions
     {
-        public String adminMail = "NC Mailbox";
+        public string adminMail = "NC Mailbox";
         Debuger OurDebug;
         public EmailFunctions(Debuger OurDebug)
         {

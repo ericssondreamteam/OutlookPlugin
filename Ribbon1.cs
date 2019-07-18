@@ -83,7 +83,7 @@ namespace OutlookAddIn1
                     }
                     catch(Exception e)
                     {
-                        OurDebug.AppendInfo("Usuwanie duplikatow nie dziala");
+                        OurDebug.AppendInfo("************ERROR****************","Usuwanie duplikatow nie dziala");
                     }
 
                     //Iterate all emails

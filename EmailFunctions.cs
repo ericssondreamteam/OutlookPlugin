@@ -45,75 +45,9 @@ namespace OutlookAddIn1
             return today;
         }
 
-        /*void DemoConversation()
-        {
-            object selectedItem =
-            Application.ActiveExplorer().Selection[1];
-            // This example uses only 
-            // MailItem. Other item types such as 
-            // MeetingItem and PostItem can participate 
-            // in the conversation. 
-            if (selectedItem is Outlook.MailItem)
-            {
-                // Cast selectedItem to MailItem. 
-                Outlook.MailItem mailItem =
-                selectedItem as Outlook.MailItem;
-                // Determine the store of the mail item. 
-                Outlook.Folder folder = mailItem.Parent
-                as Outlook.Folder;
-                Outlook.Store store = folder.Store;
-                if (store.IsConversationEnabled == true)
-                {
-                    // Obtain a Conversation object. 
-                    Outlook.Conversation conv =
-                    mailItem.GetConversation();
-                    // Check for null Conversation. 
-                    if (conv != null)
-                    {
-                        // Obtain Table that contains rows 
-                        // for each item in the conversation. 
-                        Outlook.Table table = conv.GetTable();
-                        Debug.WriteLine("Conversation Items Count: " +
-                        table.GetRowCount().ToString());
-                        Debug.WriteLine("Conversation Items from Table:");
-                        while (!table.EndOfTable)
-                        {
-                            Outlook.Row nextRow = table.GetNextRow();
-                            Debug.WriteLine(nextRow["Subject"]
-                            + " Modified: "
-                            + nextRow["LastModificationTime"]);
-                        }
-                        Debug.WriteLine("Conversation Items from Root:");
-                        // Obtain root items and enumerate the conversation. 
-                        Outlook.SimpleItems simpleItems
-                        = conv.GetRootItems();
-                        foreach (object item in simpleItems)
-                        {
-                            // In this example, only enumerate MailItem type. 
-                            // Other types such as PostItem or MeetingItem 
-                            // can appear in the conversation. 
-                            if (item is Outlook.MailItem)
-                            {
-                                Outlook.MailItem mail = item
-                                as Outlook.MailItem;
-                                Outlook.Folder inFolder =
-                                mail.Parent as Outlook.Folder;
-                                string msg = mail.Subject
-                                + " in folder " + inFolder.Name;
-                                Debug.WriteLine(msg);
-                            }
-                            // Call EnumerateConversation 
-                            // to access child nodes of root items. 
-                            EnumerateConversation(item, conv);
-                        }
-                    }
-                }
-            }
-        }*/
-
 
         void EnumerateConversation(object item,
-         Outlook.Conversation conversation, int i)
+         Outlook.Conversation conversation, int i, List<bool> categoryList)
         {
             Outlook.SimpleItems items =
             conversation.GetChildren(item);
@@ -138,6 +72,7 @@ namespace OutlookAddIn1
                             if (mailItem.ReceivedTime > getInflowDate())
                             {
                                 msg += " TYP: INFLOW";
+                                categoryList[0] = true;
                             }
                         }
                         else
@@ -145,10 +80,7 @@ namespace OutlookAddIn1
                             if (mailItem.SenderName == "Karol Lasek" && mailItem.ReceivedTime > getInflowDate())
                             {
                                 msg += " TYP: IN HANDS";
-                            }
-                            else
-                            {
-                                msg += " TYP: OUTFLOW";
+                                categoryList[1] = true;
                             }
                         }
                             
@@ -156,7 +88,7 @@ namespace OutlookAddIn1
                         i++;
                     }
                     // Continue recursion. 
-                    EnumerateConversation(myItem, conversation, i);
+                    EnumerateConversation(myItem, conversation, i, categoryList);
                 }
             }
         }
@@ -166,6 +98,11 @@ namespace OutlookAddIn1
         {
             try
             {
+                List<bool> categoryList = new List<bool>();
+                categoryList.Add(false);
+                categoryList.Add(false);
+                categoryList.Add(false);
+
                 int i = 0;
                 Outlook.Conversation conv = newEmail.GetConversation();
                 Debug.WriteLine("Conversation Items from Root:");
@@ -181,21 +118,30 @@ namespace OutlookAddIn1
                         if (mail.ReceivedTime > getInflowDate())
                         {
                             msg += " TYP: INFLOW";
+                            categoryList[0] = true;
                         }
-                        else if(mail.SenderName == "Karol Lasek" && mail.ReceivedTime > getInflowDate())
+                        if(mail.SenderName == "Karol Lasek" && mail.ReceivedTime > getInflowDate())
                         {
                             msg += " TYP: IN HANDS";
-                        }
-                        else
-                        {
-                            msg += " TYP: OUTFLOW";
+                            categoryList[1] = true;
                         }
                         Debug.WriteLine(msg);
                         i++;
                     }
-                    EnumerateConversation(item, conv, i);
+                    EnumerateConversation(item, conv, i, categoryList);
                 }
+                
+                if(categoryList[0] || categoryList[1])
+                {
+                    Debug.WriteLine(categoryList[0] + "" + categoryList[1] + "" + categoryList[2]);
+                    Debug.WriteLine("----------------------------------------------");
+                    //return categoryList;
+                    return 1;
+                }
+                categoryList[2] = true;
+                Debug.WriteLine(categoryList[0] + "" + categoryList[1] + "" + categoryList[2]);
                 Debug.WriteLine("----------------------------------------------");
+                //return categoryList;
                 return 1;
             }
             catch (Exception e)

@@ -19,10 +19,11 @@ namespace OutlookAddIn1
 {
     class EmailFunctions
     {
-        public String adminMail = "Karol Lasek";
+        public String adminMail = "NC Mailbox";
         Debuger OurDebug;
         public EmailFunctions(Debuger OurDebug)
         {
+            var aaa = 2;
             this.OurDebug = OurDebug;
         }
         public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
@@ -86,6 +87,7 @@ namespace OutlookAddIn1
                         }
                             
                         Debug.WriteLine(msg);
+                        OurDebug.AppendInfo(msg);
                         i++;
                     }
                     // Continue recursion. 
@@ -127,6 +129,7 @@ namespace OutlookAddIn1
                             categoryList[1] = true;
                         }
                         Debug.WriteLine(msg);
+                        OurDebug.AppendInfo(msg);
                         i++;
                     }
                     EnumerateConversation(item, conv, i, categoryList);
@@ -136,12 +139,16 @@ namespace OutlookAddIn1
                 {
                     Debug.WriteLine("INFLOW: "+categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
                     Debug.WriteLine("----------------------------------------------");
+                    OurDebug.AppendInfo("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
+                    OurDebug.AppendInfo("----------------------------------------------");
                     //return categoryList;
                     return categoryList;
                 }
                 categoryList[2] = true;
                 Debug.WriteLine("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
                 Debug.WriteLine("----------------------------------------------");
+                OurDebug.AppendInfo("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
+                OurDebug.AppendInfo("----------------------------------------------");
                 //return categoryList;
                 return categoryList;
             }
@@ -197,7 +204,7 @@ namespace OutlookAddIn1
         }
         public bool isMultipleCategoriesAndAnyOfTheireInterestedUs(string categories)
         {
-            OurDebug.AppendInfo("Categories start:", categories);
+            //OurDebug.AppendInfo("Categories start:", categories);
             if (categories is null)
             {
                 return false;

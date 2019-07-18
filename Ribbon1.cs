@@ -75,19 +75,16 @@ namespace OutlookAddIn1
                     //Show how many times foreach is performed
                     OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
 
-                  //  ExcelSheet raport = new ExcelSheet();
-                    //var rowInHands = 4;
-                  //  var rowInflow = 4;
-                   // var rowOutflow = 4;
+                    var we = 2;
                     emails = functions.emailsWithoutDuplicates(emails);
                     emails = functions.removeDuplicateOneMoreTime(emails);
                     foreach (MailItem newEmail in emails)
                     {
-                        OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
+                        //OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
                         List<bool> categoryList;
                         if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
-                            OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
+                            //OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
                             DateTime friday = functions.getInflowDate();
                             categoryList = functions.selectCorrectEmailType(newEmail);
                             OurData.addNewItem(newEmail.Subject, categoryList);

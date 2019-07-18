@@ -72,8 +72,8 @@ namespace OutlookAddIn1
             ok.Click += (sender, e) => { prompt.Close(); };
 
             panel.Controls.Add(chk);
-            //panel.Controls.Add(chkExcel);
-            //panel.Controls.Add(chkTxt);
+            panel.Controls.Add(chkExcel);
+            panel.Controls.Add(chkTxt);
             panel.Controls.Add(ok);
 
             prompt.Controls.Add(panel);

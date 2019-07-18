@@ -19,7 +19,7 @@ namespace OutlookAddIn1
 {
     class EmailFunctions
     {
-        public String adminMail = "NC Mailbox";
+        public String adminMail = "Karol Lasek";
         Debuger OurDebug;
         public EmailFunctions(Debuger OurDebug)
         {

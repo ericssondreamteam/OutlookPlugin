@@ -70,7 +70,7 @@ namespace OutlookAddIn1
 
                 }
 
-                string tym2 = "\tIn-hands: "; tym2 += Ribbon1.OurData.inflowAmount.ToString();
+                string tym2 = "\tIn-hands: "; tym2 += Ribbon1.OurData.inhandsAmount.ToString();
                 document.Content.Text += tym2;
                 foreach (string s in Ribbon1.OurData.inhands)
                 {

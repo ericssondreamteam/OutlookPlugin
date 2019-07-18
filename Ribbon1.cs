@@ -27,6 +27,8 @@ namespace OutlookAddIn1
         ToSaveObject toBeSavedTemp1 = new ToSaveObject();
         WordClass toBeSavedWord = new WordClass();
         static public DataObject OurData = new DataObject();
+        private bool checkExcel = false;
+        private bool checkWord = false;
 
         public Ribbon1()
         {
@@ -44,13 +46,32 @@ namespace OutlookAddIn1
                 int DebugForEachCounter = 0;
                 int DebugCorrectEmailsCounter = 0;
 
-                List<bool> checkList = Interaction.ShowDebugDialog("Debuger", "Excel", "Txt", "CheckBoxes");
+                List<bool> checkList = Interaction.ShowDebugDialog("Debuger", "Excel", "Word", "CheckBoxes");
+                Debug.WriteLine(checkList[0] + "" + checkList[1] + "" + checkList[2]);
                 if (checkList[0])
+                {
                     OurDebug.Enable();
-                //if(checkList[1])
-                //Enable Excel
-                //if(checkList[2])
-                //Enable Txt
+                }
+                else
+                {
+                    OurDebug.Disable();
+                }
+                if (checkList[1])
+                {
+                    checkExcel = true;
+                }
+                else
+                {
+                    checkExcel = false;
+                }
+                if (checkList[2])
+                {
+                    checkWord = true;
+                }
+                else
+                {
+                    checkWord = false;
+                }
 
                 if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
                 {
@@ -108,14 +129,20 @@ namespace OutlookAddIn1
                     }
 
                     //Start create excel raport
-                    ExcelSheet raport = new ExcelSheet();
-                    raport.saveToExcel(OutputRaportFileName);
+                    if(checkExcel)
+                    {
+                        ExcelSheet raport = new ExcelSheet();
+                        raport.saveToExcel(OutputRaportFileName);
+                    }                    
 
                     //Save to txt file and word
-                    string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + OutputRaportFileName + ".docx";
-                    endingCorrectList.WriteToTxtFile(path);
-                    toBeSavedWord.WriteToWord(path);
-                    OurData.ClearData();
+                    if(checkWord)
+                    {
+                        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + OutputRaportFileName + ".docx";
+                        endingCorrectList.WriteToTxtFile(path);
+                        toBeSavedWord.WriteToWord(path);
+                        OurData.ClearData();
+                    }                    
 
                     //Raport is saved
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);

@@ -76,8 +76,15 @@ namespace OutlookAddIn1
                     OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
 
                     //Delete duplicates from email in the same name or the same thread
-                    emails = functions.emailsWithoutDuplicates(emails);
-                    emails = functions.removeDuplicateOneMoreTime(emails);
+                    try
+                    {
+                        emails = functions.emailsWithoutDuplicates(emails);
+                        emails = functions.removeDuplicateOneMoreTime(emails);
+                    }
+                    catch(Exception e)
+                    {
+                        OurDebug.AppendInfo("Usuwanie duplikatow nie dziala");
+                    }
 
                     //Iterate all emails
                     foreach (MailItem newEmail in emails)

@@ -91,7 +91,6 @@ namespace OutlookAddIn1
         }
         public List<bool> selectCorrectEmailType(MailItem newEmail)
         {
-            OurDebug.AppendInfo("2345678asdasdasdasfjsdlkfjsdklafjsdklfjaskldfjlsadjfklsjdafklsdfj");
             try
             {
                 List<bool> categoryList = new List<bool>();
@@ -108,8 +107,7 @@ namespace OutlookAddIn1
                 {
                     try
                     {
-                        throw new Exception();
-                        if (item is Outlook.MailItem)
+                        if(item is Outlook.MailItem)
                         {
                             Outlook.MailItem mail = item as Outlook.MailItem;
                             Outlook.Folder inFolder = mail.Parent as Outlook.Folder;
@@ -162,19 +160,29 @@ namespace OutlookAddIn1
         }
         public List<MailItem> emailsWithoutDuplicates(List<MailItem> emails)
         {
-            for (int i = 0; i < emails.Count; i++)
+            try
             {
-                for (int j = i + 1; j < emails.Count; j++)
+                for (int i = 0; i < emails.Count; i++)
                 {
-                    if (emails[i].ConversationID.Equals(emails[j].ConversationID))
+                    for (int j = i + 1; j < emails.Count; j++)
                     {
+                        if (emails[i].ConversationID.Equals(emails[j].ConversationID))
+                        {
 
-                        emails.RemoveAt(j);
-                        j--;
+                            emails.RemoveAt(j);
+                            j--;
+                        }
                     }
                 }
+                return emails;
             }
-            return emails;
+            catch(Exception ex)
+            {
+                OurDebug.AppendInfo("Blad w usuwaniu duplikatow; brak dostepu do ConversationID");
+                Debug.WriteLine("Blad w usuwaniu duplikatow; brak dostepu do ConversationID");
+                return emails;
+            }
+
         }
         public bool isMultipleCategoriesAndAnyOfTheireInterestedUs(string categories)
         {

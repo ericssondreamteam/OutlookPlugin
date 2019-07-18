@@ -19,6 +19,7 @@ namespace OutlookAddIn1
 {
     class EmailFunctions
     {
+        public String adminMail = "Mateusz Baranski";
         Debuger OurDebug;
         public EmailFunctions(Debuger OurDebug)
         {
@@ -77,7 +78,7 @@ namespace OutlookAddIn1
                         }
                         else
                         {
-                            if (mailItem.SenderName == "Karol Lasek" && mailItem.ReceivedTime > getInflowDate())
+                            if (mailItem.SenderName.Equals(adminMail) && mailItem.ReceivedTime > getInflowDate())
                             {
                                 msg += " TYP: IN HANDS";
                                 categoryList[1] = true;
@@ -120,7 +121,7 @@ namespace OutlookAddIn1
                             msg += " TYP: INFLOW";
                             categoryList[0] = true;
                         }
-                        if(mail.SenderName == "Karol Lasek" && mail.ReceivedTime > getInflowDate())
+                        if(mail.SenderName.Equals(adminMail) && mail.ReceivedTime > getInflowDate())
                         {
                             msg += " TYP: IN HANDS";
                             categoryList[1] = true;
@@ -133,13 +134,13 @@ namespace OutlookAddIn1
                 
                 if(categoryList[0] || categoryList[1])
                 {
-                    Debug.WriteLine(categoryList[0] + "" + categoryList[1] + "" + categoryList[2]);
+                    Debug.WriteLine("INFLOW: "+categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
                     Debug.WriteLine("----------------------------------------------");
                     //return categoryList;
                     return 1;
                 }
                 categoryList[2] = true;
-                Debug.WriteLine(categoryList[0] + "" + categoryList[1] + "" + categoryList[2]);
+                Debug.WriteLine("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
                 Debug.WriteLine("----------------------------------------------");
                 //return categoryList;
                 return 1;

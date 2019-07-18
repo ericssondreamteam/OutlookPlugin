@@ -178,6 +178,7 @@ namespace OutlookAddIn1
                     }
                     EnumerateConversation(item, conv);
                 }
+                Debug.WriteLine("----------------------------------------------");
                 return 1;
             }
             catch (Exception e)

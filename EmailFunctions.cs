@@ -44,9 +44,6 @@ namespace OutlookAddIn1
             {
                 foreach (object myItem in items)
                 {
-                    // In this example, only enumerate MailItem type. 
-                    // Other types such as PostItem or MeetingItem 
-                    // can appear in the conversation. 
                     if (myItem is Outlook.MailItem)
                     {
                         Outlook.MailItem mailItem =
@@ -75,7 +72,7 @@ namespace OutlookAddIn1
                         OurDebug.AppendInfo(msg);
                         i++;
                     }
-                    // Continue recursion. 
+             
                     EnumerateConversation(myItem, conversation, i, categoryList);
                 }
             }
@@ -189,7 +186,7 @@ namespace OutlookAddIn1
                 OurDebug.AppendInfo("Categories after trim and repalce and lower:", categories);
                 string[] categoriesList = categories.Split(',');
                 foreach (var cat in categoriesList)
-                {   //No Response Necessary    or    Unknown     No Response Necessary, Unknown
+                {   
                     if (!cat.Equals("noresponsenecessary") && !cat.Equals("unknown") && !cat.Equals(""))
                     {
                         return true;
@@ -240,10 +237,9 @@ namespace OutlookAddIn1
                     email1 = collectionItem as MailItem;
                     if (email1 != null)
                     {
-                        //Save mails
+                        
                         OurDebug.AppendInfo("Email  ", DebugCorrectEmailsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());
 
-                        //Add to list of mails
                         if (email1.ReceivedTime > getInflowDate().AddDays(-7))
                         {
                             DebugCorrectEmailsCounter++;

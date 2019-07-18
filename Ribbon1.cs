@@ -37,7 +37,6 @@ namespace OutlookAddIn1
         {
             try
             {
-                //Initialize
                 EmailFunctions functions = new EmailFunctions(OurDebug);
                 string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
                 List<MailItem> emails = new List<MailItem>();
@@ -103,7 +102,7 @@ namespace OutlookAddIn1
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("Nasz try catch vol.3 - Problem w ID wiadomosci");
+                            OurDebug.AppendInfo("Nasz try catch vol.3 - Problem w ID wiadomosci");
                         }
                         
                     }

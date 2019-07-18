@@ -14,40 +14,22 @@ namespace OutlookAddIn1
         public int inflowAmount = 0;
         public int outflowAmount = 0;
         public int inhandsAmount = 0;
-
-        public void addNewItem(string n, string k)
-        {
-            if (k == "inflow")
-            {
-                inflowAmount++;
-                inflow.Add(n);
-            }
-            if (k == "outflow")
-            {
-                outflowAmount++;
-                outflow.Add(n);
-            }
-            if (k == "inhands")
-            {
-                inhandsAmount++;
-                inhands.Add(n);
-            }
-        }
+        
         private StringBuilder WriteInCorrextFomrat()
         {
-            StringBuilder koncowyString = new StringBuilder();
+            StringBuilder endingString = new StringBuilder();
             int i;
-            koncowyString.Append("Inflow: " + inflowAmount + "\n");
+            endingString.Append("Inflow: " + inflowAmount + "\n");
             for (i = 0; i < inflow.Count; i++)
-                koncowyString.Append("\t" + inflow[i] + "\n");
-            koncowyString.Append("In-hands: " + inhandsAmount + "\n");
+                endingString.Append("\t" + inflow[i] + "\n");
+            endingString.Append("In-hands: " + inhandsAmount + "\n");
             for (i = 0; i < inhands.Count; i++)
-                koncowyString.Append("\t" + inhands[i] + "\n");
-            koncowyString.Append("Outflow: " + outflowAmount + "\n");
+                endingString.Append("\t" + inhands[i] + "\n");
+            endingString.Append("Outflow: " + outflowAmount + "\n");
             for (i = 0; i < outflow.Count; i++)
-                koncowyString.Append("\t" + outflow[i] + "\n");
+                endingString.Append("\t" + outflow[i] + "\n");
 
-            return koncowyString;
+            return endingString;
 
         }
         public void WriteToTxtFile(string path)

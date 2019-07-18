@@ -17,7 +17,7 @@ namespace OutlookAddIn1
         {
             try
             {
-                /************************************************************************************************************/
+                /********************************************************************************************/
                 //Create an instance for word app              
                 Word.Application winword = new Word.Application();
                 //Set animation status for word application  
@@ -28,7 +28,7 @@ namespace OutlookAddIn1
                 object missing = System.Reflection.Missing.Value;
                 //Create a new document  
                 Word.Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
-                /************************************************************************************************************/
+                /********************************************************************************************/
 
 
                 string header = "NCMAILBOX tasks (week "; header += CurrentWeek(); header += "):";
@@ -43,7 +43,7 @@ namespace OutlookAddIn1
                 WriteSecondHeader(tym33, document);
                 WriteOutflowMails(document);
 
-                /************************************************************************************************************/
+                /**********************************************************************************************/
                 //Save the document                 
                 object filename = path;
                 document.SaveAs2(ref filename);

@@ -44,25 +44,161 @@ namespace OutlookAddIn1
             today = today.AddDays(-2).AddHours(17);
             return today;
         }
-       public int getConversationAmount(MailItem newEmail)
+
+        /*void DemoConversation()
+        {
+            object selectedItem =
+            Application.ActiveExplorer().Selection[1];
+            // This example uses only 
+            // MailItem. Other item types such as 
+            // MeetingItem and PostItem can participate 
+            // in the conversation. 
+            if (selectedItem is Outlook.MailItem)
+            {
+                // Cast selectedItem to MailItem. 
+                Outlook.MailItem mailItem =
+                selectedItem as Outlook.MailItem;
+                // Determine the store of the mail item. 
+                Outlook.Folder folder = mailItem.Parent
+                as Outlook.Folder;
+                Outlook.Store store = folder.Store;
+                if (store.IsConversationEnabled == true)
+                {
+                    // Obtain a Conversation object. 
+                    Outlook.Conversation conv =
+                    mailItem.GetConversation();
+                    // Check for null Conversation. 
+                    if (conv != null)
+                    {
+                        // Obtain Table that contains rows 
+                        // for each item in the conversation. 
+                        Outlook.Table table = conv.GetTable();
+                        Debug.WriteLine("Conversation Items Count: " +
+                        table.GetRowCount().ToString());
+                        Debug.WriteLine("Conversation Items from Table:");
+                        while (!table.EndOfTable)
+                        {
+                            Outlook.Row nextRow = table.GetNextRow();
+                            Debug.WriteLine(nextRow["Subject"]
+                            + " Modified: "
+                            + nextRow["LastModificationTime"]);
+                        }
+                        Debug.WriteLine("Conversation Items from Root:");
+                        // Obtain root items and enumerate the conversation. 
+                        Outlook.SimpleItems simpleItems
+                        = conv.GetRootItems();
+                        foreach (object item in simpleItems)
+                        {
+                            // In this example, only enumerate MailItem type. 
+                            // Other types such as PostItem or MeetingItem 
+                            // can appear in the conversation. 
+                            if (item is Outlook.MailItem)
+                            {
+                                Outlook.MailItem mail = item
+                                as Outlook.MailItem;
+                                Outlook.Folder inFolder =
+                                mail.Parent as Outlook.Folder;
+                                string msg = mail.Subject
+                                + " in folder " + inFolder.Name;
+                                Debug.WriteLine(msg);
+                            }
+                            // Call EnumerateConversation 
+                            // to access child nodes of root items. 
+                            EnumerateConversation(item, conv);
+                        }
+                    }
+                }
+            }
+        }*/
+
+
+        void EnumerateConversation(object item,
+         Outlook.Conversation conversation)
+        {
+            Outlook.SimpleItems items =
+            conversation.GetChildren(item);
+            if (items.Count > 0)
+            {
+                foreach (object myItem in items)
+                {
+                    // In this example, only enumerate MailItem type. 
+                    // Other types such as PostItem or MeetingItem 
+                    // can appear in the conversation. 
+                    if (myItem is Outlook.MailItem)
+                    {
+                        Outlook.MailItem mailItem =
+                        myItem as Outlook.MailItem;
+                        Outlook.Folder inFolder =
+                        mailItem.Parent as Outlook.Folder;
+                        string msg = mailItem.Subject
+                        + " in folder " + inFolder.Name + " Sender: " + mailItem.SenderName
+                        + " Date: " + mailItem.ReceivedTime;
+                        Debug.WriteLine(msg);
+                    }
+                    // Continue recursion. 
+                    EnumerateConversation(myItem, conversation);
+                }
+            }
+        }
+
+
+        public int getConversationAmount(MailItem newEmail)
         {
             try
             {
+                /*Debug.WriteLine("\n");
+                Debug.WriteLine(newEmail.SenderName);
+                Debug.WriteLine(newEmail.Sender.Name.ToString());
+                Debug.WriteLine(newEmail.LastModificationTime);
+                Debug.WriteLine(newEmail.ReceivedTime);
+                Debug.WriteLine(newEmail.ReplyRecipients.Count.ToString());*/
+                //Debug.WriteLine(newEmail.SenderEmailAddress);
+                //Debug.WriteLine(newEmail.Subject);
+
                 Outlook.Conversation conv = newEmail.GetConversation();
-                Outlook.Table table = conv.GetTable();
-                Debug.WriteLine("Pobieramy maile z conwersacji NOWA");
-                Debug.WriteLine("+++++++++++++++++++++++++++++++++++++");
-                Array tableArray = table.GetArray(table.GetRowCount()) as Array;
-                for (int i = 0; i <= tableArray.GetUpperBound(0); i++)
+                Debug.WriteLine("Conversation Items from Root:");
+                // Obtain root items and enumerate the conversation. 
+                Outlook.SimpleItems simpleItems
+                = conv.GetRootItems();
+                foreach (object item in simpleItems)
                 {
-                    for (int j = 0; j <= tableArray.GetUpperBound(1); j++)
+                    // In this example, only enumerate MailItem type. 
+                    // Other types such as PostItem or MeetingItem 
+                    // can appear in the conversation. 
+                    if (item is Outlook.MailItem)
                     {
-                        Debug.WriteLine(tableArray.GetValue(i, j));
+                        Outlook.MailItem mail = item
+                        as Outlook.MailItem;
+                        Outlook.Folder inFolder =
+                        mail.Parent as Outlook.Folder;
+                        string msg = mail.Subject
+                        + " in folder " + inFolder.Name + " Sender: " + mail.SenderName
+                        + " Date: " + mail.ReceivedTime;
+                        Debug.WriteLine(msg);
                     }
+                    // Call EnumerateConversation 
+                    // to access child nodes of root items. 
+                    EnumerateConversation(item, conv);
                 }
 
-                Debug.WriteLine("+++++++++++++++++++++++++++++++++++++");
-                return table.GetRowCount();
+
+                /* Outlook.Conversation conv = newEmail.GetConversation();
+                 Outlook.Table table = conv.GetTable();
+                 Debug.WriteLine("Pobieramy maile z conwersacji NOWA");
+                 Debug.WriteLine("+++++++++++++++++++++++++++++++++++++");
+                 Array tableArray = table.GetArray(table.GetRowCount()) as Array;
+                 for (int i = 0; i <= tableArray.GetUpperBound(0); i++)
+                 {
+                     for (int j = 0; j <= tableArray.GetUpperBound(1); j++)
+                     {
+                         Debug.WriteLine(tableArray.GetValue(i, j));
+                         Debug.WriteLine(newEmail.SenderName);
+                     }
+                 }
+
+                 Debug.WriteLine("+++++++++++++++++++++++++++++++++++++");
+                 return table.GetRowCount();*/
+                return 1;
             }
             catch (Exception e)
             {

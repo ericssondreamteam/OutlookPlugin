@@ -113,7 +113,7 @@ namespace OutlookAddIn1
 
 
         void EnumerateConversation(object item,
-         Outlook.Conversation conversation)
+         Outlook.Conversation conversation, int i)
         {
             Outlook.SimpleItems items =
             conversation.GetChildren(item);
@@ -133,14 +133,30 @@ namespace OutlookAddIn1
                         string msg = mailItem.Subject
                         + " in folder " + inFolder.Name + " Sender: " + mailItem.SenderName
                         + " Date: " + mailItem.ReceivedTime;
-                        if (mailItem.SenderName == "Karol Lasek" && mailItem.ReceivedTime > getInflowDate())
+                        if(i == 0)
                         {
-                            msg += " TYP: IN HANDS";
+                            if (mailItem.ReceivedTime > getInflowDate())
+                            {
+                                msg += " TYP: INFLOW";
+                            }
                         }
+                        else
+                        {
+                            if (mailItem.SenderName == "Karol Lasek" && mailItem.ReceivedTime > getInflowDate())
+                            {
+                                msg += " TYP: IN HANDS";
+                            }
+                            else
+                            {
+                                msg += " TYP: OUTFLOW";
+                            }
+                        }
+                            
                         Debug.WriteLine(msg);
+                        i++;
                     }
                     // Continue recursion. 
-                    EnumerateConversation(myItem, conversation);
+                    EnumerateConversation(myItem, conversation, i);
                 }
             }
         }
@@ -150,6 +166,7 @@ namespace OutlookAddIn1
         {
             try
             {
+                int i = 0;
                 Outlook.Conversation conv = newEmail.GetConversation();
                 Debug.WriteLine("Conversation Items from Root:");
                 Outlook.SimpleItems simpleItems
@@ -158,25 +175,25 @@ namespace OutlookAddIn1
                 {
                     if (item is Outlook.MailItem)
                     {
-                        Outlook.MailItem mail = item
-                        as Outlook.MailItem;
-                        Outlook.Folder inFolder =
-                        mail.Parent as Outlook.Folder;
-                        string msg = mail.Subject
-                        + " in folder " + inFolder.Name + " Sender: " + mail.SenderName
-                        + " Date: " + mail.ReceivedTime;
+                        Outlook.MailItem mail = item as Outlook.MailItem;
+                        Outlook.Folder inFolder = mail.Parent as Outlook.Folder;
+                        string msg = mail.Subject + " in folder " + inFolder.Name + " Sender: " + mail.SenderName + " Date: " + mail.ReceivedTime;
                         if (mail.ReceivedTime > getInflowDate())
                         {
                             msg += " TYP: INFLOW";
                         }
-                        if(mail.SenderName == "Karol Lasek" && mail.ReceivedTime > getInflowDate())
+                        else if(mail.SenderName == "Karol Lasek" && mail.ReceivedTime > getInflowDate())
                         {
                             msg += " TYP: IN HANDS";
                         }
-                        
+                        else
+                        {
+                            msg += " TYP: OUTFLOW";
+                        }
                         Debug.WriteLine(msg);
+                        i++;
                     }
-                    EnumerateConversation(item, conv);
+                    EnumerateConversation(item, conv, i);
                 }
                 Debug.WriteLine("----------------------------------------------");
                 return 1;

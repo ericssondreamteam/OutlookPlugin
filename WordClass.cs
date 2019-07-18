@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Word = Microsoft.Office.Interop.Word;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.Globalization;
 
 namespace OutlookAddIn1
 {
@@ -15,7 +16,6 @@ namespace OutlookAddIn1
         public int inflowAmount = 0;
         public int outflowAmount = 0;
         public int inhandsAmount = 0;
-        private Hashtable myHashtable;
 
         public void addNewItem(string n, string k)
         {
@@ -44,7 +44,7 @@ namespace OutlookAddIn1
             try
             {
                 //Create an instance for word app              
-                Word.Application winword = new Word.Application();             
+                Word.Application winword = new Word.Application();
 
                 //Set animation status for word application  
                 winword.ShowAnimation = false;
@@ -57,18 +57,41 @@ namespace OutlookAddIn1
 
                 //Create a new document  
                 Word.Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
+
+                foreach (Word.Section section in document.Sections)
+                {
+                    //Get the header range and add the header details.  
+                    Word.Range headerRange = section.Headers[Word.WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
+                    headerRange.Fields.Add(headerRange, Word.WdFieldType.wdFieldPage);
+                    //  headerRange.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+                    // headerRange.Font.ColorIndex = Word.WdColorIndex.wdBlue;
+                    headerRange.Font.Size = 12;
+                   
+                    string header = "NCMAILBOX tasks (week "; header += currentWeek(); header += "):";
+                    headerRange.Font.Underline = Word.WdUnderline.wdUnderlineSingle;
+                    headerRange.Text = header;
+                }
                 //document.Content.Bold = 1;
                 //document.Content.Font = "Calibri";
-               // document.Content.Font.Size = 12;
+                // document.Content.Font.Size = 12;
                 //document.Content.Italic = 1;
+                document.Content.Font.Underline = Word.WdUnderline.wdUnderlineSingle;
+                //document.Content.Font.Italic = 1;
+                document.Content.Font.Name = "Calibri";
                 document.Content.Text += "NCMAILBOX tasks (week 24):";
+                document.Content.Font.Italic = 1;
+                Word.Paragraph paraMain = document.Content.Paragraphs.Add(ref missing);
+                object styleHeading1 = "Heading 1";
+                paraMain.Range.set_Style(ref styleHeading1);
+                //paraMain.Range.Text = "Para 1 text";
+                paraMain.Range.InsertParagraphAfter();
                 string tym1 = "\tInflow: "; tym1 += inflowAmount.ToString();
                 document.Content.Text += tym1;
                 foreach (string s in inflow)
                 {
-                    string tym = "\t\t"; tym += s; 
+                    string tym = "\t\t"; tym += s;
                     document.Content.Text += tym;
-                    
+
                 }
 
                 string tym2 = "\tIn-hands: "; tym2 += inflowAmount.ToString();
@@ -78,6 +101,7 @@ namespace OutlookAddIn1
                     string tym = "\t\t"; tym += s;
                     document.Content.Text += tym;
                 }
+
                 string tym3 = "\tOutflow: "; tym3 += outflowAmount.ToString();
                 document.Content.Text += tym3;
                 foreach (string s in outflow)
@@ -85,8 +109,8 @@ namespace OutlookAddIn1
                     string tym = "\t\t"; tym += s;
                     document.Content.Text += tym;
                 }
-                   
-               
+
+
 
 
 
@@ -102,10 +126,22 @@ namespace OutlookAddIn1
             }
             catch (Exception ex)
             {
-                
+
             }
         }
 
-      
+        int currentWeek()
+        {
+            DateTime d = new DateTime();
+            d = DateTime.Now;
+            CultureInfo cul = CultureInfo.CurrentCulture;
+            int weekNum = cul.Calendar.GetWeekOfYear(
+                d,
+                CalendarWeekRule.FirstDay,
+                DayOfWeek.Monday);
+            return weekNum;
+        }
+
+
     }
 }

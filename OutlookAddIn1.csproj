@@ -188,6 +188,7 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="DataObject.cs" />
     <Compile Include="EmailFunctions.cs" />
     <Compile Include="Debuger.cs" />
     <Compile Include="ExcelSheet.cs" />

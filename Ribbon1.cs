@@ -26,6 +26,7 @@ namespace OutlookAddIn1
         ToSaveObject toBeSavedTemp = new ToSaveObject();
         ToSaveObject toBeSavedTemp1 = new ToSaveObject();
         WordClass toBeSavedWord = new WordClass();
+        static public DataObject OurData = new DataObject();
 
         public Ribbon1()
         {
@@ -74,64 +75,65 @@ namespace OutlookAddIn1
                     //Show how many times foreach is performed
                     OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
 
-                    ExcelSheet raport = new ExcelSheet();
-                    var rowInHands = 4;
-                    var rowInflow = 4;
-                    var rowOutflow = 4;
+                  //  ExcelSheet raport = new ExcelSheet();
+                    //var rowInHands = 4;
+                  //  var rowInflow = 4;
+                   // var rowOutflow = 4;
                     emails = functions.emailsWithoutDuplicates(emails);
                     emails = functions.removeDuplicateOneMoreTime(emails);
                     foreach (MailItem newEmail in emails)
                     {
                         OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
-                        var typ = 0;
+                        List<bool> categoryList;
                         if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
                             OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
-                            int emailConversationAmount = functions.getConversationAmount(newEmail);
+                          //  int emailConversationAmount = functions.getConversationAmount(newEmail);
                             DateTime friday = functions.getInflowDate();
-                            typ = functions.selectCorrectEmailType(newEmail);
-                            OurDebug.AppendInfo("Nadany typ:", typ.ToString());
-                            switch (typ)
-                            {
-                                case 1:
-                                    rowInHands++;
-                                    raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
-                                    endingCorrectList.addNewItem(newEmail.Subject,"inhands");
-                                    toBeSavedWord.addNewItem(newEmail.Subject, "inhands");
-                                    break;
-                                case 2:
-                                    rowInflow++;
-                                    raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, emailConversationAmount, 2);
-                                    endingCorrectList.addNewItem(newEmail.Subject, "inflow");
-                                    toBeSavedWord.addNewItem(newEmail.Subject, "inflow");
-                                    break;
-                                case 3:
-                                    rowOutflow++;
-                                    raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, emailConversationAmount, 3);
-                                    endingCorrectList.addNewItem(newEmail.Subject, "outflow");
-                                    toBeSavedWord.addNewItem(newEmail.Subject, "outflow");
-                                    break;
-                                case 4:
-                                    rowInflow++;
-                                    rowInHands++;
-                                    raport.insertDataExcelInflowInHands(raport.oSheet, rowInflow, rowInHands, newEmail, emailConversationAmount);
-                                    endingCorrectList.addNewItem(newEmail.Subject, "inhands");
-                                    endingCorrectList.addNewItem(newEmail.Subject, "inflow");
-                                    toBeSavedWord.addNewItem(newEmail.Subject, "inhands");
-                                    toBeSavedWord.addNewItem(newEmail.Subject, "inflow");
-                                    break;
-                            }
-                            raport.oSheet.Columns.AutoFit();
-                            raport.oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
+                            categoryList = functions.selectCorrectEmailType(newEmail);
+                            OurData.addNewItem(newEmail.Subject, categoryList);
+                            //OurDebug.AppendInfo("Nadany typ:", typ.ToString());
+                            //switch (typ)
+                            //{
+                            //    case 1:
+                            //        rowInHands++;
+                            //        raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
+                            //        endingCorrectList.addNewItem(newEmail.Subject,"inhands");
+                            //        toBeSavedWord.addNewItem(newEmail.Subject, "inhands");
+                            //        break;
+                            //    case 2:
+                            //        rowInflow++;
+                            //        raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, emailConversationAmount, 2);
+                            //        endingCorrectList.addNewItem(newEmail.Subject, "inflow");
+                            //        toBeSavedWord.addNewItem(newEmail.Subject, "inflow");
+                            //        break;
+                            //    case 3:
+                            //        rowOutflow++;
+                            //        raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, emailConversationAmount, 3);
+                            //        endingCorrectList.addNewItem(newEmail.Subject, "outflow");
+                            //        toBeSavedWord.addNewItem(newEmail.Subject, "outflow");
+                            //        break;
+                            //    case 4:
+                            //        rowInflow++;
+                            //        rowInHands++;
+                            //        raport.insertDataExcelInflowInHands(raport.oSheet, rowInflow, rowInHands, newEmail, emailConversationAmount);
+                            //        endingCorrectList.addNewItem(newEmail.Subject, "inhands");
+                            //        endingCorrectList.addNewItem(newEmail.Subject, "inflow");
+                            //        toBeSavedWord.addNewItem(newEmail.Subject, "inhands");
+                            //        toBeSavedWord.addNewItem(newEmail.Subject, "inflow");
+                            //        break;
+                            //}
+                            // raport.oSheet.Columns.AutoFit();
+                            // raport.oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
                         }
                     }
 
-                    raport.createCenterTables(raport.oSheet, rowInHands, rowInflow, rowOutflow);
-                    raport.createExcelSumCategories(raport.oSheet, rowInHands, rowInflow, rowOutflow);
-                    raport.oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
-                    raport.oWB.Close(true);
-                    raport.oXL.Quit();
-                    raport.killExcel(raport.getExcelIDProcess());
+                    //raport.createCenterTables(raport.oSheet, rowInHands, rowInflow, rowOutflow);
+                    //raport.createExcelSumCategories(raport.oSheet, rowInHands, rowInflow, rowOutflow);
+                    //raport.oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
+                    //raport.oWB.Close(true);
+                    //raport.oXL.Quit();
+                    //raport.killExcel(raport.getExcelIDProcess());
 
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                     path += "\\";

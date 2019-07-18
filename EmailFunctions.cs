@@ -95,7 +95,7 @@ namespace OutlookAddIn1
         }
 
 
-        public int getConversationAmount(MailItem newEmail)
+        public List<bool> selectCorrectEmailType(MailItem newEmail)
         {
             try
             {
@@ -137,47 +137,47 @@ namespace OutlookAddIn1
                     Debug.WriteLine("INFLOW: "+categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
                     Debug.WriteLine("----------------------------------------------");
                     //return categoryList;
-                    return 1;
+                    return categoryList;
                 }
                 categoryList[2] = true;
                 Debug.WriteLine("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
                 Debug.WriteLine("----------------------------------------------");
                 //return categoryList;
-                return 1;
+                return categoryList;
             }
             catch (Exception e)
             {
                 OurDebug.AppendInfo("Blad w liczbie konwersacji; funkcja getConversationAmount()");
                 Debug.WriteLine("Blad w liczbie konwersacji; funkcja getConversationAmount()");
-                return 0;
+                return null;
             }
 
         }
-        public int selectCorrectEmailType(MailItem newEmail)
-        {
-            int typ = 0;
-            if (newEmail.Categories != null)
-            {
-                /*if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
-                {
-                    typ = 1;
-                }*/
-                if (newEmail.ReceivedTime > getInflowDate()) //inflow
-                {
-                    typ = 2;
-                }
-                else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate())) //outflow
-                {
-                    typ = 3;
-                }
-                if (typ == 1) //inflow + in hands
-                {
-                    typ = 4;
-                }
-            }
-            OurDebug.AppendInfo("Nadany typ:", typ.ToString());
-            return typ;
-        }
+        //public int selectCorrectEmailType(MailItem newEmail)
+        //{
+        //    int typ = 0;
+        //    if (newEmail.Categories != null)
+        //    {
+        //        /*if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
+        //        {
+        //            typ = 1;
+        //        }*/
+        //        if (newEmail.ReceivedTime > getInflowDate()) //inflow
+        //        {
+        //            typ = 2;
+        //        }
+        //        else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate())) //outflow
+        //        {
+        //            typ = 3;
+        //        }
+        //        if (typ == 1) //inflow + in hands
+        //        {
+        //            typ = 4;
+        //        }
+        //    }
+        //    OurDebug.AppendInfo("Nadany typ:", typ.ToString());
+        //    return typ;
+        //}
 
         public List<MailItem> emailsWithoutDuplicates(List<MailItem> emails)
         {

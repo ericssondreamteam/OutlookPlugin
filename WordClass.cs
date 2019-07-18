@@ -10,36 +10,12 @@ namespace OutlookAddIn1
 {
     class WordClass
     {
-        public List<string> inflow = new List<string>();
-        public List<string> outflow = new List<string>();
-        public List<string> inhands = new List<string>();
-        public int inflowAmount = 0;
-        public int outflowAmount = 0;
-        public int inhandsAmount = 0;
-
-        public void addNewItem(string n, string k)
-        {
-            if (k == "inflow")
-            {
-                inflowAmount++;
-                inflow.Add(n);
-            }
-            if (k == "outflow")
-            {
-                outflowAmount++;
-                outflow.Add(n);
-            }
-            if (k == "inhands")
-            {
-                inhandsAmount++;
-                inhands.Add(n);
-            }
-        }
+        
         public void WriteToWord(string path)
         {
             CreateDocument(path);
         }
-        public void CreateDocument(string path)
+      public void CreateDocument(string path)
         {
             try
             {
@@ -85,26 +61,26 @@ namespace OutlookAddIn1
                 paraMain.Range.set_Style(ref styleHeading1);
                 //paraMain.Range.Text = "Para 1 text";
                 paraMain.Range.InsertParagraphAfter();
-                string tym1 = "\tInflow: "; tym1 += inflowAmount.ToString();
+                string tym1 = "\tInflow: "; tym1 += Ribbon1.OurData.inflowAmount.ToString();
                 document.Content.Text += tym1;
-                foreach (string s in inflow)
+                foreach (string s in Ribbon1.OurData.inflow)
                 {
                     string tym = "\t\t"; tym += s;
                     document.Content.Text += tym;
 
                 }
 
-                string tym2 = "\tIn-hands: "; tym2 += inflowAmount.ToString();
+                string tym2 = "\tIn-hands: "; tym2 += Ribbon1.OurData.inflowAmount.ToString();
                 document.Content.Text += tym2;
-                foreach (string s in inhands)
+                foreach (string s in Ribbon1.OurData.inhands)
                 {
                     string tym = "\t\t"; tym += s;
                     document.Content.Text += tym;
                 }
 
-                string tym3 = "\tOutflow: "; tym3 += outflowAmount.ToString();
+                string tym3 = "\tOutflow: "; tym3 += Ribbon1.OurData.outflowAmount.ToString();
                 document.Content.Text += tym3;
-                foreach (string s in outflow)
+                foreach (string s in Ribbon1.OurData.outflow)
                 {
                     string tym = "\t\t"; tym += s;
                     document.Content.Text += tym;

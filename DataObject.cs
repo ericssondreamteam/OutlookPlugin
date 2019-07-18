@@ -34,6 +34,14 @@ namespace OutlookAddIn1
                 inhands.Add(n);
             }
         }
-
+        public void ClearData()
+        {
+            inflow.Clear();
+            outflow.Clear();
+            inhands.Clear();
+            inflowAmount = 0;
+            outflowAmount = 0;
+            inhandsAmount = 0;
+        }
     }
 }

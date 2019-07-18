@@ -4,6 +4,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Diagnostics;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace OutlookAddIn1
 {
@@ -155,6 +156,38 @@ namespace OutlookAddIn1
                 if (ExcelProcess.Id == processID)
                     ExcelProcess.Kill();
             }
+        }
+
+        public void saveToExcel(string OutputRaportFileName)
+        {
+            var rowInHands = 4;
+            var rowInflow = 4;
+            var rowOutflow = 4;
+
+            foreach (string s in Ribbon1.OurData.inflow)
+            {
+                rowInflow++;
+                oSheet.Cells[rowInflow, 1] = s;                
+            }
+            foreach (string s in Ribbon1.OurData.outflow)
+            {
+                rowOutflow++;
+                oSheet.Cells[rowOutflow, 5] = s;                
+            }
+            foreach (string s in Ribbon1.OurData.inhands)
+            {
+                rowInHands++;
+                oSheet.Cells[rowInHands, 9] = s;                
+            }
+
+            oSheet.Columns.AutoFit();
+            oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
+            createCenterTables(oSheet, rowInHands, rowInflow, rowOutflow);
+            createExcelSumCategories(oSheet, rowInHands, rowInflow, rowOutflow);
+            oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
+            oWB.Close(true);
+            oXL.Quit();
+            killExcel(getExcelIDProcess());
         }
     }
 }

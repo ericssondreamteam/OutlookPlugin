@@ -88,52 +88,14 @@ namespace OutlookAddIn1
                         if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
                             OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
-                          //  int emailConversationAmount = functions.getConversationAmount(newEmail);
                             DateTime friday = functions.getInflowDate();
                             categoryList = functions.selectCorrectEmailType(newEmail);
                             OurData.addNewItem(newEmail.Subject, categoryList);
-                            //OurDebug.AppendInfo("Nadany typ:", typ.ToString());
-                            //switch (typ)
-                            //{
-                            //    case 1:
-                            //        rowInHands++;
-                            //        raport.insertDataExcel(raport.oSheet, rowInHands, newEmail, emailConversationAmount, 1);
-                            //        endingCorrectList.addNewItem(newEmail.Subject,"inhands");
-                            //        toBeSavedWord.addNewItem(newEmail.Subject, "inhands");
-                            //        break;
-                            //    case 2:
-                            //        rowInflow++;
-                            //        raport.insertDataExcel(raport.oSheet, rowInflow, newEmail, emailConversationAmount, 2);
-                            //        endingCorrectList.addNewItem(newEmail.Subject, "inflow");
-                            //        toBeSavedWord.addNewItem(newEmail.Subject, "inflow");
-                            //        break;
-                            //    case 3:
-                            //        rowOutflow++;
-                            //        raport.insertDataExcel(raport.oSheet, rowOutflow, newEmail, emailConversationAmount, 3);
-                            //        endingCorrectList.addNewItem(newEmail.Subject, "outflow");
-                            //        toBeSavedWord.addNewItem(newEmail.Subject, "outflow");
-                            //        break;
-                            //    case 4:
-                            //        rowInflow++;
-                            //        rowInHands++;
-                            //        raport.insertDataExcelInflowInHands(raport.oSheet, rowInflow, rowInHands, newEmail, emailConversationAmount);
-                            //        endingCorrectList.addNewItem(newEmail.Subject, "inhands");
-                            //        endingCorrectList.addNewItem(newEmail.Subject, "inflow");
-                            //        toBeSavedWord.addNewItem(newEmail.Subject, "inhands");
-                            //        toBeSavedWord.addNewItem(newEmail.Subject, "inflow");
-                            //        break;
-                            //}
-                            // raport.oSheet.Columns.AutoFit();
-                            // raport.oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
                         }
                     }
 
-                    //raport.createCenterTables(raport.oSheet, rowInHands, rowInflow, rowOutflow);
-                    //raport.createExcelSumCategories(raport.oSheet, rowInHands, rowInflow, rowOutflow);
-                    //raport.oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
-                    //raport.oWB.Close(true);
-                    //raport.oXL.Quit();
-                    //raport.killExcel(raport.getExcelIDProcess());
+                    ExcelSheet raport = new ExcelSheet();
+                    raport.saveToExcel(OutputRaportFileName);
 
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                     path += "\\";
@@ -141,6 +103,7 @@ namespace OutlookAddIn1
                     path += ".docx";
                     endingCorrectList.WriteToTxtFile(path);
                     toBeSavedWord.WriteToWord(path);
+                    OurData.ClearData();
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
 

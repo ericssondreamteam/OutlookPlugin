@@ -133,6 +133,10 @@ namespace OutlookAddIn1
                         string msg = mailItem.Subject
                         + " in folder " + inFolder.Name + " Sender: " + mailItem.SenderName
                         + " Date: " + mailItem.ReceivedTime;
+                        if (mailItem.SenderName == "Karol Lasek" && mailItem.ReceivedTime > getInflowDate())
+                        {
+                            msg += " TYP: IN HANDS";
+                        }
                         Debug.WriteLine(msg);
                     }
                     // Continue recursion. 
@@ -146,25 +150,12 @@ namespace OutlookAddIn1
         {
             try
             {
-                /*Debug.WriteLine("\n");
-                Debug.WriteLine(newEmail.SenderName);
-                Debug.WriteLine(newEmail.Sender.Name.ToString());
-                Debug.WriteLine(newEmail.LastModificationTime);
-                Debug.WriteLine(newEmail.ReceivedTime);
-                Debug.WriteLine(newEmail.ReplyRecipients.Count.ToString());*/
-                //Debug.WriteLine(newEmail.SenderEmailAddress);
-                //Debug.WriteLine(newEmail.Subject);
-
                 Outlook.Conversation conv = newEmail.GetConversation();
                 Debug.WriteLine("Conversation Items from Root:");
-                // Obtain root items and enumerate the conversation. 
                 Outlook.SimpleItems simpleItems
                 = conv.GetRootItems();
                 foreach (object item in simpleItems)
                 {
-                    // In this example, only enumerate MailItem type. 
-                    // Other types such as PostItem or MeetingItem 
-                    // can appear in the conversation. 
                     if (item is Outlook.MailItem)
                     {
                         Outlook.MailItem mail = item
@@ -174,30 +165,19 @@ namespace OutlookAddIn1
                         string msg = mail.Subject
                         + " in folder " + inFolder.Name + " Sender: " + mail.SenderName
                         + " Date: " + mail.ReceivedTime;
+                        if (mail.ReceivedTime > getInflowDate())
+                        {
+                            msg += " TYP: INFLOW";
+                        }
+                        if(mail.SenderName == "Karol Lasek" && mail.ReceivedTime > getInflowDate())
+                        {
+                            msg += " TYP: IN HANDS";
+                        }
+                        
                         Debug.WriteLine(msg);
                     }
-                    // Call EnumerateConversation 
-                    // to access child nodes of root items. 
                     EnumerateConversation(item, conv);
                 }
-
-
-                /* Outlook.Conversation conv = newEmail.GetConversation();
-                 Outlook.Table table = conv.GetTable();
-                 Debug.WriteLine("Pobieramy maile z conwersacji NOWA");
-                 Debug.WriteLine("+++++++++++++++++++++++++++++++++++++");
-                 Array tableArray = table.GetArray(table.GetRowCount()) as Array;
-                 for (int i = 0; i <= tableArray.GetUpperBound(0); i++)
-                 {
-                     for (int j = 0; j <= tableArray.GetUpperBound(1); j++)
-                     {
-                         Debug.WriteLine(tableArray.GetValue(i, j));
-                         Debug.WriteLine(newEmail.SenderName);
-                     }
-                 }
-
-                 Debug.WriteLine("+++++++++++++++++++++++++++++++++++++");
-                 return table.GetRowCount();*/
                 return 1;
             }
             catch (Exception e)
@@ -213,11 +193,11 @@ namespace OutlookAddIn1
             int typ = 0;
             if (newEmail.Categories != null)
             {
-                if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
+                /*if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
                 {
                     typ = 1;
-                }
-                else if (newEmail.ReceivedTime > getInflowDate()) //inflow
+                }*/
+                if (newEmail.ReceivedTime > getInflowDate()) //inflow
                 {
                     typ = 2;
                 }

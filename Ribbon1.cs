@@ -75,32 +75,35 @@ namespace OutlookAddIn1
                     //Show how many times foreach is performed
                     OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
 
-                    var we = 2;
+                    //Delete duplicates from email in the same name or the same thread
                     emails = functions.emailsWithoutDuplicates(emails);
                     emails = functions.removeDuplicateOneMoreTime(emails);
+
+                    //Iterate all emails
                     foreach (MailItem newEmail in emails)
                     {
-                        //OurDebug.AppendInfo("Przed odczytem kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());//#endif
                         List<bool> categoryList;
+                        //Divide on category
                         if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                         {
-                            //OurDebug.AppendInfo("Po odczycie kategorii:", newEmail.Subject, newEmail.Categories, newEmail.ReceivedTime.ToString());
+                            //Get inflow date and set to category
                             DateTime friday = functions.getInflowDate();
                             categoryList = functions.selectCorrectEmailType(newEmail);
                             OurData.addNewItem(newEmail.Subject, categoryList);
                         }
                     }
 
+                    //Start create excel raport
                     ExcelSheet raport = new ExcelSheet();
                     raport.saveToExcel(OutputRaportFileName);
 
-                    string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                    path += "\\";
-                    path += OutputRaportFileName;
-                    path += ".docx";
+                    //Save to txt file and word
+                    string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + OutputRaportFileName + ".docx";
                     endingCorrectList.WriteToTxtFile(path);
                     toBeSavedWord.WriteToWord(path);
                     OurData.ClearData();
+
+                    //Raport is saved
                     MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
 
@@ -127,8 +130,6 @@ namespace OutlookAddIn1
                 }
             }
         }
-
-
         #region IRibbonExtensibility Members
         public string GetCustomUI(string ribbonID)
         {

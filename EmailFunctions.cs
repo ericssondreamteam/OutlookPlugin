@@ -23,7 +23,6 @@ namespace OutlookAddIn1
         Debuger OurDebug;
         public EmailFunctions(Debuger OurDebug)
         {
-            var aaa = 2;
             this.OurDebug = OurDebug;
         }
         public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
@@ -46,10 +45,7 @@ namespace OutlookAddIn1
             today = today.AddDays(-2).AddHours(17);
             return today;
         }
-
-
-        void EnumerateConversation(object item,
-         Outlook.Conversation conversation, int i, List<bool> categoryList)
+        void EnumerateConversation(object item, Outlook.Conversation conversation, int i, List<bool> categoryList)
         {
             Outlook.SimpleItems items =
             conversation.GetChildren(item);
@@ -66,9 +62,7 @@ namespace OutlookAddIn1
                         myItem as Outlook.MailItem;
                         Outlook.Folder inFolder =
                         mailItem.Parent as Outlook.Folder;
-                        string msg = mailItem.Subject
-                        + " in folder " + inFolder.Name + " Sender: " + mailItem.SenderName
-                        + " Date: " + mailItem.ReceivedTime;
+                        string msg = mailItem.Subject + " in folder " + inFolder.Name + " Sender: " + mailItem.SenderName + " Date: " + mailItem.ReceivedTime;
                         if(i == 0)
                         {
                             if (mailItem.ReceivedTime > getInflowDate())
@@ -95,8 +89,6 @@ namespace OutlookAddIn1
                 }
             }
         }
-
-
         public List<bool> selectCorrectEmailType(MailItem newEmail)
         {
             try
@@ -105,43 +97,49 @@ namespace OutlookAddIn1
                 categoryList.Add(false);
                 categoryList.Add(false);
                 categoryList.Add(false);
-
                 int i = 0;
+
                 Outlook.Conversation conv = newEmail.GetConversation();
                 Debug.WriteLine("Conversation Items from Root:");
-                Outlook.SimpleItems simpleItems
-                = conv.GetRootItems();
+                Outlook.SimpleItems simpleItems = conv.GetRootItems();
+
                 foreach (object item in simpleItems)
                 {
-                    if (item is Outlook.MailItem)
+                    try
                     {
-                        Outlook.MailItem mail = item as Outlook.MailItem;
-                        Outlook.Folder inFolder = mail.Parent as Outlook.Folder;
-                        string msg = mail.Subject + " in folder " + inFolder.Name + " Sender: " + mail.SenderName + " Date: " + mail.ReceivedTime;
-                        if (mail.ReceivedTime > getInflowDate())
+                        if (item is Outlook.MailItem)
                         {
-                            msg += " TYP: INFLOW";
-                            categoryList[0] = true;
+                            Outlook.MailItem mail = item as Outlook.MailItem;
+                            Outlook.Folder inFolder = mail.Parent as Outlook.Folder;
+                            string msg = mail.Subject + " in folder " + inFolder.Name + " Sender: " + mail.SenderName + " Date: " + mail.ReceivedTime;
+                            if (mail.ReceivedTime > getInflowDate())
+                            {
+                                msg += " TYP: INFLOW";
+                                categoryList[0] = true;
+                            }
+                            if (mail.SenderName.Equals(adminMail) && mail.ReceivedTime > getInflowDate())
+                            {
+                                msg += " TYP: IN HANDS";
+                                categoryList[1] = true;
+                            }
+                            Debug.WriteLine(msg);
+                            OurDebug.AppendInfo(msg);
+                            i++;
                         }
-                        if(mail.SenderName.Equals(adminMail) && mail.ReceivedTime > getInflowDate())
-                        {
-                            msg += " TYP: IN HANDS";
-                            categoryList[1] = true;
-                        }
-                        Debug.WriteLine(msg);
-                        OurDebug.AppendInfo(msg);
-                        i++;
+                        EnumerateConversation(item, conv, i, categoryList);
                     }
-                    EnumerateConversation(item, conv, i, categoryList);
+                    catch(Exception e)
+                    {
+                        Debug.WriteLine("Exception in read children and set categories");
+                        OurDebug.AppendInfo("Exception in read children and set categories");
+                    }
                 }
-                
                 if(categoryList[0] || categoryList[1])
                 {
                     Debug.WriteLine("INFLOW: "+categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
                     Debug.WriteLine("----------------------------------------------");
                     OurDebug.AppendInfo("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
                     OurDebug.AppendInfo("----------------------------------------------");
-                    //return categoryList;
                     return categoryList;
                 }
                 categoryList[2] = true;
@@ -149,7 +147,6 @@ namespace OutlookAddIn1
                 Debug.WriteLine("----------------------------------------------");
                 OurDebug.AppendInfo("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
                 OurDebug.AppendInfo("----------------------------------------------");
-                //return categoryList;
                 return categoryList;
             }
             catch (Exception e)
@@ -160,32 +157,6 @@ namespace OutlookAddIn1
             }
 
         }
-        //public int selectCorrectEmailType(MailItem newEmail)
-        //{
-        //    int typ = 0;
-        //    if (newEmail.Categories != null)
-        //    {
-        //        /*if (getConversationAmount(newEmail) > 1 && newEmail.ReceivedTime > getInflowDate()) //in hands
-        //        {
-        //            typ = 1;
-        //        }*/
-        //        if (newEmail.ReceivedTime > getInflowDate()) //inflow
-        //        {
-        //            typ = 2;
-        //        }
-        //        else if ((newEmail.ReceivedTime > getInflowDate().AddDays(-7)) && (newEmail.ReceivedTime < getInflowDate())) //outflow
-        //        {
-        //            typ = 3;
-        //        }
-        //        if (typ == 1) //inflow + in hands
-        //        {
-        //            typ = 4;
-        //        }
-        //    }
-        //    OurDebug.AppendInfo("Nadany typ:", typ.ToString());
-        //    return typ;
-        //}
-
         public List<MailItem> emailsWithoutDuplicates(List<MailItem> emails)
         {
             for (int i = 0; i < emails.Count; i++)
@@ -204,7 +175,6 @@ namespace OutlookAddIn1
         }
         public bool isMultipleCategoriesAndAnyOfTheireInterestedUs(string categories)
         {
-            //OurDebug.AppendInfo("Categories start:", categories);
             if (categories is null)
             {
                 return false;

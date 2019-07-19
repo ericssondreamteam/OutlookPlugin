@@ -232,10 +232,32 @@ namespace OutlookAddIn1
                         mailSubject2 = mailSubject2.Substring(3);
 
                     if (mailSubject1.Equals(mailSubject2))
-
                     {
                         emails.RemoveAt(j);
                         j--;
+                    }
+                    else
+                    {
+                        int mailOneSize = mailSubject1.Length;
+                        int mailTwoSize = mailSubject2.Length;
+                        if(mailOneSize > mailTwoSize)
+                        {
+                            String b = mailSubject2.Substring(mailSubject2.Length / 2);
+                            if (mailSubject1.Contains(b))
+                            {
+                                emails.RemoveAt(j);
+                                j--;
+                            }
+                        }
+                        else
+                        {
+                            String b = mailSubject1.Substring(mailSubject2.Length / 2);
+                            if (mailSubject2.Contains(b))
+                            {
+                                emails.RemoveAt(j);
+                                j--;
+                            }
+                        }
                     }
                 }
             }

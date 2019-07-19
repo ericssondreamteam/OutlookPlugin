@@ -238,31 +238,56 @@ namespace OutlookAddIn1
                     }
                     else
                     {
-                        int mailOneSize = mailSubject1.Length;
-                        int mailTwoSize = mailSubject2.Length;
-                        if(mailOneSize > mailTwoSize)
+                        if(obliczPodobienstwo(mailSubject1, mailSubject2) > 0.7)
                         {
-                            String b = mailSubject2.Substring(mailSubject2.Length / 2);
-                            if (mailSubject1.Contains(b))
-                            {
-                                emails.RemoveAt(j);
-                                j--;
-                            }
-                        }
-                        else
-                        {
-                            String b = mailSubject1.Substring(mailSubject2.Length / 2);
-                            if (mailSubject2.Contains(b))
-                            {
-                                emails.RemoveAt(j);
-                                j--;
-                            }
+                            emails.RemoveAt(j);
+                            j--;
                         }
                     }
                 }
             }
             return emails;
         }
+
+        private static int levenshtein(String s, String t)
+        {
+            int i, j, m, n, cost;
+            int[,] d;
+
+            m = s.Length;
+            n = t.Length;
+
+            d = new int[m + 1, n + 1];
+
+            for (i = 0; i <= m; i++)
+                d[i, 0] = i;
+            for (j = 1; j <= n; j++)
+                d[0, j] = j;
+
+            for (i = 1; i <= m; i++)
+            {
+                for (j = 1; j <= n; j++)
+                {
+                    if (s[i - 1] == t[j - 1])
+                        cost = 0;
+                    else
+                        cost = 1;
+
+                    d[i, j] = Math.Min(d[i - 1, j] + 1,   /* remove */
+                    Math.Min(d[i, j - 1] + 1,         /* insert */
+                    d[i - 1, j - 1] + cost));        /* change */
+                }
+            }
+
+            return d[m, n];
+        }
+
+        public static double obliczPodobienstwo(String lancuchPierwszy, String lancuchDrugi)
+        {
+            // obliczamy i zwracamy podobieństwo łańcuchów
+            return (1.0 / (1.0 + levenshtein(lancuchPierwszy, lancuchDrugi)));
+        }
+
         public int getOnlyEmailsForTwoWeeksAgo(int DebugForEachCounter, MailItem email1, Items oItems, int DebugCorrectEmailsCounter, List<MailItem> emails)
         {
             foreach (object collectionItem in oItems)

@@ -114,8 +114,11 @@ namespace OutlookAddIn1
                     }
                     OurData.ClearData();
                     DebugForEachCounter = 0;
-                    //Raport is saved
-                    OurDebug.AppendInfo("Your raport is SAVED :D");
+                    checkExcel = false;
+                    checkWord = false;
+                    OurDebug.Disable();
+        //Raport is saved
+        OurDebug.AppendInfo("Your raport is SAVED :D");
 
                 }
                 else

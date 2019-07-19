@@ -233,11 +233,11 @@ namespace OutlookAddIn1
             {
                 try
                 {
-                    DebugForEachCounter++;
+                    
                     email1 = collectionItem as MailItem;
                     if (email1 != null)
                     {
-                        
+                        DebugForEachCounter++;
                         OurDebug.AppendInfo("Email  ", DebugCorrectEmailsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());
 
                         if (email1.ReceivedTime > getInflowDate().AddDays(-7))

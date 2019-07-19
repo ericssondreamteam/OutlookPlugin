@@ -263,7 +263,7 @@ namespace OutlookAddIn1
                     }
                     else
                     {
-                        var a = mailSubject2.Substring(mailSubject1.Length / 2);
+                        var a = mailSubject2.Substring(mailSubject2.Length / 2);
                         if (mailSubject1.EndsWith(a))
                         {
                             emails.RemoveAt(j);

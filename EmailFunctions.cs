@@ -187,7 +187,7 @@ namespace OutlookAddIn1
                 string[] categoriesList = categories.Split(',');
                 foreach (var cat in categoriesList)
                 {   
-                    if (!cat.Equals("noresponsenecessary") && !cat.Equals("unknown") && !cat.Equals(""))
+                    if (!cat.Equals("noresponsenecessary") && !cat.Equals("unknown") && !cat.Equals("") && !cat.Equals("wow"))
                     {
                         return true;
                     }

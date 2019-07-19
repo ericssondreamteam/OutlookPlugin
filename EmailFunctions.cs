@@ -12,6 +12,7 @@ namespace OutlookAddIn1
     {
         public string adminMail = "NC Mailbox";
         Debuger OurDebug;
+       
         public EmailFunctions(Debuger OurDebug)
         {
             this.OurDebug = OurDebug;
@@ -35,6 +36,22 @@ namespace OutlookAddIn1
             DateTime today = GetFirstDayOfWeek(DateTime.Today);
             today = today.AddDays(-2).AddHours(17);
             return today;
+        }
+
+        public void choiceOfFileFormat(List<bool> checkList)
+        {
+            if (checkList[0])
+            {
+                OurDebug.Enable();
+            }
+            if (checkList[1])
+            {
+                Ribbon1.checkExcel = true;
+            }
+            if (checkList[2])
+            {
+                Ribbon1.checkWord = true;
+            }
         }
         void EnumerateConversation(object item, Outlook.Conversation conversation, int i, List<bool> categoryList)
         {

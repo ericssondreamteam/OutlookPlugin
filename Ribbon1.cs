@@ -20,8 +20,8 @@ namespace OutlookAddIn1
         ToSaveObject endingCorrectList = new ToSaveObject();
         WordClass toBeSavedWord = new WordClass();
         static public DataObject OurData = new DataObject();
-        public bool checkExcel = false;
-        public bool checkWord = false;
+        public static bool checkExcel = false;
+        public static bool checkWord = false;
         private int DebugForEachCounter = 0;
 
         public Ribbon1()
@@ -43,18 +43,7 @@ namespace OutlookAddIn1
                 //Window with checkboxes; debuger, excel, word
                 List<bool> checkList = Interaction.ShowDebugDialog("Debuger", "Excel", "Word", "CheckBoxes");
                 Debug.WriteLine(checkList[0] + "" + checkList[1] + "" + checkList[2]);
-                if (checkList[0])
-                {
-                    OurDebug.Enable();
-                }
-                if (checkList[1])
-                {
-                    checkExcel = true;
-                }
-                if (checkList[2])
-                {
-                    checkWord = true;
-                }
+                functions.choiceOfFileFormat(checkList);
 
                 if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
                 {
@@ -112,21 +101,7 @@ namespace OutlookAddIn1
                     }
 
                     //Start create excel raport
-                    if(checkExcel)
-                    {
-                        ExcelSheet raport = new ExcelSheet();
-                        raport.saveToExcel(OutputRaportFileName);
-                        MessageBox.Show("Your raport (Excel) is saved in: " + OutputRaportFileName);
-                    }                    
-
-                    //Save to txt file and word
-                    if(checkWord)
-                    {
-                        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + OutputRaportFileName + ".docx";
-                        endingCorrectList.WriteToTxtFile(path);
-                        toBeSavedWord.WriteToWord(path);
-                        MessageBox.Show("Your raport (Word) is saved in: " + OutputRaportFileName);
-                    }
+                    
                     OurData.ClearData();
                     //Raport is saved
                     OurDebug.AppendInfo("Your raport is SAVED :D");

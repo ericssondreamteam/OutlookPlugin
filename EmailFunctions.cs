@@ -236,29 +236,6 @@ namespace OutlookAddIn1
                         emails.RemoveAt(j);
                         j--;
                     }
-                    else
-                    {
-                        int mailOneSize = mailSubject1.Length;
-                        int mailTwoSize = mailSubject2.Length;
-                        if(mailOneSize > mailTwoSize)
-                        {
-                            String b = mailSubject2.Substring(mailSubject2.Length / 2);
-                            if (mailSubject1.Contains(b))
-                            {
-                                emails.RemoveAt(j);
-                                j--;
-                            }
-                        }
-                        else
-                        {
-                            String b = mailSubject1.Substring(mailSubject2.Length / 2);
-                            if (mailSubject2.Contains(b))
-                            {
-                                emails.RemoveAt(j);
-                                j--;
-                            }
-                        }
-                    }
                 }
             }
             return emails;

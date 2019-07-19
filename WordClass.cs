@@ -44,7 +44,7 @@ namespace OutlookAddIn1
                 WriteOutflowMails(document);
 
                 /**********************************************************************************************/
-                //Save the document                 
+                //Save the document 
                 object filename = path;
                 document.SaveAs(ref filename, Word.WdSaveFormat.wdFormatDocumentDefault);
                 document.Close(true);

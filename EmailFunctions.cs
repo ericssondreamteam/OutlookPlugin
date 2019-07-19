@@ -249,13 +249,13 @@ namespace OutlookAddIn1
                 mailSubject1 = emails[i].Subject.Trim().Replace(" ","").ToLower();
                 for (int j = i + 1; j < emails.Count; j++)
                 {
-                    mailSubject2 = emails[j].Subject.Trim().Replace(" ", "").ToLower();
+                    mailSubject2 = emails[j].Subject.Trim().Replace(" ", "").ToLower();                    
                     //string mailSubject1;
                     //string mailSubject2;
                     if(mailSubject2.Length > mailSubject1.Length)
                     {
                         var a = mailSubject1.Substring(mailSubject1.Length / 2);
-                        if (mailSubject2.EndsWith(a))
+                        if (mailSubject2.Contains(a))
                         {
                             emails.RemoveAt(j);
                             j--;
@@ -264,7 +264,7 @@ namespace OutlookAddIn1
                     else
                     {
                         var a = mailSubject2.Substring(mailSubject2.Length / 2);
-                        if (mailSubject1.EndsWith(a))
+                        if (mailSubject1.Contains(a))
                         {
                             emails.RemoveAt(j);
                             j--;

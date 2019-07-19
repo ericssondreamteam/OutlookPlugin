@@ -7,7 +7,7 @@ namespace OutlookAddIn1
     class Debuger
     {
         private StringBuilder DebugerMsg = new StringBuilder();
-        private bool debugerStatus = false;
+        public bool debugerStatus = false;
         public bool IsEnable()
         {
             return debugerStatus;

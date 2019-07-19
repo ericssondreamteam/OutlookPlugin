@@ -5,15 +5,10 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
-using Excel = Microsoft.Office.Interop.Excel;
-using System.Globalization;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
 using System.Diagnostics;
-using System.Collections;
-using System.Threading;
-using System.Text;
 
 namespace OutlookAddIn1
 {
@@ -23,12 +18,11 @@ namespace OutlookAddIn1
         private Debuger OurDebug = new Debuger();
         private Office.IRibbonUI ribbon;
         ToSaveObject endingCorrectList = new ToSaveObject();
-        ToSaveObject toBeSavedTemp = new ToSaveObject();
-        ToSaveObject toBeSavedTemp1 = new ToSaveObject();
         WordClass toBeSavedWord = new WordClass();
         static public DataObject OurData = new DataObject();
-        private bool checkExcel = false;
-        private bool checkWord = false;
+        public bool checkExcel = false;
+        public bool checkWord = false;
+        private int DebugForEachCounter = 0;
 
         public Ribbon1()
         {
@@ -43,34 +37,23 @@ namespace OutlookAddIn1
                 string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
                 List<MailItem> emails = new List<MailItem>();
                 MailItem email1 = null;
-                int DebugForEachCounter = 0;
+                //int DebugForEachCounter = 0;
                 int DebugCorrectEmailsCounter = 0;
 
+                //Window with checkboxes; debuger, excel, word
                 List<bool> checkList = Interaction.ShowDebugDialog("Debuger", "Excel", "Word", "CheckBoxes");
                 Debug.WriteLine(checkList[0] + "" + checkList[1] + "" + checkList[2]);
                 if (checkList[0])
                 {
                     OurDebug.Enable();
                 }
-                else
-                {
-                    OurDebug.Disable();
-                }
                 if (checkList[1])
                 {
                     checkExcel = true;
                 }
-                else
-                {
-                    checkExcel = false;
-                }
                 if (checkList[2])
                 {
                     checkWord = true;
-                }
-                else
-                {
-                    checkWord = false;
                 }
 
                 if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
@@ -90,7 +73,7 @@ namespace OutlookAddIn1
                     OurDebug.AppendInfo("\n\n ************************MAILS*******************\n\n");
 
                     //Get only mails from two weeks ago
-                    functions.getOnlyEmailsForTwoWeeksAgo(DebugForEachCounter, email1, oItems, DebugCorrectEmailsCounter, emails);
+                    DebugForEachCounter = functions.getOnlyEmailsForTwoWeeksAgo(DebugForEachCounter, email1, oItems, DebugCorrectEmailsCounter, emails);
 
                     //Show how many times foreach is performed
                     OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
@@ -133,6 +116,7 @@ namespace OutlookAddIn1
                     {
                         ExcelSheet raport = new ExcelSheet();
                         raport.saveToExcel(OutputRaportFileName);
+                        MessageBox.Show("Your raport (Excel) is saved in: " + OutputRaportFileName);
                     }                    
 
                     //Save to txt file and word
@@ -140,11 +124,11 @@ namespace OutlookAddIn1
                     {
                         string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + OutputRaportFileName + ".docx";
                         endingCorrectList.WriteToTxtFile(path);
-                        toBeSavedWord.WriteToWord(path);                        
+                        toBeSavedWord.WriteToWord(path);
+                        MessageBox.Show("Your raport (Word) is saved in: " + OutputRaportFileName);
                     }
                     OurData.ClearData();
                     //Raport is saved
-                    MessageBox.Show("Your raport is saved in: " + OutputRaportFileName);
                     OurDebug.AppendInfo("Your raport is SAVED :D");
 
                 }

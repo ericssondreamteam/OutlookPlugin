@@ -227,7 +227,7 @@ namespace OutlookAddIn1
             }
             return emails;
         }
-        public void getOnlyEmailsForTwoWeeksAgo(int DebugForEachCounter, MailItem email1, Items oItems, int DebugCorrectEmailsCounter, List<MailItem> emails)
+        public int getOnlyEmailsForTwoWeeksAgo(int DebugForEachCounter, MailItem email1, Items oItems, int DebugCorrectEmailsCounter, List<MailItem> emails)
         {
             foreach (object collectionItem in oItems)
             {
@@ -256,6 +256,7 @@ namespace OutlookAddIn1
                     OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "FIRST TRY CATCH\n", "eMail number:", DebugCorrectEmailsCounter.ToString(), "\n", e.Message, "\n", e.StackTrace);
                 }
             }
+            return DebugForEachCounter;
         }
     }
 }

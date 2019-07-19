@@ -55,18 +55,15 @@ namespace OutlookAddIn1
         }
         void EnumerateConversation(object item, Outlook.Conversation conversation, int i, List<bool> categoryList)
         {
-            Outlook.SimpleItems items =
-            conversation.GetChildren(item);
+            SimpleItems items = conversation.GetChildren(item);
             if (items.Count > 0)
             {
                 foreach (object myItem in items)
                 {
                     if (myItem is Outlook.MailItem)
                     {
-                        Outlook.MailItem mailItem =
-                        myItem as Outlook.MailItem;
-                        Outlook.Folder inFolder =
-                        mailItem.Parent as Outlook.Folder;
+                        MailItem mailItem = myItem as MailItem;
+                        Folder inFolder = mailItem.Parent as Folder;
                         string msg = mailItem.Subject + " in folder " + inFolder.Name + " Sender: " + mailItem.SenderName + " Date: " + mailItem.ReceivedTime;
                         if(i == 0)
                         {
@@ -104,18 +101,18 @@ namespace OutlookAddIn1
                 categoryList.Add(false);
                 int i = 0;
 
-                Outlook.Conversation conv = newEmail.GetConversation();
+                Conversation conv = newEmail.GetConversation();
                 Debug.WriteLine("Conversation Items from Root:");
-                Outlook.SimpleItems simpleItems = conv.GetRootItems();
+                SimpleItems simpleItems = conv.GetRootItems();
 
                 foreach (object item in simpleItems)
                 {
                     try
                     {
-                        if(item is Outlook.MailItem)
+                        if(item is MailItem)
                         {
-                            Outlook.MailItem mail = item as Outlook.MailItem;
-                            Outlook.Folder inFolder = mail.Parent as Outlook.Folder;
+                            MailItem mail = item as MailItem;
+                            Folder inFolder = mail.Parent as Folder;
                             string msg = mail.Subject + " in folder " + inFolder.Name + " Sender: " + mail.SenderName + " Date: " + mail.ReceivedTime;
                             if (mail.ReceivedTime > getInflowDate())
                             {

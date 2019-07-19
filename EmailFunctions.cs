@@ -231,15 +231,11 @@ namespace OutlookAddIn1
                     mailSubject2 = mailSubject2.ToLower();
                     if (mailSubject2.Substring(0, 3).Equals("re:") || mailSubject2.Substring(0, 3).Equals("fw:"))
                         mailSubject2 = mailSubject2.Substring(3);
-
-                   
-                    //{
-                    //    if(obliczPodobienstwo(mailSubject1, mailSubject2) > 0.5)
-                    //    {
-                    //        emails.RemoveAt(j);
-                    //        j--;
-                    //    }
-                    //}
+                    if (mailSubject1.Equals(mailSubject2))
+                    {
+                        emails.RemoveAt(j);
+                        j--;
+                    }
                 }
             }
 

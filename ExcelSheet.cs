@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace OutlookAddIn1
 {
-    public class ExcelSheet
+    class ExcelSheet
     {
         private Hashtable myHashtable;
         public Excel.Application oXL;
@@ -126,36 +126,49 @@ namespace OutlookAddIn1
             }
         }
 
-        public void saveToExcel(string OutputRaportFileName)
+        public void SaveExcel(string OutputRaportFileName, Debuger ourDebug)
         {
-            var rowInHands = 4;
-            var rowInflow = 4;
-            var rowOutflow = 4;
+            saveToExcel(OutputRaportFileName, ourDebug);
+        }
 
-            foreach (string s in Ribbon1.OurData.inflow)
+        private void saveToExcel(string OutputRaportFileName, Debuger ourDebug)
+        {
+            try
             {
-                rowInflow++;
-                oSheet.Cells[rowInflow, 1] = s;
-            }
-            foreach (string s in Ribbon1.OurData.outflow)
-            {
-                rowOutflow++;
-                oSheet.Cells[rowOutflow, 2] = s;
-            }
-            foreach (string s in Ribbon1.OurData.inhands)
-            {
-                rowInHands++;
-                oSheet.Cells[rowInHands, 3] = s;
-            }
+                var rowInHands = 4;
+                var rowInflow = 4;
+                var rowOutflow = 4;
 
-            oSheet.Columns.AutoFit();
-            oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
-            createCenterTables(oSheet, rowInHands, rowInflow, rowOutflow);
-            createExcelSumCategories(oSheet, rowInHands, rowInflow, rowOutflow);
-            oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
-            oWB.Close(true);
-            oXL.Quit();
-            killExcel(getExcelIDProcess());
+                foreach (string s in Ribbon1.OurData.inflow)
+                {
+                    rowInflow++;
+                    oSheet.Cells[rowInflow, 1] = s;
+                }
+                foreach (string s in Ribbon1.OurData.outflow)
+                {
+                    rowOutflow++;
+                    oSheet.Cells[rowOutflow, 2] = s;
+                }
+                foreach (string s in Ribbon1.OurData.inhands)
+                {
+                    rowInHands++;
+                    oSheet.Cells[rowInHands, 3] = s;
+                }
+
+                oSheet.Columns.AutoFit();
+                oSheet.Cells[4, 1].EntireRow.Font.Bold = true;
+                createCenterTables(oSheet, rowInHands, rowInflow, rowOutflow);
+                createExcelSumCategories(oSheet, rowInHands, rowInflow, rowOutflow);
+                oWB.SaveAs(OutputRaportFileName, Excel.XlFileFormat.xlOpenXMLStrictWorkbook);
+                oWB.Close(true);
+                oXL.Quit();
+                killExcel(getExcelIDProcess());
+            }
+            catch(Exception ex)
+            {
+                ourDebug.SaveDebugInfoToFile("Problem with saveToExcel function. \n" + ex.StackTrace);
+            }
+            
         }
     }
 }

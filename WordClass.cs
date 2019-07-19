@@ -9,11 +9,11 @@ namespace OutlookAddIn1
     class WordClass
     {
 
-        public void WriteToWord(string path)
+        public void WriteToWord(string path, Debuger OurDebug)
         {
-            CreateDocument(path);
+            CreateDocument(path, OurDebug);
         }
-        private void CreateDocument(string path)
+        private void CreateDocument(string path, Debuger OurDebug)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace OutlookAddIn1
                 //Create an instance for word app              
                 Word.Application winword = new Word.Application();
                 //Set animation status for word application  
-                winword.ShowAnimation = false;
+                //winword.ShowAnimation = false;
                 //Set status for word application is to be visible or not.  
                 winword.Visible = false;
                 //Create a missing variable for missing value  
@@ -46,16 +46,15 @@ namespace OutlookAddIn1
                 /**********************************************************************************************/
                 //Save the document                 
                 object filename = path;
-                document.SaveAs2(ref filename);
-                document.Close(ref missing, ref missing, ref missing);
-                document = null;
-                winword.Quit(ref missing, ref missing, ref missing);
+                document.SaveAs(ref filename, Word.WdSaveFormat.wdFormatDocumentDefault);
+                document.Close(true);
+                winword.Quit();
                 Marshal.ReleaseComObject(winword);
 
             }
             catch (Exception ex)
             {
-
+                OurDebug.SaveDebugInfoToFile("Problem with createDocument Word. \n" + ex.StackTrace);
             }
         }
         void WriteMainHeader(string header, Word.Document document)

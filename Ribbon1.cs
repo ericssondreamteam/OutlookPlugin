@@ -102,13 +102,13 @@ namespace OutlookAddIn1
                     if (checkExcel)
                     {
                         ExcelSheet raport = new ExcelSheet();
-                        raport.saveToExcel(OutputRaportFileName);
+                        raport.SaveExcel(OutputRaportFileName, OurDebug);
                     }
                     //Save to txt file and word 
                     if (checkWord)
                     {
                         string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + OutputRaportFileName + ".docx";
-                        toBeSavedWord.WriteToWord(path);
+                        toBeSavedWord.WriteToWord(path, OurDebug);
                     }
                     if(checkExcel)
                         MessageBox.Show("Your raport (Excel) is saved in: " + OutputRaportFileName);

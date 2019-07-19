@@ -252,12 +252,26 @@ namespace OutlookAddIn1
                     mailSubject2 = emails[j].Subject.Trim().Replace(" ", "").ToLower();
                     //string mailSubject1;
                     //string mailSubject2;
-
-                    if (mailSubject1.Equals(mailSubject2))
+                    if(mailSubject2.Length > mailSubject1.Length)
                     {
-                        emails.RemoveAt(j);
-                        j--;
+                        var a = mailSubject1.Substring(mailSubject1.Length / 2);
+                        if (mailSubject2.EndsWith(a))
+                        {
+                            emails.RemoveAt(j);
+                            j--;
+                        }
                     }
+                    else
+                    {
+                        var a = mailSubject2.Substring(mailSubject1.Length / 2);
+                        if (mailSubject1.EndsWith(a))
+                        {
+                            emails.RemoveAt(j);
+                            j--;
+                        }
+                    }
+                   
+
                 }
 
             }

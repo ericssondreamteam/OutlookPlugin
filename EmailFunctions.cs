@@ -132,7 +132,7 @@ namespace OutlookAddIn1
                     }
                     catch(Exception e)
                     {
-                        Debug.WriteLine("Exception in read children and set categories");
+                        Debug.WriteLine("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Exception in read children and set categories");
                         OurDebug.AppendInfo("Exception in read children and set categories");
                     }
                 }
@@ -154,7 +154,7 @@ namespace OutlookAddIn1
             }
             catch (Exception e)
             {
-                OurDebug.AppendInfo("Blad w liczbie konwersacji; funkcja getConversationAmount()");
+                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Blad w liczbie konwersacji; funkcja getConversationAmount()\n",e.Message,"\n",e.StackTrace);
                 Debug.WriteLine("Blad w liczbie konwersacji; funkcja getConversationAmount()");
                 return null;
             }
@@ -180,7 +180,7 @@ namespace OutlookAddIn1
             }
             catch(Exception ex)
             {
-                OurDebug.AppendInfo("Blad w usuwaniu duplikatow; brak dostepu do ConversationID");
+                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Blad w usuwaniu duplikatow; brak dostepu do ConversationID\n",ex.Message,"\n",ex.StackTrace);
                 Debug.WriteLine("Blad w usuwaniu duplikatow; brak dostepu do ConversationID");
                 return emails;
             }
@@ -236,14 +236,14 @@ namespace OutlookAddIn1
                         emails.RemoveAt(j);
                         j--;
                     }
-                    else
-                    {
-                        if(obliczPodobienstwo(mailSubject1, mailSubject2) > 0.7)
-                        {
-                            emails.RemoveAt(j);
-                            j--;
-                        }
-                    }
+                    //else
+                    //{
+                    //    if(obliczPodobienstwo(mailSubject1, mailSubject2) > 0.5)
+                    //    {
+                    //        emails.RemoveAt(j);
+                    //        j--;
+                    //    }
+                    //}
                 }
             }
             return emails;

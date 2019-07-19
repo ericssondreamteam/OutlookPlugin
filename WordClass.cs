@@ -54,7 +54,7 @@ namespace OutlookAddIn1
             }
             catch (Exception ex)
             {
-                OurDebug.AppendInfo("Problem with createDocument Word. \n" + ex.StackTrace);
+                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Problem with createDocument Word. \n" , ex.StackTrace,"\n",ex.Message);
             }
         }
         void WriteMainHeader(string header, Word.Document document)

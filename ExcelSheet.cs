@@ -166,7 +166,7 @@ namespace OutlookAddIn1
             }
             catch(Exception ex)
             {
-                ourDebug.AppendInfo("Problem with saveToExcel function. \n" + ex.StackTrace);
+                ourDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Problem with saveToExcel function. \n" , ex.StackTrace,ex.Message);
             }
             
         }

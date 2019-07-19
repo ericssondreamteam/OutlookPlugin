@@ -73,7 +73,7 @@ namespace OutlookAddIn1
                     }
                     catch(Exception e)
                     {
-                        OurDebug.AppendInfo("************ERROR****************","Usuwanie duplikatow nie dziala");
+                        OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Usuwanie duplikatow nie dziala",e.StackTrace,"\n",e.Message);
                     }
 
                     //Iterate all emails
@@ -93,7 +93,7 @@ namespace OutlookAddIn1
                         }
                         catch (Exception ex)
                         {
-                            OurDebug.AppendInfo("Nasz try catch vol.3 - Problem w ID wiadomosci");
+                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Nasz try catch vol.3 - Problem w ID wiadomosci", ex.Message, "\n", ex.StackTrace);
                         }
                         
                     }

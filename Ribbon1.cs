@@ -103,20 +103,22 @@ namespace OutlookAddIn1
                     {
                         ExcelSheet raport = new ExcelSheet();
                         raport.saveToExcel(OutputRaportFileName);
-                        MessageBox.Show("Your raport (Excel) is saved in: " + OutputRaportFileName);
                     }
                     //Save to txt file and word 
                     if (checkWord)
                     {
                         string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + OutputRaportFileName + ".docx";
                         toBeSavedWord.WriteToWord(path);
-                        MessageBox.Show("Your raport (Word) is saved in: " + OutputRaportFileName);
                     }
+                    if(checkExcel)
+                        MessageBox.Show("Your raport (Excel) is saved in: " + OutputRaportFileName);
+                    if(checkWord)
+                        MessageBox.Show("Your raport (Word) is saved in: " + OutputRaportFileName);
+
                     OurData.ClearData();
                     DebugForEachCounter = 0;
                     checkExcel = false;
                     checkWord = false;
-                    OurDebug.Disable();
         //Raport is saved
         OurDebug.AppendInfo("Your raport is SAVED :D");
 
@@ -140,6 +142,7 @@ namespace OutlookAddIn1
                     path += "\\DebugInfoRaportPlugin.txt";
                     OurDebug.SaveDebugInfoToFile(path);
                     MessageBox.Show("Plik debugowania zapisany w " + path);
+                    OurDebug.Disable();
                 }
             }
         }

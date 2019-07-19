@@ -17,9 +17,8 @@ namespace OutlookAddIn1
     {
         private Debuger OurDebug = new Debuger();
         private Office.IRibbonUI ribbon;
-        ToSaveObject endingCorrectList = new ToSaveObject();
-        WordClass toBeSavedWord = new WordClass();
         static public DataObject OurData = new DataObject();
+        WordClass toBeSavedWord = new WordClass();
         public static bool checkExcel = false;
         public static bool checkWord = false;
         private int DebugForEachCounter = 0;
@@ -37,7 +36,6 @@ namespace OutlookAddIn1
                 string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
                 List<MailItem> emails = new List<MailItem>();
                 MailItem email1 = null;
-                //int DebugForEachCounter = 0;
                 int DebugCorrectEmailsCounter = 0;
 
                 //Window with checkboxes; debuger, excel, word
@@ -101,8 +99,21 @@ namespace OutlookAddIn1
                     }
 
                     //Start create excel raport
-                    
+                    if (checkExcel)
+                    {
+                        ExcelSheet raport = new ExcelSheet();
+                        raport.saveToExcel(OutputRaportFileName);
+                        MessageBox.Show("Your raport (Excel) is saved in: " + OutputRaportFileName);
+                    }
+                    //Save to txt file and word 
+                    if (checkWord)
+                    {
+                        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + OutputRaportFileName + ".docx";
+                        toBeSavedWord.WriteToWord(path);
+                        MessageBox.Show("Your raport (Word) is saved in: " + OutputRaportFileName);
+                    }
                     OurData.ClearData();
+                    DebugForEachCounter = 0;
                     //Raport is saved
                     OurDebug.AppendInfo("Your raport is SAVED :D");
 

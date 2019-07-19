@@ -213,6 +213,7 @@ namespace OutlookAddIn1
         {
             string mailSubject1;
             string mailSubject2;
+
             for (int i = 0; i < emails.Count - 1; i++)
             {
                 mailSubject1 = emails[i].Subject;
@@ -231,12 +232,7 @@ namespace OutlookAddIn1
                     if (mailSubject2.Substring(0, 3).Equals("re:") || mailSubject2.Substring(0, 3).Equals("fw:"))
                         mailSubject2 = mailSubject2.Substring(3);
 
-                    if (mailSubject1.Equals(mailSubject2))
-                    {
-                        emails.RemoveAt(j);
-                        j--;
-                    }
-                    //else
+                   
                     //{
                     //    if(obliczPodobienstwo(mailSubject1, mailSubject2) > 0.5)
                     //    {
@@ -246,7 +242,28 @@ namespace OutlookAddIn1
                     //}
                 }
             }
+
+
+            for (int i = 0; i < emails.Count - 1; i++)
+            {
+                mailSubject1 = emails[i].Subject.Trim().Replace(" ","").ToLower();
+                for (int j = i + 1; j < emails.Count; j++)
+                {
+                    mailSubject2 = emails[j].Subject.Trim().Replace(" ", "").ToLower();
+                    //string mailSubject1;
+                    //string mailSubject2;
+
+                    if (mailSubject1.Equals(mailSubject2))
+                    {
+                        emails.RemoveAt(j);
+                        j--;
+                    }
+                }
+
+            }
+
             return emails;
+
         }
 
         private static int levenshtein(String s, String t)

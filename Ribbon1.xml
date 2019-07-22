@@ -8,6 +8,9 @@
           <button id="tableButton" label="Create Raport"
                screentip="Table" onAction="OnTableButton"
                supertip="Inserts a table at the cursor location."/>
+          <button id="tableButton2" label="Create not 'NC MailBox' Raport"
+              screentip="Table" onAction="OnTableButtonCustom"
+              supertip="Custom Raport."/>
         </group>
       </tab>
     </tabs>

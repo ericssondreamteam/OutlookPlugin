@@ -53,7 +53,7 @@ namespace OutlookAddIn1
                 Ribbon1.checkWord = true;
             }
         }
-        void EnumerateConversation(object item, Outlook.Conversation conversation, int i, List<bool> categoryList, bool correctCategory)
+        void EnumerateConversation(object item, Outlook.Conversation conversation, int i, List<bool> categoryList, ref bool correctCategory)
         {
             SimpleItems items = conversation.GetChildren(item);
             if (items.Count > 0)
@@ -99,7 +99,7 @@ namespace OutlookAddIn1
                         i++;
                     }
              
-                    EnumerateConversation(myItem, conversation, i, categoryList, correctCategory);
+                    EnumerateConversation(myItem, conversation, i, categoryList, ref correctCategory);
                 }
             }
         }
@@ -146,7 +146,7 @@ namespace OutlookAddIn1
                             OurDebug.AppendInfo(msg);
                             i++;
                         }
-                        EnumerateConversation(item, conv, i, categoryList, correctCategory);
+                        EnumerateConversation(item, conv, i, categoryList, ref correctCategory);
                     }
                     catch(Exception e)
                     {

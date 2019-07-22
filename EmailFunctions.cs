@@ -10,7 +10,7 @@ namespace OutlookAddIn1
 {
     class EmailFunctions
     {
-        public string adminMail = "NC Mailbox";
+        public string adminMail = "Karol Lasek";
         Debuger OurDebug;
        
         public EmailFunctions(Debuger OurDebug)
@@ -53,7 +53,7 @@ namespace OutlookAddIn1
                 Ribbon1.checkWord = true;
             }
         }
-        void EnumerateConversation(object item, Outlook.Conversation conversation, int i, List<bool> categoryList)
+        void EnumerateConversation(object item, Outlook.Conversation conversation, int i, List<bool> categoryList, bool correctCategory)
         {
             SimpleItems items = conversation.GetChildren(item);
             if (items.Count > 0)
@@ -67,6 +67,11 @@ namespace OutlookAddIn1
                         string msg = mailItem.Subject + " in folder " + inFolder.Name + " Sender: " + mailItem.SenderName + " Date: " + mailItem.ReceivedTime;
                         if(i == 0)
                         {
+                            if (mailItem.ReceivedTime > getInflowDate().AddDays(-7) && 
+                                mailItem.SenderName.Equals(adminMail))
+                            {
+                                correctCategory = true;
+                            }
                             if (mailItem.ReceivedTime > getInflowDate())
                             {
                                 msg += " TYP: INFLOW";
@@ -75,6 +80,11 @@ namespace OutlookAddIn1
                         }
                         else
                         {
+                            if (mailItem.ReceivedTime > getInflowDate().AddDays(-7) && 
+                                mailItem.SenderName.Equals(adminMail))
+                            {
+                                correctCategory = true;
+                            }
                             if (mailItem.SenderName.Equals(adminMail) && mailItem.ReceivedTime > getInflowDate())
                             {
                                 msg += " TYP: IN HANDS";
@@ -87,7 +97,7 @@ namespace OutlookAddIn1
                         i++;
                     }
              
-                    EnumerateConversation(myItem, conversation, i, categoryList);
+                    EnumerateConversation(myItem, conversation, i, categoryList, correctCategory);
                 }
             }
         }
@@ -95,6 +105,7 @@ namespace OutlookAddIn1
         {
             try
             {
+                bool correctCategory = false;
                 List<bool> categoryList = new List<bool>();
                 categoryList.Add(false);
                 categoryList.Add(false);
@@ -114,6 +125,10 @@ namespace OutlookAddIn1
                             MailItem mail = item as MailItem;
                             Folder inFolder = mail.Parent as Folder;
                             string msg = mail.Subject + " in folder " + inFolder.Name + " Sender: " + mail.SenderName + " Date: " + mail.ReceivedTime;
+                            if(mail.ReceivedTime > getInflowDate().AddDays(-7) && mail.SenderName.Equals(adminMail))
+                            {
+                                correctCategory = true;
+                            }
                             if (mail.ReceivedTime > getInflowDate())
                             {
                                 msg += " TYP: INFLOW";
@@ -128,7 +143,7 @@ namespace OutlookAddIn1
                             OurDebug.AppendInfo(msg);
                             i++;
                         }
-                        EnumerateConversation(item, conv, i, categoryList);
+                        EnumerateConversation(item, conv, i, categoryList, correctCategory);
                     }
                     catch(Exception e)
                     {
@@ -144,7 +159,11 @@ namespace OutlookAddIn1
                     OurDebug.AppendInfo("----------------------------------------------");
                     return categoryList;
                 }
-                categoryList[2] = true;
+                if((!categoryList[0] && !categoryList[1]) && correctCategory)
+                {
+                    categoryList[2] = true;
+                }
+                
                 Debug.WriteLine("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
                 Debug.WriteLine("----------------------------------------------");
                 OurDebug.AppendInfo("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);

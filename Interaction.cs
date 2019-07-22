@@ -88,5 +88,39 @@ namespace OutlookAddIn1
             return checkList;
 
         }
+        public static string DialogGetMailName()
+        {
+            Form form = new Form();
+            Label label = new Label();
+            TextBox textBox = new TextBox();
+            Button buttonOk = new Button();
+
+            form.Text = "Nazwa Maila";
+            label.Text = "Podaj nazwe skrzynki: ";
+            textBox.Text = "NC Mailbox";
+            buttonOk.Text = "OK";
+            buttonOk.DialogResult = DialogResult.OK;
+
+            label.SetBounds(9, 20, 300, 13);
+            textBox.SetBounds(12, 50, 400, 20);
+            buttonOk.SetBounds(300, 100, 100, 30);
+
+            label.AutoSize = true;
+            textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
+            buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+            form.ClientSize = new Size(424, 150);
+            form.Controls.AddRange(new Control[] { label, textBox, buttonOk });
+            form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.StartPosition = FormStartPosition.CenterScreen;
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
+            form.AcceptButton = buttonOk;
+
+            form.ShowDialog();
+            string name = textBox.Text;
+            return name;
+        }
     }
 }

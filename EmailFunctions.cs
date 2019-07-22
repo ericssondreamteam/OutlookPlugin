@@ -10,7 +10,7 @@ namespace OutlookAddIn1
 {
     class EmailFunctions
     {
-        public string adminMail = "Karol Lasek";
+        public string adminMail = "NC Mailbox";
         Debuger OurDebug;
        
         public EmailFunctions(Debuger OurDebug)

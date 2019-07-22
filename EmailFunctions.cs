@@ -10,7 +10,7 @@ namespace OutlookAddIn1
 {
     class EmailFunctions
     {
-        public string adminMail = "Karol Lasek";
+        public string adminMail = "NC Mailbox";
         Debuger OurDebug;
        
         public EmailFunctions(Debuger OurDebug)
@@ -70,6 +70,7 @@ namespace OutlookAddIn1
                             if (mailItem.ReceivedTime > getInflowDate().AddDays(-7) && 
                                 mailItem.SenderName.Equals(adminMail))
                             {
+                                msg += " ++correctCategory++";
                                 correctCategory = true;
                             }
                             if (mailItem.ReceivedTime > getInflowDate())
@@ -83,6 +84,7 @@ namespace OutlookAddIn1
                             if (mailItem.ReceivedTime > getInflowDate().AddDays(-7) && 
                                 mailItem.SenderName.Equals(adminMail))
                             {
+                                msg += " ++correctCategory++";
                                 correctCategory = true;
                             }
                             if (mailItem.SenderName.Equals(adminMail) && mailItem.ReceivedTime > getInflowDate())
@@ -127,6 +129,7 @@ namespace OutlookAddIn1
                             string msg = mail.Subject + " in folder " + inFolder.Name + " Sender: " + mail.SenderName + " Date: " + mail.ReceivedTime;
                             if(mail.ReceivedTime > getInflowDate().AddDays(-7) && mail.SenderName.Equals(adminMail))
                             {
+                                msg += " ++correctCategory++";
                                 correctCategory = true;
                             }
                             if (mail.ReceivedTime > getInflowDate())
@@ -153,9 +156,9 @@ namespace OutlookAddIn1
                 }
                 if(categoryList[0] || categoryList[1])
                 {
-                    Debug.WriteLine("INFLOW: "+categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
+                    Debug.WriteLine("INFLOW: "+categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2] + " correctCategory: " + correctCategory);
                     Debug.WriteLine("----------------------------------------------");
-                    OurDebug.AppendInfo("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
+                    OurDebug.AppendInfo("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2] + " correctCategory: " + correctCategory);
                     OurDebug.AppendInfo("----------------------------------------------");
                     return categoryList;
                 }
@@ -164,9 +167,9 @@ namespace OutlookAddIn1
                     categoryList[2] = true;
                 }
                 
-                Debug.WriteLine("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
+                Debug.WriteLine("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2] + " correctCategory: " + correctCategory);
                 Debug.WriteLine("----------------------------------------------");
-                OurDebug.AppendInfo("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2]);
+                OurDebug.AppendInfo("INFLOW: " + categoryList[0] + " INHANDS: " + categoryList[1] + " OUTFLOW: " + categoryList[2] + " correctCategory: " + correctCategory);
                 OurDebug.AppendInfo("----------------------------------------------");
                
                 return categoryList;

@@ -43,5 +43,24 @@ namespace OutlookAddIn1
             outflowAmount = 0;
             inhandsAmount = 0;
         }
+        public void lastTuning()
+        {
+            removeReAndFW(inflow);
+            removeReAndFW(outflow);
+            removeReAndFW(inhands);
+        }
+        private void removeReAndFW(List<string> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                for (int j = i + 1; j < list.Count; j++)
+                {
+                    if (list[i].Trim().ToLower().StartsWith("re:") || list[i].Trim().ToLower().StartsWith("fw:"))
+                    {
+                        list[i] = list[i].Substring(4);
+                    }
+                }
+            }
+        }
     }
 }

@@ -97,7 +97,7 @@ namespace OutlookAddIn1
                         }
                         
                     }
-
+                   // OurData.lastTuning();
                     //Start create excel raport
                     if (checkExcel)
                     {

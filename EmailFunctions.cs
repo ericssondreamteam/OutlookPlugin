@@ -13,9 +13,10 @@ namespace OutlookAddIn1
         public string adminMail = "NC Mailbox";
         Debuger OurDebug;
        
-        public EmailFunctions(Debuger OurDebug)
+        public EmailFunctions(Debuger OurDebug,string mailName)
         {
             this.OurDebug = OurDebug;
+            adminMail = mailName;
         }
         public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
         {

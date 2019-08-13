@@ -189,6 +189,8 @@ namespace OutlookAddIn1
                     {
                         emails = functions.emailsWithoutDuplicates(emails);
                         emails = functions.removeDuplicateOneMoreTime(emails);
+                        //--------------> nowo dodane <------------------
+                        emails = functions.checkStringSimilarity(emails);
                     }
                     catch(Exception e)
                     {

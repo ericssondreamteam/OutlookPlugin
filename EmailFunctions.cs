@@ -12,7 +12,9 @@ namespace OutlookAddIn1
     {
         public string adminMail = "NC Mailbox";
         Debuger OurDebug;
-       
+        public static int distance = 0;
+        public static double percentage = 0.0;
+
         public EmailFunctions(Debuger OurDebug,string mailName)
         {
             this.OurDebug = OurDebug;
@@ -209,6 +211,88 @@ namespace OutlookAddIn1
             }
 
         }
+
+        public List<MailItem> checkStringSimilarity(List<MailItem> emails)
+        {
+            try
+            {
+                for (int i = 0; i < emails.Count; i++)
+                {
+                    for (int j = i + 1; j < emails.Count; j++)
+                    {
+                        percentage = similarity(emails[i].Subject, emails[j].Subject);
+                        Debug.WriteLine("------> checkStringSimilarity() <------ PERCENTAGE: " 
+                            + percentage + " DISTANCE: " + distance);
+                        //TERAZ CAŁA LOGIKA if else if oraz else
+
+                        /*if (emails[i].ConversationID.Equals(emails[j].ConversationID))
+                        {
+
+                            emails.RemoveAt(j);
+                            j--;
+                        }*/
+                    }
+                }
+                return emails;
+            }
+            catch (Exception ex)
+            {
+                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Blad w usuwaniu duplikatow; Sprawdzanie poprawnosci procentowej.\n", ex.Message, "\n", ex.StackTrace);
+                Debug.WriteLine("Blad w usuwaniu duplikatow; Sprawdzanie poprawnosci procentowej ");
+                return emails;
+            }
+
+        }
+
+        public double similarity(string s1, string s2)
+        {
+
+            string longer = s1, shorter = s2;
+            if (s1.Length < s2.Length)
+            { // longer should always have greater length
+                longer = s2; shorter = s1;
+            }
+            int longerLength = longer.Length;
+            if (longerLength == 0) { return 1.0; /* both strings are zero length */ }
+            distance = editDistance(longer, shorter);
+            return (longerLength - distance) / (double)longerLength;
+
+        }
+
+        public int editDistance(string s1, string s2)
+        {
+            s1 = s1.ToLower();
+            s2 = s2.ToLower();
+
+            int[] costs = new int[s2.Length + 1];
+            for (int i = 0; i <= s1.Length; i++)
+            {
+                int lastValue = i;
+                for (int j = 0; j <= s2.Length; j++)
+                {
+                    if (i == 0)
+                        costs[j] = j;
+                    else
+                    {
+                        if (j > 0)
+                        {
+                            int newValue = costs[j - 1];
+                            if (s1[i - 1] != s2[j - 1])
+                                newValue = Math.Min(Math.Min(newValue, lastValue),
+                                        costs[j]) + 1;
+                            costs[j - 1] = lastValue;
+                            lastValue = newValue;
+                        }
+                    }
+                }
+                if (i > 0)
+                    costs[s2.Length] = lastValue;
+            }
+            Console.WriteLine("DEBUG----------> " + costs[s2.Length]);
+            return costs[s2.Length];
+        }
+
+
         public bool isMultipleCategoriesAndAnyOfTheireInterestedUs(string categories)
         {
             if (categories is null)

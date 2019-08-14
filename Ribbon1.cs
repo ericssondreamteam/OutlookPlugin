@@ -40,7 +40,7 @@ namespace OutlookAddIn1
 
                 //Window with checkboxes; debuger, excel, word
                 List<bool> checkList = Interaction.ShowDebugDialog("Debuger", "Excel", "Word", "CheckBoxes");
-                Debug.WriteLine(checkList[0] + "" + checkList[1] + "" + checkList[2]);
+                Debug.WriteLine("---------------> (1) Checkboxes: " + checkList[0] + "" + checkList[1] + "" + checkList[2]);
                 functions.choiceOfFileFormat(checkList);
 
                 if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
@@ -93,7 +93,7 @@ namespace OutlookAddIn1
                         }
                         catch (Exception ex)
                         {
-                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Nasz try catch vol.3 - Problem w ID wiadomosci", ex.Message, "\n", ex.StackTrace);
+                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Ribbon1.cs line:96. Problem in ID message.", ex.Message, "\n", ex.StackTrace);
                         }
 
                     }
@@ -111,9 +111,9 @@ namespace OutlookAddIn1
                         toBeSavedWord.WriteToWord(path, OurDebug);
                     }
                     if (checkExcel)
-                        MessageBox.Show("Your raport (Excel) is saved in: " + OutputRaportFileName);
+                        MessageBox.Show("Your raport (Excel) is saved: " + OutputRaportFileName);
                     if (checkWord)
-                        MessageBox.Show("Your raport (Word) is saved in: " + OutputRaportFileName);
+                        MessageBox.Show("Your raport (Word) is saved: " + OutputRaportFileName);
 
                     OurData.ClearData();
                     DebugForEachCounter = 0;
@@ -132,7 +132,7 @@ namespace OutlookAddIn1
             catch (Exception e)
             {
                 MessageBox.Show("Some error occured during second analysis\nIf You turn on debugger please go there");
-                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "SECOND TRY CATCH\n", e.Message, "\n", e.StackTrace);
+                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Ribbon1.cs line:135. SECOND TRY CATCH\n", e.Message, "\n", e.StackTrace);
             }
             finally
             {
@@ -159,7 +159,7 @@ namespace OutlookAddIn1
 
                 //Window with checkboxes; debuger, excel, word
                 List<bool> checkList = Interaction.ShowDebugDialog("Debuger", "Excel", "Word", "CheckBoxes");
-                Debug.WriteLine(checkList[0] + "" + checkList[1] + "" + checkList[2]);
+                Debug.WriteLine("---------------> (1) Checkboxes: " + checkList[0] + "" + checkList[1] + "" + checkList[2]);
                 functions.choiceOfFileFormat(checkList);
 
                 if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
@@ -190,9 +190,9 @@ namespace OutlookAddIn1
                         emails = functions.emailsWithoutDuplicates(emails);
                         emails = functions.removeDuplicateOneMoreTime(emails);
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
-                        OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Usuwanie duplikatow nie dziala",e.StackTrace,"\n",e.Message);
+                        OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Usuwanie duplikatow nie dziala", e.StackTrace, "\n", e.Message);
                     }
 
                     //Iterate all emails
@@ -212,9 +212,9 @@ namespace OutlookAddIn1
                         }
                         catch (Exception ex)
                         {
-                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Nasz try catch vol.3 - Problem w ID wiadomosci", ex.Message, "\n", ex.StackTrace);
+                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Ribbon1.cs line:96. Problem in ID message.", ex.Message, "\n", ex.StackTrace);
                         }
-                        
+
                     }
                     OurData.lastTuning();
                     //Start create excel raport
@@ -229,17 +229,17 @@ namespace OutlookAddIn1
                         string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + OutputRaportFileName + ".docx";
                         toBeSavedWord.WriteToWord(path, OurDebug);
                     }
-                    if(checkExcel)
-                        MessageBox.Show("Your raport (Excel) is saved in: " + OutputRaportFileName);
-                    if(checkWord)
-                        MessageBox.Show("Your raport (Word) is saved in: " + OutputRaportFileName);
+                    if (checkExcel)
+                        MessageBox.Show("Your raport (Excel) is saved: " + OutputRaportFileName);
+                    if (checkWord)
+                        MessageBox.Show("Your raport (Word) is saved: " + OutputRaportFileName);
 
                     OurData.ClearData();
                     DebugForEachCounter = 0;
                     checkExcel = false;
                     checkWord = false;
-        //Raport is saved
-        OurDebug.AppendInfo("Your raport is SAVED :D");
+                    //Raport is saved
+                    OurDebug.AppendInfo("Your raport is SAVED :D");
 
                 }
                 else
@@ -251,7 +251,7 @@ namespace OutlookAddIn1
             catch (Exception e)
             {
                 MessageBox.Show("Some error occured during second analysis\nIf You turn on debugger please go there");
-                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "SECOND TRY CATCH\n", e.Message, "\n", e.StackTrace);
+                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Ribbon1.cs line:135. SECOND TRY CATCH\n", e.Message, "\n", e.StackTrace);
             }
             finally
             {

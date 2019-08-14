@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OutlookAddIn1
 {
-    class Debuger
+    public class Debuger
     {
         private StringBuilder DebugerMsg = new StringBuilder();
         public bool debugerStatus = false;

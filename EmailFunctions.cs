@@ -12,7 +12,7 @@ namespace OutlookAddIn1
     {
         public string adminMail = "NC Mailbox";
         Debuger OurDebug;
-       
+
         public EmailFunctions(Debuger OurDebug,string mailName)
         {
             this.OurDebug = OurDebug;
@@ -209,6 +209,7 @@ namespace OutlookAddIn1
             }
 
         }
+
         public bool isMultipleCategoriesAndAnyOfTheireInterestedUs(string categories)
         {
             if (categories is null)

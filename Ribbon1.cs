@@ -15,9 +15,9 @@ namespace OutlookAddIn1
     [ComVisible(true)]
     public class Ribbon1 : Office.IRibbonExtensibility
     {
-        private Debuger OurDebug = new Debuger();
+        static private Debuger OurDebug = new Debuger();
         private Office.IRibbonUI ribbon;
-        static public DataObject OurData = new DataObject();
+        static public DataObject OurData = new DataObject(OurDebug);
         WordClass toBeSavedWord = new WordClass();
         public static bool checkExcel = false;
         public static bool checkWord = false;

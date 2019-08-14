@@ -58,6 +58,10 @@ namespace OutlookAddIn1
             checkStringSimilarity(inflow);
             checkStringSimilarity(outflow);
             checkStringSimilarity(inhands);
+
+            inflowAmount = inflow.Count;
+            inhandsAmount = inhands.Count;
+            outflowAmount = outflow.Count;
         }
         private void removeReAndFW(List<string> list)
         {

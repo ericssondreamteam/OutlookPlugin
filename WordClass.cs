@@ -32,13 +32,13 @@ namespace OutlookAddIn1
 
                 string header = "NCMAILBOX tasks (week "; header += CurrentWeek(); header += "):";
                 WriteMainHeader(header, document);
-                string tym11 = "\tInflow: "; tym11 += Ribbon1.OurData.inflowAmount.ToString();
+                string tym11 = "Inflow: "; tym11 += Ribbon1.OurData.inflowAmount.ToString();
                 WriteSecondHeader(tym11, document);
                 WriteMails(document, Ribbon1.OurData.inflow);
-                string tym22 = "\tIn-hands: "; tym22 += Ribbon1.OurData.inhandsAmount.ToString();
+                string tym22 = "In-hands: "; tym22 += Ribbon1.OurData.inhandsAmount.ToString();
                 WriteSecondHeader(tym22, document);
                 WriteMails(document, Ribbon1.OurData.inhands);
-                string tym33 = "\tOutflow: "; tym33 += Ribbon1.OurData.outflowAmount.ToString();
+                string tym33 = "Outflow: "; tym33 += Ribbon1.OurData.outflowAmount.ToString();
                 WriteSecondHeader(tym33, document);
                 WriteMails(document, Ribbon1.OurData.outflow);
 
@@ -69,10 +69,11 @@ namespace OutlookAddIn1
 
         private void WriteSecondHeader(string header, Document document)
         {
+            string header2 = "     "; header2 += header;
             Paragraph objPara;
-            objPara = document.Paragraphs.Add();
+            objPara = document.Paragraphs.Add(); 
             objPara.Range.Font.Underline = WdUnderline.wdUnderlineNone;
-            objPara.Range.Text = header;
+            objPara.Range.Text = header2;
             objPara.Range.Font.Size = 11;
             objPara.Range.Font.Italic = 0;
             objPara.Range.InsertParagraphAfter();
@@ -82,7 +83,7 @@ namespace OutlookAddIn1
         {
             foreach (string s in list)
             {
-                string tym = "\t\t"; tym += s;
+                string tym = " \t"; tym += s;
                 Paragraph objPara;
                 objPara = document.Paragraphs.Add();
                 objPara.Range.Text = tym;

@@ -83,12 +83,12 @@ namespace OutlookAddIn1
             }
             int longerLength = longer.Length;
             if (longerLength == 0) { return 1.0; /* both strings are zero length */ }
-            distance = editDistance(longer, shorter);
+            distance = getLevenshteinDistance(longer, shorter);
             return (longerLength - distance) / (double)longerLength;
 
         }
 
-        public int editDistance(string s1, string s2)
+        public int getLevenshteinDistance(string s1, string s2)
         {
             s1 = s1.ToLower();
             s2 = s2.ToLower();
@@ -173,7 +173,7 @@ namespace OutlookAddIn1
             }
             catch (Exception ex)
             {
-                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Blad w usuwaniu duplikatow; Sprawdzanie poprawnosci procentowej.\n", ex.Message, "\n", ex.StackTrace);
+                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "DataObject.cs line:176. Blad w usuwaniu duplikatow; Sprawdzanie poprawnosci procentowej.\n", ex.Message, "\n", ex.StackTrace);
                 Debug.WriteLine("Blad w usuwaniu duplikatow; Sprawdzanie poprawnosci procentowej ");
                 return emails;
             }

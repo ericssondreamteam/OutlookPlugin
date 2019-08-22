@@ -11,12 +11,19 @@ namespace OutlookAddIn1
     class EmailFunctions
     {
         public string adminMail = "NC Mailbox";
+        public DateTime dateTime;
         Debuger OurDebug;
 
         public EmailFunctions(Debuger OurDebug,string mailName)
         {
             this.OurDebug = OurDebug;
             adminMail = mailName;
+        }
+        public EmailFunctions(Debuger OurDebug, string mailName, DateTime dateTime)
+        {
+            this.OurDebug = OurDebug;
+            adminMail = mailName;
+            this.dateTime = dateTime;
         }
         public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
         {
@@ -32,9 +39,9 @@ namespace OutlookAddIn1
                 firstDayInWeek = firstDayInWeek.AddDays(-1);
             return firstDayInWeek;
         }
-        public DateTime getInflowDate()
+        public DateTime getInflowDate(DateTime date)
         {
-            DateTime today = GetFirstDayOfWeek(DateTime.Today);
+            DateTime today = GetFirstDayOfWeek(date);
             today = today.AddDays(-2).AddHours(17);
             return today;
         }
@@ -68,13 +75,13 @@ namespace OutlookAddIn1
                         string msg = mailItem.Subject + " in folder " + inFolder.Name + " Sender: " + mailItem.SenderName + " Date: " + mailItem.ReceivedTime;
                         if(i == 0)
                         {
-                            if (mailItem.ReceivedTime > getInflowDate().AddDays(-7) && 
+                            if (mailItem.ReceivedTime > getInflowDate(dateTime).AddDays(-7) && 
                                 mailItem.SenderName.Equals(adminMail))
                             {
                                 msg += " ++correctCategory++";
                                 correctCategory = true;
                             }
-                            if (mailItem.ReceivedTime > getInflowDate())
+                            if (mailItem.ReceivedTime > getInflowDate(dateTime))
                             {
                                 msg += " TYP: INFLOW";
                                 categoryList[0] = true;
@@ -82,13 +89,13 @@ namespace OutlookAddIn1
                         }
                         else
                         {
-                            if (mailItem.ReceivedTime > getInflowDate().AddDays(-7) && 
+                            if (mailItem.ReceivedTime > getInflowDate(dateTime).AddDays(-7) && 
                                 mailItem.SenderName.Equals(adminMail))
                             {
                                 msg += " ++correctCategory++";
                                 correctCategory = true;
                             }
-                            if (mailItem.SenderName.Equals(adminMail) && mailItem.ReceivedTime > getInflowDate())
+                            if (mailItem.SenderName.Equals(adminMail) && mailItem.ReceivedTime > getInflowDate(dateTime))
                             {
                                 msg += " TYP: IN HANDS";
                                 categoryList[1] = true;
@@ -128,17 +135,17 @@ namespace OutlookAddIn1
                             MailItem mail = item as MailItem;
                             Folder inFolder = mail.Parent as Folder;
                             string msg = mail.Subject + " in folder " + inFolder.Name + " Sender: " + mail.SenderName + " Date: " + mail.ReceivedTime;
-                            if(mail.ReceivedTime > getInflowDate().AddDays(-7) && mail.SenderName.Equals(adminMail))
+                            if(mail.ReceivedTime > getInflowDate(dateTime).AddDays(-7) && mail.SenderName.Equals(adminMail))
                             {
                                 msg += " ++correctCategory++";
                                 correctCategory = true;
                             }
-                            if (mail.ReceivedTime > getInflowDate())
+                            if (mail.ReceivedTime > getInflowDate(dateTime))
                             {
                                 msg += " TYP: INFLOW";
                                 categoryList[0] = true;
                             }
-                            if (mail.SenderName.Equals(adminMail) && mail.ReceivedTime > getInflowDate())
+                            if (mail.SenderName.Equals(adminMail) && mail.ReceivedTime > getInflowDate(dateTime))
                             {
                                 msg += " TYP: IN HANDS";
                                 categoryList[1] = true;
@@ -352,7 +359,7 @@ namespace OutlookAddIn1
                         DebugForEachCounter++;
                         OurDebug.AppendInfo("Email  ", DebugCorrectEmailsCounter.ToString(), ": ", email1.Subject, email1.ReceivedTime.ToString());
 
-                        if (email1.ReceivedTime > getInflowDate().AddDays(-7))
+                        if (email1.ReceivedTime > getInflowDate(dateTime).AddDays(-7))
                         {
                             DebugCorrectEmailsCounter++;
                             emails.Add(email1);

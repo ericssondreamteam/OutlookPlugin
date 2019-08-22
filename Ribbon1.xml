@@ -11,6 +11,9 @@
           <button id="tableButton2" label="Create not 'NC MailBox' Raport"
               screentip="Table" onAction="OnTableButtonCustom"
               supertip="Custom Raport."/>
+          <button id="tableButton3" label="Create 'NC MailBox' Raport with your date"
+              screentip="Table" onAction="OnTableButtonCustomDate"
+              supertip="Custom Raport."/>
         </group>
       </tab>
     </tabs>

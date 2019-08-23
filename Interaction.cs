@@ -127,12 +127,16 @@ namespace OutlookAddIn1
             string raportDate;
             // Create a new DateTimePicker
             Form form = new Form();
+            form.Text = "Wybierz date";
             Button buttonOk = new Button();
             buttonOk.Text = "OK";
             buttonOk.DialogResult = DialogResult.OK;
           //  buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             buttonOk.SetBounds(300, 100, 100, 30);
             DateTimePicker dateTimePicker1 = new DateTimePicker();
+            dateTimePicker1.Format = DateTimePickerFormat.Custom;
+            dateTimePicker1.CustomFormat = "MM/dd/yyyy hh:mm:ss"; // Only use hours and minutes
+            
             dateTimePicker1.SetBounds(9, 20, 300, 13);
             form.Controls.AddRange(new Control[] { dateTimePicker1 ,buttonOk});
             form.ClientSize = new Size(424, 150);

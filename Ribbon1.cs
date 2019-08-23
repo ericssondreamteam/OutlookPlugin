@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -32,7 +32,10 @@ namespace OutlookAddIn1
             string mailName = Interaction.DialogGetMailName();
             string raportDate = Interaction.DialogGetDate();
             DateTime date = DateTime.Parse(raportDate);
-            main(mailName, date);
+            if (date > DateTime.Now)
+                MessageBox.Show("No chyba nie... \nData nie może być nowsza niż w rzeczywistości");
+            else
+                main(mailName, date);
         }
         public void OnTableButtonCustom(Office.IRibbonControl control)
         {

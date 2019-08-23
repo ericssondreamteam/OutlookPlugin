@@ -135,6 +135,8 @@ namespace OutlookAddIn1
             DateTimePicker dateTimePicker1 = new DateTimePicker();
             dateTimePicker1.SetBounds(9, 20, 300, 13);
             form.Controls.AddRange(new Control[] { dateTimePicker1 ,buttonOk});
+            form.ClientSize = new Size(424, 150);
+            form.StartPosition = FormStartPosition.CenterScreen;
             form.ShowDialog();
             raportDate = dateTimePicker1.Value.ToString();
             return raportDate;

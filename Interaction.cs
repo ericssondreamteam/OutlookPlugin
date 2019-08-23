@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -131,7 +130,7 @@ namespace OutlookAddIn1
             Button buttonOk = new Button();
             buttonOk.Text = "OK";
             buttonOk.DialogResult = DialogResult.OK;
-            buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+          //  buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             buttonOk.SetBounds(300, 100, 100, 30);
             DateTimePicker dateTimePicker1 = new DateTimePicker();
             dateTimePicker1.SetBounds(9, 20, 300, 13);

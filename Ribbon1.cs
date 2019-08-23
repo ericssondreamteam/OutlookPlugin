@@ -126,7 +126,7 @@ namespace OutlookAddIn1
                     if (checkWord)
                     {
                         string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + OutputRaportFileName + ".docx";
-                        toBeSavedWord.WriteToWord(path, OurDebug);
+                        toBeSavedWord.WriteToWord(path, OurDebug, date);
                     }
                     if (checkExcel)
                         MessageBox.Show("Your raport (Excel) is saved: " + OutputRaportFileName);

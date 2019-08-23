@@ -27,260 +27,35 @@ namespace OutlookAddIn1
         {
 
         }
+        public void OnTableButtonMailWithAnotherDate(Office.IRibbonControl control)
+        {
+            string mailName = Interaction.DialogGetMailName();
+            string raportDate = Interaction.DialogGetDate();
+            DateTime date = DateTime.Parse(raportDate);
+            main(mailName, date);
+        }
         public void OnTableButtonCustom(Office.IRibbonControl control)
         {
-            try
-            {
-                string mailName = Interaction.DialogGetMailName();
-                EmailFunctions functions = new EmailFunctions(OurDebug, mailName);
-                string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
-                List<MailItem> emails = new List<MailItem>();
-                MailItem email1 = null;
-                int DebugCorrectEmailsCounter = 0;
-
-                //Window with checkboxes; debuger, excel, word
-                List<bool> checkList = Interaction.ShowDebugDialog("Debuger", "Excel", "Word", "CheckBoxes");
-                Debug.WriteLine("---------------> (1) Checkboxes: " + checkList[0] + "" + checkList[1] + "" + checkList[2]);
-                functions.choiceOfFileFormat(checkList);
-
-                if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
-                {
-                    //Initialize outlook app
-                    Outlook.Application oApp = new Outlook.Application();
-                    NameSpace oNS = oApp.GetNamespace("mapi");
-                    MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder as MAPIFolder;
-                    OurDebug.AppendInfo("Wybrany folder ", oInbox2.Name);
-                    Items oItems = oInbox2.Items;
-                    OurDebug.AppendInfo("Email's amount", oItems.Count.ToString());
-
-                    //Sort all items
-                    oItems.Sort("[ReceivedTime]", true);
-
-                    //Debug info for mails
-                    OurDebug.AppendInfo("\n\n ************************MAILS*******************\n\n");
-
-                    //Get only mails from two weeks ago
-                    DebugForEachCounter = functions.getOnlyEmailsForTwoWeeksAgo(DebugForEachCounter, email1, oItems, DebugCorrectEmailsCounter, emails);
-
-                    //Show how many times foreach is performed
-                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
-
-                    //Delete duplicates from email in the same name or the same thread
-                    try
-                    {
-                        emails = functions.emailsWithoutDuplicates(emails);
-                        emails = functions.removeDuplicateOneMoreTime(emails);
-                    }
-                    catch (Exception e)
-                    {
-                        OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Usuwanie duplikatow nie dziala", e.StackTrace, "\n", e.Message);
-                    }
-
-                    //Iterate all emails
-                    foreach (MailItem newEmail in emails)
-                    {
-                        try
-                        {
-                            List<bool> categoryList;
-                            //Divide on category
-                            if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
-                            {
-                                //Get inflow date and set to category
-                                DateTime friday = functions.getInflowDate(DateTime.Today);
-                                categoryList = functions.selectCorrectEmailType(newEmail);
-                                OurData.addNewItem(newEmail.Subject, categoryList);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Ribbon1.cs line:96. Problem in ID message.", ex.Message, "\n", ex.StackTrace);
-                        }
-
-                    }
-                    OurData.lastTuning();
-                    //Start create excel raport
-                    if (checkExcel)
-                    {
-                        ExcelSheet raport = new ExcelSheet();
-                        raport.SaveExcel(OutputRaportFileName, OurDebug);
-                    }
-                    //Save to txt file and word 
-                    if (checkWord)
-                    {
-                        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + OutputRaportFileName + ".docx";
-                        toBeSavedWord.WriteToWord(path, OurDebug);
-                    }
-                    if (checkExcel)
-                        MessageBox.Show("Your raport (Excel) is saved: " + OutputRaportFileName);
-                    if (checkWord)
-                        MessageBox.Show("Your raport (Word) is saved: " + OutputRaportFileName);
-
-                    OurData.ClearData();
-                    DebugForEachCounter = 0;
-                    checkExcel = false;
-                    checkWord = false;
-                    //Raport is saved
-                    OurDebug.AppendInfo("Your raport is SAVED :D");
-
-                }
-                else
-                {
-                    MessageBox.Show("Operation cannceled");
-                }
-
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Some error occured during second analysis\nIf You turn on debugger please go there");
-                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Ribbon1.cs line:135. SECOND TRY CATCH\n", e.Message, "\n", e.StackTrace);
-            }
-            finally
-            {
-                if (OurDebug.IsEnable())
-                {
-                    string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                    path += "\\DebugInfoRaportPlugin.txt";
-                    OurDebug.SaveDebugInfoToFile(path);
-                    MessageBox.Show("Plik debugowania zapisany w " + path);
-                    OurDebug.Disable();
-                }
-            }
+            string mailName = Interaction.DialogGetMailName();
+            DateTime date= DateTime.Today; ;
+            main(mailName,date);
         }
 
         public void OnTableButton(Office.IRibbonControl control)
         {
-            try
-            {
-                
-                string mailDate = Interaction.DialogGetMailDateRaport();
-                DateTime date = DateTime.Parse(mailDate);
-                string OutputRaportFileName = "Raport_" + date.ToString("dd_MM_yyyy");
-
-                EmailFunctions functions = new EmailFunctions(OurDebug, "NC Mailbox", date);
-                List<MailItem> emails = new List<MailItem>();
-                MailItem email1 = null;
-                int DebugCorrectEmailsCounter = 0;
-
-                //Window with checkboxes; debuger, excel, word
-                List<bool> checkList = Interaction.ShowDebugDialog("Debuger", "Excel", "Word", "CheckBoxes");
-                Debug.WriteLine("---------------> (1) Checkboxes: " + checkList[0] + "" + checkList[1] + "" + checkList[2]);
-                functions.choiceOfFileFormat(checkList);
-
-                if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
-                {
-                    //Initialize outlook app
-                    Outlook.Application oApp = new Outlook.Application();
-                    NameSpace oNS = oApp.GetNamespace("mapi");
-                    MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder as MAPIFolder;
-                    OurDebug.AppendInfo("Wybrany folder ", oInbox2.Name);
-                    Items oItems = oInbox2.Items;
-                    OurDebug.AppendInfo("Email's amount", oItems.Count.ToString());
-
-                    //Sort all items
-                    oItems.Sort("[ReceivedTime]", true);
-
-                    //Debug info for mails
-                    OurDebug.AppendInfo("\n\n ************************MAILS*******************\n\n");
-
-                    //Get only mails from two weeks ago
-                    DebugForEachCounter = functions.getOnlyEmailsForTwoWeeksAgo(DebugForEachCounter, email1, oItems, DebugCorrectEmailsCounter, emails);
-
-                    //Show how many times foreach is performed
-                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
-
-                    //Delete duplicates from email in the same name or the same thread
-                    try
-                    {
-                        emails = functions.emailsWithoutDuplicates(emails);
-                        emails = functions.removeDuplicateOneMoreTime(emails);
-                    }
-                    catch (Exception e)
-                    {
-                        OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Usuwanie duplikatow nie dziala", e.StackTrace, "\n", e.Message);
-                    }
-
-                    //Iterate all emails
-                    foreach (MailItem newEmail in emails)
-                    {
-                        try
-                        {
-                            List<bool> categoryList;
-                            //Divide on category
-                            if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
-                            {
-                                //Get inflow date and set to category
-                                DateTime friday = functions.getInflowDate(DateTime.Today);
-                                categoryList = functions.selectCorrectEmailType(newEmail);
-                                OurData.addNewItem(newEmail.Subject, categoryList);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Ribbon1.cs line:96. Problem in ID message.", ex.Message, "\n", ex.StackTrace);
-                        }
-
-                    }
-                    OurData.lastTuning();
-                    //Start create excel raport
-                    if (checkExcel)
-                    {
-                        ExcelSheet raport = new ExcelSheet();
-                        raport.SaveExcel(OutputRaportFileName, OurDebug);
-                    }
-                    //Save to txt file and word 
-                    if (checkWord)
-                    {
-                        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + OutputRaportFileName + ".docx";
-                        toBeSavedWord.WriteToWord(path, OurDebug);
-                    }
-                    if (checkExcel)
-                        MessageBox.Show("Your raport (Excel) is saved: " + OutputRaportFileName);
-                    if (checkWord)
-                        MessageBox.Show("Your raport (Word) is saved: " + OutputRaportFileName);
-
-                    OurData.ClearData();
-                    DebugForEachCounter = 0;
-                    checkExcel = false;
-                    checkWord = false;
-                    //Raport is saved
-                    OurDebug.AppendInfo("Your raport is SAVED :D");
-
-                }
-                else
-                {
-                    MessageBox.Show("Operation cannceled");
-                }
-
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Some error occured during second analysis\nIf You turn on debugger please go there");
-                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Ribbon1.cs line:135. SECOND TRY CATCH\n", e.Message, "\n", e.StackTrace);
-            }
-            finally
-            {
-                if (OurDebug.IsEnable())
-                {
-                    string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                    path += "\\DebugInfoRaportPlugin.txt";
-                    OurDebug.SaveDebugInfoToFile(path);
-                    MessageBox.Show("Plik debugowania zapisany w " + path);
-                    OurDebug.Disable();
-                }
-            }
+            DateTime date=DateTime.Today; ;
+            main("NC Mailbox",date);
         }
-        public void OnTableButtonCustomDate(Office.IRibbonControl control)
+        void main(string mailBoxName,DateTime date)
         {
             try
             {
-                string dateString = Interaction.DialogGetMailDateRaport();
-                DateTime date = DateTime.Parse(dateString);
-                EmailFunctions functions = new EmailFunctions(OurDebug, "NC Mailbox", date);
+                EmailFunctions functions = new EmailFunctions(OurDebug, mailBoxName,date);
                 string OutputRaportFileName = "Raport_" + date.ToString("dd_MM_yyyy");
                 List<MailItem> emails = new List<MailItem>();
                 MailItem email1 = null;
                 int DebugCorrectEmailsCounter = 0;
-                
+
                 //Window with checkboxes; debuger, excel, word
                 List<bool> checkList = Interaction.ShowDebugDialog("Debuger", "Excel", "Word", "CheckBoxes");
                 Debug.WriteLine("---------------> (1) Checkboxes: " + checkList[0] + "" + checkList[1] + "" + checkList[2]);
@@ -329,7 +104,7 @@ namespace OutlookAddIn1
                             if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
                             {
                                 //Get inflow date and set to category
-                                DateTime friday = functions.getInflowDate(date);
+                                DateTime friday = functions.getInflowDate();
                                 categoryList = functions.selectCorrectEmailType(newEmail);
                                 OurData.addNewItem(newEmail.Subject, categoryList);
                             }

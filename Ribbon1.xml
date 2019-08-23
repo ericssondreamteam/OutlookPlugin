@@ -7,13 +7,13 @@
         
           <button id="tableButton" label="Create Raport"
                screentip="Table" onAction="OnTableButton"
-               supertip="Inserts a table at the cursor location."/>
+               supertip="Raport."/>
           <button id="tableButton2" label="Create not 'NC MailBox' Raport"
               screentip="Table" onAction="OnTableButtonCustom"
               supertip="Custom Raport."/>
-          <button id="tableButton3" label="Create 'NC MailBox' Raport with your date"
-              screentip="Table" onAction="OnTableButtonCustomDate"
-              supertip="Custom Raport."/>
+          <button id="tableButton3" label="Create Raport With Another Date"
+              screentip="Table" onAction="OnTableButtonMailWithAnotherDate"
+              supertip="Raport with aonther date."/>
         </group>
       </tab>
     </tabs>

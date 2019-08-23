@@ -8,8 +8,10 @@ namespace OutlookAddIn1
 {
     class WordClass
     {
-        public void WriteToWord(string path, Debuger OurDebug)
+        public DateTime dateTime;
+        public void WriteToWord(string path, Debuger OurDebug,DateTime date)
         {
+            dateTime = date;
             CreateDocument(path, OurDebug);
         }
         private void CreateDocument(string path, Debuger OurDebug)
@@ -96,7 +98,7 @@ namespace OutlookAddIn1
 
         private int CurrentWeek()
         {
-            DateTime d = DateTime.Now;
+            DateTime d = dateTime;
             CultureInfo cul = CultureInfo.CurrentCulture;
             int weekNum = cul.Calendar.GetWeekOfYear(
                 d,

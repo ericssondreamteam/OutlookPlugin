@@ -27,47 +27,28 @@ namespace OutlookAddIn1
         {
 
         }
-        public void OnTableButtonMailWithAnotherDate(Office.IRibbonControl control)
-        {
-            string mailName = Interaction.DialogGetMailName();
-            string raportDate = Interaction.DialogGetDate();
-            DateTime date = DateTime.Parse(raportDate);
-            if (date > DateTime.Now)
-                MessageBox.Show("No chyba nie... \nData nie może być nowsza niż w rzeczywistości");
-            else
-                main(mailName, date);
-        }
-        public void OnTableButtonCustom(Office.IRibbonControl control)
-        {
-            string mailName = Interaction.DialogGetMailName();
-            DateTime date= DateTime.Today; ;
-            main(mailName,date);
-        }
+       
+
 
         public void OnTableButton(Office.IRibbonControl control)
-        {
-            DateTime date=DateTime.Today; ;
-            main("NC Mailbox",date);
-        }
-        void main(string mailBoxName,DateTime date)
         {
             Settings set = new Settings();
             try
             {
-                string OutputRaportFileName = "Raport_" + date.ToString("dd_MM_yyyy");
+                string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
                 Form1 form3 = new Form1(ref OutputRaportFileName);
                 form3.ShowDialog();
                 if (Settings.ifWeDoRaport == DialogResult.OK)
                 {
-                    EmailFunctions functions = new EmailFunctions(OurDebug, Settings.boxMailName,DateTime.Parse(Settings.raportDate));
-                
-                List<MailItem> emails = new List<MailItem>();
-                MailItem email1 = null;
-                int DebugCorrectEmailsCounter = 0;    
-                                        
-                functions.choiceOfFileFormat(Settings.checkList);
+                    EmailFunctions functions = new EmailFunctions(OurDebug, Settings.boxMailName, DateTime.Parse(Settings.raportDate));
 
-                
+                    List<MailItem> emails = new List<MailItem>();
+                    MailItem email1 = null;
+                    int DebugCorrectEmailsCounter = 0;
+
+                    functions.choiceOfFileFormat(Settings.checkList);
+
+
                     //Initialize outlook app
                     Outlook.Application oApp = new Outlook.Application();
                     NameSpace oNS = oApp.GetNamespace("mapi");
@@ -131,7 +112,7 @@ namespace OutlookAddIn1
                     if (checkWord)
                     {
                         string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + Settings.OutputRaportFileName + ".docx";
-                        toBeSavedWord.WriteToWord(path, OurDebug, date);
+                        toBeSavedWord.WriteToWord(path, OurDebug, DateTime.Parse(Settings.raportDate));
                     }
                     if (checkExcel)
                         MessageBox.Show("Your raport (Excel) is saved: " + Settings.OutputRaportFileName);
@@ -169,6 +150,7 @@ namespace OutlookAddIn1
                 }
             }
         }
+       
         #region IRibbonExtensibility Members
         public string GetCustomUI(string ribbonID)
         {

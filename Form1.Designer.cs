@@ -89,6 +89,7 @@ namespace OutlookAddIn1
             this.label2.Size = new System.Drawing.Size(108, 20);
             this.label2.TabIndex = 4;
             this.label2.Text = "Raport Name:";
+            this.label2.Click += new System.EventHandler(this.Label2_Click);
             // 
             // textBox2
             // 
@@ -146,7 +147,7 @@ namespace OutlookAddIn1
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(34, 158);
+            this.label3.Location = new System.Drawing.Point(30, 158);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(87, 20);
             this.label3.TabIndex = 10;
@@ -157,7 +158,7 @@ namespace OutlookAddIn1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(419, 389);
+            this.ClientSize = new System.Drawing.Size(409, 389);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.checkBox3);

@@ -51,30 +51,23 @@ namespace OutlookAddIn1
         }
         void main(string mailBoxName,DateTime date)
         {
+            Settings set = new Settings();
             try
             {
-                Form1 form3 = new Form1();
-                form3.ShowDialog();
-            }
-            catch(Exception e)
-            {
-                MessageBox.Show("error");
-            }
-            try
-            {
-                EmailFunctions functions = new EmailFunctions(OurDebug, mailBoxName,date);
                 string OutputRaportFileName = "Raport_" + date.ToString("dd_MM_yyyy");
+                Form1 form3 = new Form1(ref OutputRaportFileName);
+                form3.ShowDialog();
+                if (Settings.ifWeDoRaport == DialogResult.OK)
+                {
+                    EmailFunctions functions = new EmailFunctions(OurDebug, Settings.boxMailName,DateTime.Parse(Settings.raportDate));
+                
                 List<MailItem> emails = new List<MailItem>();
                 MailItem email1 = null;
-                int DebugCorrectEmailsCounter = 0;
+                int DebugCorrectEmailsCounter = 0;    
+                                        
+                functions.choiceOfFileFormat(Settings.checkList);
 
-                //Window with checkboxes; debuger, excel, word
-                List<bool> checkList = Interaction.ShowDebugDialog("Debuger", "Excel", "Word", "CheckBoxes");
-                Debug.WriteLine("---------------> (1) Checkboxes: " + checkList[0] + "" + checkList[1] + "" + checkList[2]);
-                functions.choiceOfFileFormat(checkList);
-                Interaction.DialogAll("New document", "New document name:", ref OutputRaportFileName);
-                if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
-                {
+                
                     //Initialize outlook app
                     Outlook.Application oApp = new Outlook.Application();
                     NameSpace oNS = oApp.GetNamespace("mapi");
@@ -132,18 +125,18 @@ namespace OutlookAddIn1
                     if (checkExcel)
                     {
                         ExcelSheet raport = new ExcelSheet();
-                        raport.SaveExcel(OutputRaportFileName, OurDebug);
+                        raport.SaveExcel(Settings.OutputRaportFileName, OurDebug);
                     }
                     //Save to txt file and word 
                     if (checkWord)
                     {
-                        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + OutputRaportFileName + ".docx";
+                        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + Settings.OutputRaportFileName + ".docx";
                         toBeSavedWord.WriteToWord(path, OurDebug, date);
                     }
                     if (checkExcel)
-                        MessageBox.Show("Your raport (Excel) is saved: " + OutputRaportFileName);
+                        MessageBox.Show("Your raport (Excel) is saved: " + Settings.OutputRaportFileName);
                     if (checkWord)
-                        MessageBox.Show("Your raport (Word) is saved: " + OutputRaportFileName);
+                        MessageBox.Show("Your raport (Word) is saved: " + Settings.OutputRaportFileName);
 
                     OurData.ClearData();
                     DebugForEachCounter = 0;

@@ -12,26 +12,34 @@ namespace OutlookAddIn1
 {
     public partial class Form1 : Form
     {
-        public Form1()
+        public Form1(ref string OutputRaportFileName)
         {
             InitializeComponent();
-          // TextBox textBox =  (TextBox)this.Controls.Find("raportName", true)[0];
-           // textBox.Text = "test";
+            textBox2.Text = OutputRaportFileName;
         }
 
-        private void Label2_Click(object sender, EventArgs e)
-        {
 
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            
+            Settings.boxMailName = textBox1.Text;
+            Settings.raportDate = dateTimePicker1.Value.ToString();
+           
+            if (checkBox1.Checked)
+                Settings.checkList[0] = true;
+            if (checkBox2.Checked)
+                Settings.checkList[1] = true;
+            if (checkBox3.Checked)
+                Settings.checkList[2] = true;
+            Settings.ifWeDoRaport = DialogResult.OK;
+            Settings.OutputRaportFileName = textBox2.Text;
+            Close();
         }
 
-        private void DateTimePicker1_ValueChanged(object sender, EventArgs e)
+        private void Button2_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void TextBox2_TextChanged(object sender, EventArgs e)
-        {
-
+            Settings.ifWeDoRaport = DialogResult.Cancel;
         }
     }
 }

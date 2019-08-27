@@ -1,4 +1,6 @@
-﻿namespace OutlookAddIn1
+﻿using System.Windows.Forms;
+
+namespace OutlookAddIn1
 {
     partial class Form1
     {
@@ -48,6 +50,7 @@
             this.button1.TabIndex = 0;
             this.button1.Text = "OK";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // button2
             // 
@@ -57,6 +60,7 @@
             this.button2.TabIndex = 1;
             this.button2.Text = "Canncel";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.Button2_Click);
             // 
             // label1
             // 
@@ -71,7 +75,7 @@
             // 
             this.textBox1.Location = new System.Drawing.Point(169, 38);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 26);
+            this.textBox1.Size = new System.Drawing.Size(203, 26);
             this.textBox1.TabIndex = 3;
             this.textBox1.Text = "NC MailBox";
             // 
@@ -83,16 +87,14 @@
             this.label2.Size = new System.Drawing.Size(108, 20);
             this.label2.TabIndex = 4;
             this.label2.Text = "Raport Name:";
-            this.label2.Click += new System.EventHandler(this.Label2_Click);
             // 
             // textBox2
             // 
             this.textBox2.AccessibleName = "raportName";
             this.textBox2.Location = new System.Drawing.Point(169, 93);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 26);
+            this.textBox2.Size = new System.Drawing.Size(203, 26);
             this.textBox2.TabIndex = 5;
-            this.textBox2.TextChanged += new System.EventHandler(this.TextBox2_TextChanged);
             // 
             // checkBox1
             // 
@@ -133,11 +135,11 @@
             // dateTimePicker1
             // 
             this.dateTimePicker1.CustomFormat = "MM/dd/yyyy hh:mm:ss";
+            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dateTimePicker1.Location = new System.Drawing.Point(408, 38);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(343, 26);
             this.dateTimePicker1.TabIndex = 9;
-            this.dateTimePicker1.ValueChanged += new System.EventHandler(this.DateTimePicker1_ValueChanged);
             // 
             // Form1
             // 

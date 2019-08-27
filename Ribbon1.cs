@@ -22,12 +22,13 @@ namespace OutlookAddIn1
         public static bool checkExcel = false;
         public static bool checkWord = false;
         private int DebugForEachCounter = 0;
+        public static String fullInfoBox;
 
         public Ribbon1()
         {
 
         }
-       
+
 
 
         public void OnTableButton(Office.IRibbonControl control)
@@ -114,17 +115,15 @@ namespace OutlookAddIn1
                         string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + Settings.OutputRaportFileName + ".docx";
                         toBeSavedWord.WriteToWord(path, OurDebug, DateTime.Parse(Settings.raportDate));
                     }
-                    if (checkExcel)
-                        MessageBox.Show("Your raport (Excel) is saved: " + Settings.OutputRaportFileName);
-                    if (checkWord)
-                        MessageBox.Show("Your raport (Word) is saved: " + Settings.OutputRaportFileName);
 
-                    OurData.ClearData();
-                    DebugForEachCounter = 0;
-                    checkExcel = false;
-                    checkWord = false;
+                    if (checkExcel)
+                        fullInfoBox += "\n\nYour report (Excel) is saved: " + Settings.OutputRaportFileName + ".xlsx";
+                    if (checkWord)
+                        fullInfoBox += "\n\nYour report(Word) is saved: " + Settings.OutputRaportFileName + ".docx";
+
+
                     //Raport is saved
-                    OurDebug.AppendInfo("Your raport is SAVED :D");
+                    OurDebug.AppendInfo("Your report is SAVED :D");
 
                 }
                 else
@@ -145,12 +144,20 @@ namespace OutlookAddIn1
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                     path += "\\DebugInfoRaportPlugin.txt";
                     OurDebug.SaveDebugInfoToFile(path);
-                    MessageBox.Show("Plik debugowania zapisany w " + path);
+                    fullInfoBox += "\n\nYour debug file is saved: DebugInfoRaportPlugin.txt";
                     OurDebug.Disable();
                 }
+                Form2 summary = new Form2();
+                summary.ShowDialog();
+
+                OurData.ClearData();
+                DebugForEachCounter = 0;
+                checkExcel = false;
+                checkWord = false;
+                fullInfoBox = String.Empty;
             }
         }
-       
+
         #region IRibbonExtensibility Members
         public string GetCustomUI(string ribbonID)
         {

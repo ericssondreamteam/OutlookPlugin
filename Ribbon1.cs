@@ -53,6 +53,15 @@ namespace OutlookAddIn1
         {
             try
             {
+                Form1 form3 = new Form1();
+                form3.ShowDialog();
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show("error");
+            }
+            try
+            {
                 EmailFunctions functions = new EmailFunctions(OurDebug, mailBoxName,date);
                 string OutputRaportFileName = "Raport_" + date.ToString("dd_MM_yyyy");
                 List<MailItem> emails = new List<MailItem>();
@@ -63,7 +72,7 @@ namespace OutlookAddIn1
                 List<bool> checkList = Interaction.ShowDebugDialog("Debuger", "Excel", "Word", "CheckBoxes");
                 Debug.WriteLine("---------------> (1) Checkboxes: " + checkList[0] + "" + checkList[1] + "" + checkList[2]);
                 functions.choiceOfFileFormat(checkList);
-
+                Interaction.DialogAll("New document", "New document name:", ref OutputRaportFileName);
                 if (Interaction.SaveRaportDialog("New document", "New document name:", ref OutputRaportFileName) == DialogResult.OK)
                 {
                     //Initialize outlook app

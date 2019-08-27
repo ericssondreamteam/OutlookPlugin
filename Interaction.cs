@@ -145,6 +145,48 @@ namespace OutlookAddIn1
             raportDate = dateTimePicker1.Value.ToString();
             return raportDate;
         }
+
+        public static void DialogAll(string title, string promptText, ref string value)
+        {
+            Form form = new Form();
+            Label label = new Label();
+            TextBox textBox = new TextBox();
+            Button buttonOk = new Button();
+            Button buttonCancel = new Button();
+            DateTimePicker dateTimePicker1 = new DateTimePicker();
+
+            dateTimePicker1.Format = DateTimePickerFormat.Custom;
+            dateTimePicker1.CustomFormat = "MM/dd/yyyy hh:mm:ss"; // Only use hours and minutes
+
+            form.Text = title;
+            label.Text = promptText;
+            textBox.Text = value;
+
+            buttonOk.Text = "OK";
+            buttonCancel.Text = "Cancel";
+            buttonOk.DialogResult = DialogResult.OK;
+            buttonCancel.DialogResult = DialogResult.Cancel;
+            form.StartPosition = FormStartPosition.CenterScreen;
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
+            form.AcceptButton = buttonOk;
+            form.CancelButton = buttonCancel;
+
+            //ustawienie na sztywno pozycji
+            label.SetBounds(9, 20, 300, 13);
+            textBox.SetBounds(12, 50, 400, 20);
+            buttonOk.SetBounds(300, 100, 100, 30);
+            buttonCancel.SetBounds(150, 100, 100, 30);
+            dateTimePicker1.SetBounds(400, 20, 300, 20);
+        
+
+            form.ClientSize = new Size(700, 350);
+            form.FormBorderStyle = FormBorderStyle.FixedSingle;//lock resize
+            form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel, dateTimePicker1 });
+           // form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
+
+            DialogResult dialogResult = form.ShowDialog();
+        }
     }
 }
 

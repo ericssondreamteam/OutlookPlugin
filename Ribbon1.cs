@@ -129,7 +129,7 @@ namespace OutlookAddIn1
                 }
                 else
                 {
-                    MessageBox.Show("Operation cannceled");
+                    //OPERATION CANCELED
                 }
 
             }

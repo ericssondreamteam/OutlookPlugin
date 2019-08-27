@@ -18,8 +18,6 @@ namespace OutlookAddIn1
             textBox2.Text = OutputRaportFileName;
         }
 
-
-
         private void Button1_Click(object sender, EventArgs e)
         {
             
@@ -61,6 +59,18 @@ namespace OutlookAddIn1
         private void Label2_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void DateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            Settings.raportDate = dateTimePicker1.Value.ToString();
+            Settings.OutputRaportFileName= "Raport_" + dateTimePicker1.Value.ToString("dd_MM_yyyy");
+            textBox2.Text = Settings.OutputRaportFileName;
+        }
+
+        private void TextBox2_TextChanged(object sender, EventArgs e)
+        {
+            Settings.OutputRaportFileName = textBox2.Text;
         }
     }
 }

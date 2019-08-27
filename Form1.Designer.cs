@@ -98,6 +98,7 @@ namespace OutlookAddIn1
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(228, 26);
             this.textBox2.TabIndex = 5;
+            this.textBox2.TextChanged += new System.EventHandler(this.TextBox2_TextChanged);
             // 
             // checkBox1
             // 
@@ -143,6 +144,7 @@ namespace OutlookAddIn1
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(228, 26);
             this.dateTimePicker1.TabIndex = 9;
+            this.dateTimePicker1.ValueChanged += new System.EventHandler(this.DateTimePicker1_ValueChanged);
             // 
             // label3
             // 

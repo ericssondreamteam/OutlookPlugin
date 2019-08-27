@@ -34,6 +34,11 @@ namespace OutlookAddIn1
                 Settings.checkList[0] = true;
             Settings.ifWeDoRaport = DialogResult.OK;
             Settings.OutputRaportFileName = textBox2.Text;
+            if(DateTime.Parse(Settings.raportDate)>DateTime.Now)
+            {
+                Settings.ifWeDoRaport = DialogResult.Cancel;
+                MessageBox.Show("No chyba nie...\nNie robimy raportów w przyszłości");
+            }
             Close();
         }
 

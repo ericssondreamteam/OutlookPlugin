@@ -45,6 +45,7 @@ namespace OutlookAddIn1
         private void Button2_Click(object sender, EventArgs e)
         {
             Settings.ifWeDoRaport = DialogResult.Cancel;
+            Close();
         }
 
         private void Label1_Click(object sender, EventArgs e)

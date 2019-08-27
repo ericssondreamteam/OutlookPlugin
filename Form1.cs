@@ -27,11 +27,11 @@ namespace OutlookAddIn1
             Settings.raportDate = dateTimePicker1.Value.ToString();
            
             if (checkBox1.Checked)
-                Settings.checkList[0] = true;
-            if (checkBox2.Checked)
                 Settings.checkList[1] = true;
-            if (checkBox3.Checked)
+            if (checkBox2.Checked)
                 Settings.checkList[2] = true;
+            if (checkBox3.Checked)
+                Settings.checkList[0] = true;
             Settings.ifWeDoRaport = DialogResult.OK;
             Settings.OutputRaportFileName = textBox2.Text;
             Close();
@@ -40,6 +40,16 @@ namespace OutlookAddIn1
         private void Button2_Click(object sender, EventArgs e)
         {
             Settings.ifWeDoRaport = DialogResult.Cancel;
+        }
+
+        private void Label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -5,11 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
-using System.Collections.Generic;
-using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
-using System.Diagnostics;
-using System.Threading;
 
 namespace OutlookAddIn1
 {
@@ -17,27 +13,15 @@ namespace OutlookAddIn1
     public class Ribbon1 : Office.IRibbonExtensibility
     {
         private Office.IRibbonUI ribbon;
-        /*static private Debuger OurDebug = new Debuger();
-        private Office.IRibbonUI ribbon;
-        static public DataObject OurData = new DataObject(OurDebug);
-        WordClass toBeSavedWord = new WordClass();
-        public static bool checkExcel = false;
-        public static bool checkWord = false;
-        private int DebugForEachCounter = 0;
-        public static String fullInfoBox;*/
 
         public Ribbon1()
         {
 
         }
 
-
-
         public void OnTableButton(Office.IRibbonControl control)
         {
-            Settings set = new Settings();
-            
-            
+            Settings set = new Settings();            
             try
             {
                 string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
@@ -45,95 +29,8 @@ namespace OutlookAddIn1
                 form3.ShowDialog();
                 if (Settings.ifWeDoRaport == DialogResult.OK)
                 {
-
                     Loading waitingScreen = new Loading();
                     waitingScreen.ShowDialog();
-                    //test.Start();
-
-                    /*EmailFunctions functions = new EmailFunctions(OurDebug, Settings.boxMailName, DateTime.Parse(Settings.raportDate));
-
-                    List<MailItem> emails = new List<MailItem>();
-                    MailItem email1 = null;
-                    int DebugCorrectEmailsCounter = 0;
-
-                    functions.choiceOfFileFormat(Settings.checkList);
-
-
-                    //Initialize outlook app
-                    Outlook.Application oApp = new Outlook.Application();
-                    NameSpace oNS = oApp.GetNamespace("mapi");
-                    MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder as MAPIFolder;
-                    OurDebug.AppendInfo("Wybrany folder ", oInbox2.Name);
-                    Items oItems = oInbox2.Items;
-                    OurDebug.AppendInfo("Email's amount", oItems.Count.ToString());
-
-                    //Sort all items
-                    oItems.Sort("[ReceivedTime]", true);
-
-                    //Debug info for mails
-                    OurDebug.AppendInfo("\n\n ************************MAILS*******************\n\n");
-
-                    //Get only mails from two weeks ago
-                    DebugForEachCounter = functions.getOnlyEmailsForTwoWeeksAgo(DebugForEachCounter, email1, oItems, DebugCorrectEmailsCounter, emails);
-
-                    //Show how many times foreach is performed
-                    OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
-
-                    //Delete duplicates from email in the same name or the same thread
-                    try
-                    {
-                        emails = functions.emailsWithoutDuplicates(emails);
-                        emails = functions.removeDuplicateOneMoreTime(emails);
-                    }
-                    catch (Exception e)
-                    {
-                        OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Usuwanie duplikatow nie dziala", e.StackTrace, "\n", e.Message);
-                    }
-
-                    //Iterate all emails
-                    foreach (MailItem newEmail in emails)
-                    {
-                        try
-                        {
-                            List<bool> categoryList;
-                            //Divide on category
-                            if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
-                            {
-                                //Get inflow date and set to category
-                                DateTime friday = functions.getInflowDate();
-                                categoryList = functions.selectCorrectEmailType(newEmail);
-                                OurData.addNewItem(newEmail.Subject, categoryList);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Ribbon1.cs line:96. Problem in ID message.", ex.Message, "\n", ex.StackTrace);
-                        }
-
-                    }
-                    OurData.lastTuning();
-                    //Start create excel raport
-                    if (checkExcel)
-                    {
-                        ExcelSheet raport = new ExcelSheet();
-                        raport.SaveExcel(Settings.OutputRaportFileName, OurDebug);
-                    }
-                    //Save to txt file and word 
-                    if (checkWord)
-                    {
-                        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + Settings.OutputRaportFileName + ".docx";
-                        toBeSavedWord.WriteToWord(path, OurDebug, DateTime.Parse(Settings.raportDate));
-                    }
-
-                    if (checkExcel)
-                        fullInfoBox += "\n\nYour report (Excel) is saved: " + Settings.OutputRaportFileName + ".xlsx";
-                    if (checkWord)
-                        fullInfoBox += "\n\nYour report(Word) is saved: " + Settings.OutputRaportFileName + ".docx";
-
-
-                    //Raport is saved
-                    OurDebug.AppendInfo("Your report is SAVED :D");*/
-
                 }
                 else
                 {
@@ -156,7 +53,6 @@ namespace OutlookAddIn1
                     Loading.fullInfoBox += "\n\nYour debug file is saved: DebugInfoRaportPlugin.txt";
                     Loading.OurDebug.Disable();
                 }
-                //test.Abort();
                 Form2 summary = new Form2();
                 if(Settings.ifWeDoRaport==DialogResult.OK)
                     summary.ShowDialog();

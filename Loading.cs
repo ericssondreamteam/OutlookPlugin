@@ -49,9 +49,6 @@ namespace OutlookAddIn1
         private void pb_DoWork(object sender, DoWorkEventArgs e)
         {
 
-            //heavyJob();
-            //
-            //backgroundWorker1.ReportProgress(0);
             EmailFunctions functions = new EmailFunctions(OurDebug, Settings.boxMailName, DateTime.Parse(Settings.raportDate));
 
             List<MailItem> emails = new List<MailItem>();
@@ -93,6 +90,7 @@ namespace OutlookAddIn1
             }
 
             int counterForAllEmails = 0;
+           
             //Iterate all emails
             foreach (MailItem newEmail in emails)
             {
@@ -113,21 +111,26 @@ namespace OutlookAddIn1
                     OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Ribbon1.cs line:96. Problem in ID message.", ex.Message, "\n", ex.StackTrace);
                 }
                 counterForAllEmails++;
-                backgroundWorker1.ReportProgress(counterForAllEmails / emails.Count * 100);
+                backgroundWorker1.ReportProgress(counterForAllEmails / emails.Count * 60);
             }
             OurData.lastTuning();
             //Start create excel raport
             if (checkExcel)
             {
+                //textBox1.Text = "zapis excela";
                 ExcelSheet raport = new ExcelSheet();
                 raport.SaveExcel(Settings.OutputRaportFileName, OurDebug);
             }
+            backgroundWorker1.ReportProgress(80);
             //Save to txt file and word 
             if (checkWord)
             {
+                //textBox1.Text = "zapis worda";
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + Settings.OutputRaportFileName + ".docx";
                 toBeSavedWord.WriteToWord(path, OurDebug, DateTime.Parse(Settings.raportDate));
             }
+            backgroundWorker1.ReportProgress(100);
+            Thread.Sleep(1000);
 
             if (checkExcel)
                 fullInfoBox += "\n\nYour report (Excel) is saved: " + Settings.OutputRaportFileName + ".xlsx";
@@ -143,8 +146,13 @@ namespace OutlookAddIn1
 
         private void pb_Progress(object sender, ProgressChangedEventArgs e)
         {
-            progressBar1.Value = e.ProgressPercentage;
-            
+         
+            if (progressBar1.Value > 40 && progressBar1.Value <= 60)
+                label2.Text = "excel";
+            else if(progressBar1.Value > 60)
+                label2.Text = "word";
+            progressBar1.Value = e.ProgressPercentage;          
+
         }
 
         private void pb_Done(object sender, RunWorkerCompletedEventArgs e)
@@ -152,9 +160,9 @@ namespace OutlookAddIn1
             Close();
         }
 
-        private void heavyJob()
+        private void Label2_Click(object sender, EventArgs e)
         {
-            
+
         }
     }
 }

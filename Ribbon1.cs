@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
 using System.Diagnostics;
+using System.Threading;
 
 namespace OutlookAddIn1
 {
@@ -34,6 +35,8 @@ namespace OutlookAddIn1
         public void OnTableButton(Office.IRibbonControl control)
         {
             Settings set = new Settings();
+            Loading waitingScreen = new Loading();
+            Thread test = new Thread(() => waitingScreen.ShowDialog());
             try
             {
                 string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
@@ -41,6 +44,8 @@ namespace OutlookAddIn1
                 form3.ShowDialog();
                 if (Settings.ifWeDoRaport == DialogResult.OK)
                 {
+                    test.Start();
+
                     EmailFunctions functions = new EmailFunctions(OurDebug, Settings.boxMailName, DateTime.Parse(Settings.raportDate));
 
                     List<MailItem> emails = new List<MailItem>();
@@ -147,6 +152,7 @@ namespace OutlookAddIn1
                     fullInfoBox += "\n\nYour debug file is saved: DebugInfoRaportPlugin.txt";
                     OurDebug.Disable();
                 }
+                test.Abort();
                 Form2 summary = new Form2();
                 summary.ShowDialog();
 

@@ -3,10 +3,10 @@
   <ribbon>
     <tabs>
       <tab idMso="TabAddIns">
-        <group id="ContentGroup" label="Raports">
-                  <button id="tableButton" label="Create Raport"
+        <group id="ContentGroup" label="Reports">
+                  <button id="tableButton" label="Create Report"
                screentip="Table" onAction="OnTableButton"
-               supertip="Raport."/>
+               supertip="Report."/>
         </group>
       </tab>
     </tabs>

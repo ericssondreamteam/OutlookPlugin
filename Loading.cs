@@ -147,10 +147,10 @@ namespace OutlookAddIn1
         private void pb_Progress(object sender, ProgressChangedEventArgs e)
         {
          
-            if (progressBar1.Value > 40 && progressBar1.Value <= 60)
-                label2.Text = "excel";
-            else if(progressBar1.Value > 60)
-                label2.Text = "word";
+            if (progressBar1.Value > 40 && progressBar1.Value <= 60 && checkExcel)
+                label2.Text = "Excel is being created";
+            else if(progressBar1.Value > 60 && checkWord)
+                label2.Text = "Word is being created";
             progressBar1.Value = e.ProgressPercentage;          
 
         }
@@ -161,6 +161,11 @@ namespace OutlookAddIn1
         }
 
         private void Label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label2_Click_1(object sender, EventArgs e)
         {
 
         }

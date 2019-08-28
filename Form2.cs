@@ -28,7 +28,7 @@ namespace OutlookAddIn1
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            label1.Text = Ribbon1.fullInfoBox;
+            label1.Text = Loading.fullInfoBox;
         }
 
         private void Label1_Click(object sender, EventArgs e)

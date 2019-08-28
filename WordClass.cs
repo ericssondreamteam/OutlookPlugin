@@ -34,15 +34,15 @@ namespace OutlookAddIn1
 
                 string header = "NCMAILBOX tasks (week "; header += CurrentWeek(); header += "):";
                 WriteMainHeader(header, document);
-                string tym11 = "Inflow: "; tym11 += Ribbon1.OurData.inflowAmount.ToString();
+                string tym11 = "Inflow: "; tym11 += Loading.OurData.inflowAmount.ToString();
                 WriteSecondHeader(tym11, document);
-                WriteMails(document, Ribbon1.OurData.inflow);
-                string tym22 = "In-hands: "; tym22 += Ribbon1.OurData.inhandsAmount.ToString();
+                WriteMails(document, Loading.OurData.inflow);
+                string tym22 = "In-hands: "; tym22 += Loading.OurData.inhandsAmount.ToString();
                 WriteSecondHeader(tym22, document);
-                WriteMails(document, Ribbon1.OurData.inhands);
-                string tym33 = "Outflow: "; tym33 += Ribbon1.OurData.outflowAmount.ToString();
+                WriteMails(document, Loading.OurData.inhands);
+                string tym33 = "Outflow: "; tym33 += Loading.OurData.outflowAmount.ToString();
                 WriteSecondHeader(tym33, document);
-                WriteMails(document, Ribbon1.OurData.outflow);
+                WriteMails(document, Loading.OurData.outflow);
 
                 /**********************************************************************************************/
                 //Save the document 

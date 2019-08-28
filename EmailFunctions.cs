@@ -49,11 +49,11 @@ namespace OutlookAddIn1
             }
             if (checkList[1])
             {
-                Ribbon1.checkExcel = true;
+                Loading.checkExcel = true;
             }
             if (checkList[2])
             {
-                Ribbon1.checkWord = true;
+                Loading.checkWord = true;
             }
         }
         void EnumerateConversation(object item, Outlook.Conversation conversation, int i, List<bool> categoryList, ref bool correctCategory)
@@ -154,7 +154,7 @@ namespace OutlookAddIn1
                     catch(Exception e)
                     {
                         Debug.WriteLine("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Exception in read children and set categories");
-                        OurDebug.AppendInfo("Exception in read children and set categories");
+                        OurDebug.AppendInfo("Exception in read children and set categories" + e.StackTrace);
                     }
                 }
                 if(categoryList[0] || categoryList[1])

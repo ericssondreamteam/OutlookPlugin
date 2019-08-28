@@ -139,17 +139,17 @@ namespace OutlookAddIn1
                 var rowInflow = 4;
                 var rowOutflow = 4;
 
-                foreach (string s in Ribbon1.OurData.inflow)
+                foreach (string s in Loading.OurData.inflow)
                 {
                     rowInflow++;
                     oSheet.Cells[rowInflow, 1] = s;
                 }
-                foreach (string s in Ribbon1.OurData.outflow)
+                foreach (string s in Loading.OurData.outflow)
                 {
                     rowOutflow++;
                     oSheet.Cells[rowOutflow, 2] = s;
                 }
-                foreach (string s in Ribbon1.OurData.inhands)
+                foreach (string s in Loading.OurData.inhands)
                 {
                     rowInHands++;
                     oSheet.Cells[rowInHands, 3] = s;

@@ -16,14 +16,15 @@ namespace OutlookAddIn1
     [ComVisible(true)]
     public class Ribbon1 : Office.IRibbonExtensibility
     {
-        static private Debuger OurDebug = new Debuger();
+        private Office.IRibbonUI ribbon;
+        /*static private Debuger OurDebug = new Debuger();
         private Office.IRibbonUI ribbon;
         static public DataObject OurData = new DataObject(OurDebug);
         WordClass toBeSavedWord = new WordClass();
         public static bool checkExcel = false;
         public static bool checkWord = false;
         private int DebugForEachCounter = 0;
-        public static String fullInfoBox;
+        public static String fullInfoBox;*/
 
         public Ribbon1()
         {
@@ -35,8 +36,8 @@ namespace OutlookAddIn1
         public void OnTableButton(Office.IRibbonControl control)
         {
             Settings set = new Settings();
-            Loading waitingScreen = new Loading();
-            Thread test = new Thread(() => waitingScreen.ShowDialog());
+            
+            
             try
             {
                 string OutputRaportFileName = "Raport_" + DateTime.Now.ToString("dd_MM_yyyy");
@@ -44,9 +45,12 @@ namespace OutlookAddIn1
                 form3.ShowDialog();
                 if (Settings.ifWeDoRaport == DialogResult.OK)
                 {
-                    test.Start();
 
-                    EmailFunctions functions = new EmailFunctions(OurDebug, Settings.boxMailName, DateTime.Parse(Settings.raportDate));
+                    Loading waitingScreen = new Loading();
+                    waitingScreen.ShowDialog();
+                    //test.Start();
+
+                    /*EmailFunctions functions = new EmailFunctions(OurDebug, Settings.boxMailName, DateTime.Parse(Settings.raportDate));
 
                     List<MailItem> emails = new List<MailItem>();
                     MailItem email1 = null;
@@ -128,7 +132,7 @@ namespace OutlookAddIn1
 
 
                     //Raport is saved
-                    OurDebug.AppendInfo("Your report is SAVED :D");
+                    OurDebug.AppendInfo("Your report is SAVED :D");*/
 
                 }
                 else
@@ -140,27 +144,28 @@ namespace OutlookAddIn1
             catch (Exception e)
             {
                 MessageBox.Show("Some error occured during second analysis\nIf You turn on debugger please go there");
-                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Ribbon1.cs line:135. SECOND TRY CATCH\n", e.Message, "\n", e.StackTrace);
+                Loading.OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Ribbon1.cs line:135. SECOND TRY CATCH\n", e.Message, "\n", e.StackTrace);
             }
             finally
             {
-                if (OurDebug.IsEnable())
+                if (Loading.OurDebug.IsEnable())
                 {
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                     path += "\\DebugInfoRaportPlugin.txt";
-                    OurDebug.SaveDebugInfoToFile(path);
-                    fullInfoBox += "\n\nYour debug file is saved: DebugInfoRaportPlugin.txt";
-                    OurDebug.Disable();
+                    Loading.OurDebug.SaveDebugInfoToFile(path);
+                    Loading.fullInfoBox += "\n\nYour debug file is saved: DebugInfoRaportPlugin.txt";
+                    Loading.OurDebug.Disable();
                 }
-                test.Abort();
+                //test.Abort();
                 Form2 summary = new Form2();
-                summary.ShowDialog();
+                if(Settings.ifWeDoRaport==DialogResult.OK)
+                    summary.ShowDialog();
 
-                OurData.ClearData();
-                DebugForEachCounter = 0;
-                checkExcel = false;
-                checkWord = false;
-                fullInfoBox = String.Empty;
+                Loading.OurData.ClearData();
+                Loading.DebugForEachCounter = 0;
+                Loading.checkExcel = false;
+                Loading.checkWord = false;
+                Loading.fullInfoBox = String.Empty;
             }
         }
 

@@ -1,25 +1,160 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Outlook;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using Office = Microsoft.Office.Core;
+using Outlook = Microsoft.Office.Interop.Outlook;
+using Exception = System.Exception;
+using System.Diagnostics;
 
 namespace OutlookAddIn1
 {
     public partial class Loading : Form
     {
+
+        static public Debuger OurDebug = new Debuger();
+        //private Office.IRibbonUI ribbon;
+        static public DataObject OurData = new DataObject(OurDebug);
+        WordClass toBeSavedWord = new WordClass();
+        public static bool checkExcel = false;
+        public static bool checkWord = false;
+        public static int DebugForEachCounter = 0;
+        public static String fullInfoBox;
         public Loading()
         {
             InitializeComponent();
+            backgroundWorker1.RunWorkerAsync();
         }
 
         private void Label1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void ProgressBar1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pb_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+            //heavyJob();
+            //
+            //backgroundWorker1.ReportProgress(0);
+            EmailFunctions functions = new EmailFunctions(OurDebug, Settings.boxMailName, DateTime.Parse(Settings.raportDate));
+
+            List<MailItem> emails = new List<MailItem>();
+            MailItem email1 = null;
+            int DebugCorrectEmailsCounter = 0;
+
+            functions.choiceOfFileFormat(Settings.checkList);
+
+
+            //Initialize outlook app
+            Outlook.Application oApp = new Outlook.Application();
+            NameSpace oNS = oApp.GetNamespace("mapi");
+            MAPIFolder oInbox2 = oApp.ActiveExplorer().CurrentFolder as MAPIFolder;
+            OurDebug.AppendInfo("Wybrany folder ", oInbox2.Name);
+            Items oItems = oInbox2.Items;
+            OurDebug.AppendInfo("Email's amount", oItems.Count.ToString());
+
+            //Sort all items
+            oItems.Sort("[ReceivedTime]", true);
+
+            //Debug info for mails
+            OurDebug.AppendInfo("\n\n ************************MAILS*******************\n\n");
+
+            //Get only mails from two weeks ago
+            DebugForEachCounter = functions.getOnlyEmailsForTwoWeeksAgo(DebugForEachCounter, email1, oItems, DebugCorrectEmailsCounter, emails);
+
+            //Show how many times foreach is performed
+            OurDebug.AppendInfo("\n\n", "Ile razy foreach: ", DebugForEachCounter.ToString(), "Maile brane pod uwage po wstepnej selekcji: ", "\n\n");
+
+            //Delete duplicates from email in the same name or the same thread
+            try
+            {
+                emails = functions.emailsWithoutDuplicates(emails);
+                emails = functions.removeDuplicateOneMoreTime(emails);
+            }
+            catch (Exception ex)
+            {
+                OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Usuwanie duplikatow nie dziala", ex.StackTrace, "\n", ex.Message);
+            }
+
+            int counterForAllEmails = 0;
+            //Iterate all emails
+            foreach (MailItem newEmail in emails)
+            {
+                try
+                {
+                    List<bool> categoryList;
+                    //Divide on category
+                    if (functions.isMultipleCategoriesAndAnyOfTheireInterestedUs(newEmail.Categories))
+                    {
+                        //Get inflow date and set to category
+                        DateTime friday = functions.getInflowDate();
+                        categoryList = functions.selectCorrectEmailType(newEmail);
+                        OurData.addNewItem(newEmail.Subject, categoryList);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    OurDebug.AppendInfo("!!!!!!!!************ERROR***********!!!!!!!!!!\n", "Ribbon1.cs line:96. Problem in ID message.", ex.Message, "\n", ex.StackTrace);
+                }
+                counterForAllEmails++;
+                backgroundWorker1.ReportProgress(counterForAllEmails / emails.Count * 100);
+            }
+            OurData.lastTuning();
+            //Start create excel raport
+            if (checkExcel)
+            {
+                ExcelSheet raport = new ExcelSheet();
+                raport.SaveExcel(Settings.OutputRaportFileName, OurDebug);
+            }
+            //Save to txt file and word 
+            if (checkWord)
+            {
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + Settings.OutputRaportFileName + ".docx";
+                toBeSavedWord.WriteToWord(path, OurDebug, DateTime.Parse(Settings.raportDate));
+            }
+
+            if (checkExcel)
+                fullInfoBox += "\n\nYour report (Excel) is saved: " + Settings.OutputRaportFileName + ".xlsx";
+            if (checkWord)
+                fullInfoBox += "\n\nYour report(Word) is saved: " + Settings.OutputRaportFileName + ".docx";
+
+
+            //Raport is saved
+            OurDebug.AppendInfo("Your report is SAVED :D");
+
+
+        }
+
+        private void pb_Progress(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar1.Value = e.ProgressPercentage;
+            
+        }
+
+        private void pb_Done(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Close();
+        }
+
+        private void heavyJob()
+        {
+            
         }
     }
 }

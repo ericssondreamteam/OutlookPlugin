@@ -107,7 +107,7 @@ namespace OutlookAddIn1
             //Start create excel raport
             if (checkExcel)
             {
-                //textBox1.Text = "zapis excela";
+                fullInfoBox += "\n\nYour report (Excel) is saved: " + Settings.OutputRaportFileName + ".xlsx";
                 ExcelSheet raport = new ExcelSheet();
                 raport.SaveExcel(Settings.OutputRaportFileName, OurDebug);
             }
@@ -115,17 +115,12 @@ namespace OutlookAddIn1
             //Save to txt file and word 
             if (checkWord)
             {
-                //textBox1.Text = "zapis worda";
+                fullInfoBox += "\n\nYour report(Word) is saved: " + Settings.OutputRaportFileName + ".docx";
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + Settings.OutputRaportFileName + ".docx";
                 toBeSavedWord.WriteToWord(path, OurDebug, DateTime.Parse(Settings.raportDate));
             }
             backgroundWorker1.ReportProgress(100);
             Thread.Sleep(1000);
-
-            if (checkExcel)
-                fullInfoBox += "\n\nYour report (Excel) is saved: " + Settings.OutputRaportFileName + ".xlsx";
-            if (checkWord)
-                fullInfoBox += "\n\nYour report(Word) is saved: " + Settings.OutputRaportFileName + ".docx";
 
 
             //Raport is saved

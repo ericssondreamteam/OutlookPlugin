@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net;
+using System.Net.Mail;
 using System.Windows.Forms;
 
 namespace OutlookAddIn1
@@ -29,6 +31,9 @@ namespace OutlookAddIn1
             
         }
 
-
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            
+        }
     }
 }

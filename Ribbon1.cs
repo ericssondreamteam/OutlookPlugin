@@ -55,7 +55,7 @@ namespace OutlookAddIn1
                 }
                 Form2 summary = new Form2();
                 if(Settings.ifWeDoRaport==DialogResult.OK)
-                    summary.ShowDialog();
+                    summary.Show();
 
                 Loading.OurData.ClearData();
                 Loading.DebugForEachCounter = 0;

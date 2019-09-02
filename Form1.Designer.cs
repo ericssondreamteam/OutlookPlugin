@@ -41,6 +41,7 @@ namespace OutlookAddIn1
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -68,9 +69,9 @@ namespace OutlookAddIn1
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(30, 41);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(76, 20);
+            this.label1.Size = new System.Drawing.Size(91, 20);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Mail Box: ";
+            this.label1.Text = "User name:";
             this.label1.Click += new System.EventHandler(this.Label1_Click);
             // 
             // textBox1
@@ -80,6 +81,8 @@ namespace OutlookAddIn1
             this.textBox1.Size = new System.Drawing.Size(228, 26);
             this.textBox1.TabIndex = 3;
             this.textBox1.Text = "NC MailBox";
+            this.textBox1.TextChanged += new System.EventHandler(this.TextBox1_TextChanged);
+            this.textBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.mouseMove);
             // 
             // label2
             // 
@@ -156,11 +159,24 @@ namespace OutlookAddIn1
             this.label3.Text = "Start Date:";
             this.label3.Click += new System.EventHandler(this.Label3_Click);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(166, 20);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(176, 15);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "e.g. NC Mailbox or Karol Lasek";
+            this.label4.Click += new System.EventHandler(this.Label4_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(409, 389);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.checkBox3);
@@ -168,7 +184,6 @@ namespace OutlookAddIn1
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -195,5 +210,6 @@ namespace OutlookAddIn1
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private Label label3;
+        private Label label4;
     }
 }

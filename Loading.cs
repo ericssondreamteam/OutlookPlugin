@@ -26,15 +26,7 @@ namespace OutlookAddIn1
             backgroundWorker1.RunWorkerAsync();
         }
 
-        private void Label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ProgressBar1_Click(object sender, EventArgs e)
-        {
-
-        }
+  
 
         private void pb_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -145,14 +137,6 @@ namespace OutlookAddIn1
             Close();
         }
 
-        private void Label2_Click(object sender, EventArgs e)
-        {
 
-        }
-
-        private void Label2_Click_1(object sender, EventArgs e)
-        {
-
-        }
     }
 }

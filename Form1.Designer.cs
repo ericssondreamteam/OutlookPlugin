@@ -80,7 +80,6 @@ namespace OutlookAddIn1
             this.textBox1.Size = new System.Drawing.Size(228, 26);
             this.textBox1.TabIndex = 3;
             this.textBox1.Text = "NC MailBox";
-            this.textBox1.TextChanged += new System.EventHandler(this.TextBox1_TextChanged);
             // 
             // label2
             // 
@@ -166,7 +165,6 @@ namespace OutlookAddIn1
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(0, 15);
             this.label5.TabIndex = 12;
-            this.label5.Click += new System.EventHandler(this.Label5_Click);
             // 
             // Form1
             // 

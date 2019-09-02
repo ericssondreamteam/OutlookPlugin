@@ -44,7 +44,6 @@
             this.label1.Size = new System.Drawing.Size(453, 50);
             this.label1.TabIndex = 1;
             this.label1.Text = "Your report is being created ...";
-            this.label1.Click += new System.EventHandler(this.Label1_Click);
             // 
             // progressBar1
             // 
@@ -52,7 +51,6 @@
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(444, 23);
             this.progressBar1.TabIndex = 2;
-            this.progressBar1.Click += new System.EventHandler(this.ProgressBar1_Click);
             // 
             // backgroundWorker1
             // 
@@ -70,7 +68,6 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Email analysis . . .";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label2.Click += new System.EventHandler(this.Label2_Click_1);
             // 
             // Loading
             // 

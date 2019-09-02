@@ -271,9 +271,7 @@ namespace OutlookAddIn1
                 mailSubject1 = emails[i].Subject.Trim().Replace(" ","").ToLower();
                 for (int j = i + 1; j < emails.Count; j++)
                 {
-                    mailSubject2 = emails[j].Subject.Trim().Replace(" ", "").ToLower();                    
-                    //string mailSubject1;
-                    //string mailSubject2;
+                    mailSubject2 = emails[j].Subject.Trim().Replace(" ", "").ToLower();
                     if(mailSubject2.Length > mailSubject1.Length)
                     {
                         var a = mailSubject1.Substring(mailSubject1.Length / 2);

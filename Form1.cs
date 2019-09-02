@@ -77,19 +77,6 @@ namespace OutlookAddIn1
             Settings.OutputRaportFileName = textBox2.Text;
         }
 
-        private void TextBox1_TextChanged(object sender, EventArgs e)
-        {
-           
-        }
 
-        private void Label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Label5_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

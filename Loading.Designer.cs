@@ -1,4 +1,6 @@
-﻿namespace OutlookAddIn1
+﻿using System.Drawing;
+
+namespace OutlookAddIn1
 {
     partial class Loading
     {
@@ -37,11 +39,11 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Arial Narrow", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label1.Location = new System.Drawing.Point(121, 137);
+            this.label1.Location = new System.Drawing.Point(91, 138);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(557, 57);
+            this.label1.Size = new System.Drawing.Size(610, 59);
             this.label1.TabIndex = 1;
             this.label1.Text = "Your report is being created ...";
             // 
@@ -74,7 +76,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.CornflowerBlue;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(110)))), ((int)(((byte)(190)))));
             this.ClientSize = new System.Drawing.Size(767, 377);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.progressBar1);

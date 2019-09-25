@@ -30,6 +30,7 @@ namespace OutlookAddIn1
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -89,7 +90,6 @@ namespace OutlookAddIn1
             this.label2.Size = new System.Drawing.Size(108, 20);
             this.label2.TabIndex = 4;
             this.label2.Text = "Raport Name:";
-            
             // 
             // textBox2
             // 
@@ -154,7 +154,6 @@ namespace OutlookAddIn1
             this.label3.Size = new System.Drawing.Size(87, 20);
             this.label3.TabIndex = 10;
             this.label3.Text = "Start Date:";
-            
             // 
             // label5
             // 
@@ -184,6 +183,7 @@ namespace OutlookAddIn1
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
